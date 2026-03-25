@@ -208,6 +208,14 @@ function calculate({
   departCheckpoint,
   erpDays,
 }) {
+  // 1. Stay Duration Check
+  const msDiff = departureDt - entryDt;
+  const daysDiff = msDiff / (1000 * 60 * 60 * 24);
+
+  if (msDiff < 0)
+    return { error: "Departure date cannot be before entry date." };
+  if (daysDiff > 250) return { error: "Stay duration cannot exceed 250 days." };
+
   const isCar = vehicleCategory === "cars";
   const isMoto = vehicleCategory === "motorcycles";
   if (!isCar && !isMoto) {
@@ -519,6 +527,34 @@ export default function VEPCalculator() {
     setErrors({});
   }
 
+  const handleQuickFill = () => {
+    // Generate a random entry date within the next 30 days
+    const now = new Date();
+    const entryDate = new Date(
+      now.getTime() + Math.random() * 30 * 24 * 60 * 60 * 1000,
+    );
+
+    // Generate a stay duration between 1 and 10 days (to keep it realistic)
+    const stayDays = Math.floor(Math.random() * 10) + 1;
+    const departDate = new Date(
+      entryDate.getTime() + stayDays * 24 * 60 * 60 * 1000,
+    );
+
+    const randomForm = {
+      vehicleCategory: Math.random() > 0.5 ? "cars" : "motorcycles",
+      hasIU: Math.random() > 0.5 ? "yes" : "no",
+      entryDatetime: entryDate.toISOString().slice(0, 16),
+      departDatetime: departDate.toISOString().slice(0, 16),
+      entryCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
+      departCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
+      erpDays: Math.floor(Math.random() * stayDays).toString(),
+    };
+
+    setForm(randomForm);
+    setErrors({});
+    setResult(null);
+  };
+
   function runTest(tc) {
     setTestRes((p) => ({ ...p, [tc.id]: calculate(tc.params) }));
   }
@@ -557,38 +593,45 @@ export default function VEPCalculator() {
       padding: "24px 28px",
       background: "#fafafa",
     },
+    formGrid: {
+      display: "grid",
+      // 1 column by default (mobile)
+      gridTemplateColumns: "1fr",
+      gap: "16px",
+      marginBottom: "20px",
+    },
     row: {
       display: "flex",
-      alignItems: "flex-start",
-      marginBottom: 16,
-      gap: 12,
+      flexDirection: "column",
+      gap: "6px",
     },
     lbl: {
-      width: 265,
-      flexShrink: 0,
+      width: "100%", // Takes full width
       fontSize: 13,
-      fontWeight: 600,
+      fontWeight: 700,
       color: "#333",
-      paddingTop: 8,
       lineHeight: 1.4,
     },
-    ctrl: { flex: 1, minWidth: 0 },
+    ctrl: {
+      width: "100%",
+    },
     sel: (e) => ({
       width: "100%",
-      padding: "7px 10px",
+      padding: "10px 12px",
       border: `1px solid ${e ? RED : "#bbb"}`,
-      borderRadius: 3,
-      fontSize: 13,
+      borderRadius: 4,
+      fontSize: 14,
       background: "#fff",
       outline: "none",
       cursor: "pointer",
+      appearance: "none", // cleaner look on mobile
     }),
     inp: (e) => ({
       width: "100%",
-      padding: "7px 10px",
+      padding: "10px 12px", // Slightly larger touch targets for mobile
       border: `1px solid ${e ? RED : "#bbb"}`,
-      borderRadius: 3,
-      fontSize: 13,
+      borderRadius: 4,
+      fontSize: 14,
       background: "#fff",
       outline: "none",
       boxSizing: "border-box",
@@ -625,6 +668,17 @@ export default function VEPCalculator() {
       marginBottom: 16,
       color: RED,
     },
+    emptyFlex: {
+      flexBasis: "100%",
+    },
+    btnGroup: {
+      display: "flex",
+      flexWrap: "wrap", // This allows buttons to drop to the next line
+      gap: "12px",
+      marginTop: "20px",
+      alignItems: "center",
+      justifyContent: "center",
+    },
     btnP: {
       background: RED,
       color: "#fff",
@@ -644,6 +698,7 @@ export default function VEPCalculator() {
       padding: "10px 20px",
       fontSize: 14,
       cursor: "pointer",
+      marginRight: 10,
     },
 
     // Result
@@ -926,237 +981,275 @@ export default function VEPCalculator() {
   })();
 
   return (
-    <div style={s.wrap}>
-      <div style={s.tabs}>
-        <button style={s.tab(tab === "calc")} onClick={() => setTab("calc")}>
-          Fee Calculator
-        </button>
-        <button style={s.tab(tab === "tests")} onClick={() => setTab("tests")}>
-          Test Cases
-        </button>
-      </div>
+    <>
+      <style>{`
+  .vep-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  @media (min-width: 768px) {
+    .vep-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    /* Optional: Make wide fields (like dates) span both columns if needed */
+    .full-width {
+      grid-column: span 2;
+    }
+  }
+`}</style>
+      <div style={s.wrap}>
+        <div style={s.tabs}>
+          <button style={s.tab(tab === "calc")} onClick={() => setTab("calc")}>
+            Fee Calculator
+          </button>
+          <button
+            style={s.tab(tab === "tests")}
+            onClick={() => setTab("tests")}
+          >
+            Test Cases
+          </button>
+        </div>
 
-      {/* ── Calculator ── */}
-      {tab === "calc" && (
-        <>
-          <div style={s.info}>
-            <strong>Applicable to:</strong> Cars &amp; Motorcycles registered in
-            Malaysia.
-            <br />
-            <strong>Pre-2027:</strong> VEP Cars $35/day · Motorcycles $4/day.
-            Free on: Sat/Sun/PH, weekday evenings (entry ≥5pm, exit ≤2am),
-            school-holiday noons (entry ≥12pm, exit ≤2am).
-            <br />
-            <strong>From 1 Jan 2027:</strong> VEP Cars $50/day · Motorcycles
-            $7/day. Free on: Sat/Sun/PH <em>only</em> (all other exemptions
-            removed). ERP flat rate without OBU: Cars $10/day, Motorcycles
-            $3/day.
-          </div>
-
-          {straddlesBoundary && (
-            <div style={s.warn2027}>
-              ⚠️{" "}
-              <strong>
-                Your trip straddles the 1 January 2027 rate change.
-              </strong>{" "}
-              Days before 2027 will be charged at current rates; days from 1 Jan
-              2027 will be charged at the new higher rates. The breakdown is
-              shown separately in the results.
+        {/* ── Calculator ── */}
+        {tab === "calc" && (
+          <>
+            <div style={s.info}>
+              <strong>Applicable to:</strong> Cars &amp; Motorcycles registered
+              in Malaysia.
+              <br />
+              <strong>Pre-2027:</strong> VEP Cars $35/day · Motorcycles $4/day.
+              Free on: Sat/Sun/PH, weekday evenings (entry ≥5pm, exit ≤2am),
+              school-holiday noons (entry ≥12pm, exit ≤2am).
+              <br />
+              <strong>From 1 Jan 2027:</strong> VEP Cars $50/day · Motorcycles
+              $7/day. Free on: Sat/Sun/PH <em>only</em> (all other exemptions
+              removed). ERP flat rate without OBU: Cars $10/day, Motorcycles
+              $3/day.
             </div>
-          )}
 
-          {errors._g && <div style={s.errBanner}>{errors._g}</div>}
-
-          <div style={s.card}>
-            {/* Vehicle Category */}
-            <div style={s.row}>
-              <label style={s.lbl}>Vehicle Category</label>
-              <div style={s.ctrl}>
-                <select
-                  style={s.sel(errors.vehicleCategory)}
-                  value={form.vehicleCategory}
-                  onChange={(e) => set("vehicleCategory", e.target.value)}
-                >
-                  <option value="">Select category</option>
-                  <option value="cars">Cars</option>
-                  <option value="motorcycles">Motorcycles</option>
-                  <option value="vans">Vans/Light Goods Vehicles</option>
-                  <option value="hgv">Heavy Goods Vehicles</option>
-                  <option value="taxis">Taxis</option>
-                  <option value="buses">Buses</option>
-                </select>
-                {errors.vehicleCategory && (
-                  <div style={s.err}>{errors.vehicleCategory}</div>
-                )}
+            {straddlesBoundary && (
+              <div style={s.warn2027}>
+                ⚠️{" "}
+                <strong>
+                  Your trip straddles the 1 January 2027 rate change.
+                </strong>{" "}
+                Days before 2027 will be charged at current rates; days from 1
+                Jan 2027 will be charged at the new higher rates. The breakdown
+                is shown separately in the results.
               </div>
-            </div>
+            )}
 
-            {/* IU / OBU */}
-            <div style={s.row}>
-              <label style={s.lbl}>In-Vehicle Unit / OBU installed?</label>
-              <div style={s.ctrl}>
-                <select
-                  style={s.sel(errors.hasIU)}
-                  value={form.hasIU}
-                  onChange={(e) => set("hasIU", e.target.value)}
-                >
-                  <option value="">Select</option>
-                  <option value="yes">Yes (IU / OBU installed)</option>
-                  <option value="no">No (no IU / OBU)</option>
-                </select>
-                {errors.hasIU && <div style={s.err}>{errors.hasIU}</div>}
+            {errors._g && <div style={s.errBanner}>{errors._g}</div>}
+
+            <div className="vep-grid">
+              {/* Vehicle Category */}
+              <div style={s.row}>
+                <label style={s.lbl}>Vehicle Category</label>
+                <div style={s.ctrl}>
+                  <select
+                    style={s.sel(errors.vehicleCategory)}
+                    value={form.vehicleCategory}
+                    onChange={(e) => set("vehicleCategory", e.target.value)}
+                  >
+                    <option value="">Select category</option>
+                    <option value="cars">Cars</option>
+                    <option value="motorcycles">Motorcycles</option>
+                    <option value="vans">Vans/Light Goods Vehicles</option>
+                    <option value="hgv">Heavy Goods Vehicles</option>
+                    <option value="taxis">Taxis</option>
+                    <option value="buses">Buses</option>
+                  </select>
+                  {errors.vehicleCategory && (
+                    <div style={s.err}>{errors.vehicleCategory}</div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Entry Date & Time */}
-            <div style={s.row}>
-              <label style={s.lbl}>Entry Date &amp; Time</label>
-              <div style={s.ctrl}>
-                <input
-                  type="datetime-local"
-                  style={s.inp(errors.entryDatetime)}
-                  value={form.entryDatetime}
-                  onChange={(e) => set("entryDatetime", e.target.value)}
-                />
-                {errors.entryDatetime && (
-                  <div style={s.err}>{errors.entryDatetime}</div>
-                )}
+              {/* IU / OBU */}
+              <div style={s.row}>
+                <label style={s.lbl}>In-Vehicle Unit / OBU installed?</label>
+                <div style={s.ctrl}>
+                  <select
+                    style={s.sel(errors.hasIU)}
+                    value={form.hasIU}
+                    onChange={(e) => set("hasIU", e.target.value)}
+                  >
+                    <option value="">Select</option>
+                    <option value="yes">Yes (IU / OBU installed)</option>
+                    <option value="no">No (no IU / OBU)</option>
+                  </select>
+                  {errors.hasIU && <div style={s.err}>{errors.hasIU}</div>}
+                </div>
               </div>
-            </div>
 
-            {/* Departure Date & Time */}
-            <div style={s.row}>
-              <label style={s.lbl}>Departure Date &amp; Time</label>
-              <div style={s.ctrl}>
-                <input
-                  type="datetime-local"
-                  style={s.inp(errors.departDatetime)}
-                  value={form.departDatetime}
-                  min={form.entryDatetime || undefined}
-                  onChange={(e) => set("departDatetime", e.target.value)}
-                />
-                {errors.departDatetime && (
-                  <div style={s.err}>{errors.departDatetime}</div>
-                )}
+              {/* Entry Date & Time */}
+              <div style={s.row}>
+                <label style={s.lbl}>Entry Date &amp; Time</label>
+                <div style={s.ctrl}>
+                  <input
+                    type="datetime-local"
+                    style={s.inp(errors.entryDatetime)}
+                    value={form.entryDatetime}
+                    onChange={(e) => set("entryDatetime", e.target.value)}
+                  />
+                  {errors.entryDatetime && (
+                    <div style={s.err}>{errors.entryDatetime}</div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Entry Checkpoint */}
-            <div style={s.row}>
-              <label style={s.lbl}>Entry Checkpoint</label>
-              <div style={s.ctrl}>
-                <select
-                  style={s.sel(errors.entryCheckpoint)}
-                  value={form.entryCheckpoint}
-                  onChange={(e) => set("entryCheckpoint", e.target.value)}
-                >
-                  <option value="">Select Entry Checkpoint</option>
-                  <option value="woodlands">Woodlands Checkpoint</option>
-                  <option value="tuas">Tuas Checkpoint</option>
-                </select>
-                {errors.entryCheckpoint && (
-                  <div style={s.err}>{errors.entryCheckpoint}</div>
-                )}
+              {/* Departure Date & Time */}
+              <div style={s.row}>
+                <label style={s.lbl}>Departure Date &amp; Time</label>
+                <div style={s.ctrl}>
+                  <input
+                    type="datetime-local"
+                    style={s.inp(errors.departDatetime)}
+                    value={form.departDatetime}
+                    min={form.entryDatetime || undefined}
+                    onChange={(e) => set("departDatetime", e.target.value)}
+                  />
+                  {errors.departDatetime && (
+                    <div style={s.err}>{errors.departDatetime}</div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* Departure Checkpoint */}
-            <div style={s.row}>
-              <label style={s.lbl}>Departure Checkpoint</label>
-              <div style={s.ctrl}>
-                <select
-                  style={s.sel(errors.departCheckpoint)}
-                  value={form.departCheckpoint}
-                  onChange={(e) => set("departCheckpoint", e.target.value)}
-                >
-                  <option value="">Select Departure Checkpoint</option>
-                  <option value="woodlands">Woodlands Checkpoint</option>
-                  <option value="tuas">Tuas Checkpoint</option>
-                </select>
-                {errors.departCheckpoint && (
-                  <div style={s.err}>{errors.departCheckpoint}</div>
-                )}
+              {/* Entry Checkpoint */}
+              <div style={s.row}>
+                <label style={s.lbl}>Entry Checkpoint</label>
+                <div style={s.ctrl}>
+                  <select
+                    style={s.sel(errors.entryCheckpoint)}
+                    value={form.entryCheckpoint}
+                    onChange={(e) => set("entryCheckpoint", e.target.value)}
+                  >
+                    <option value="">Select Entry Checkpoint</option>
+                    <option value="woodlands">Woodlands Checkpoint</option>
+                    <option value="tuas">Tuas Checkpoint</option>
+                  </select>
+                  {errors.entryCheckpoint && (
+                    <div style={s.err}>{errors.entryCheckpoint}</div>
+                  )}
+                </div>
               </div>
-            </div>
 
-            {/* ERP Days */}
-            <div style={s.row}>
-              <label style={s.lbl}>
-                No. of days using ERP-priced roads
-                <br />
-                <span style={{ fontWeight: 400, fontSize: 11, color: "#888" }}>
-                  (during ERP-operating hours — only relevant if no IU/OBU)
-                </span>
-              </label>
-              <div style={s.ctrl}>
-                <input
-                  type="number"
-                  min="0"
-                  style={s.inp(false)}
-                  value={form.erpDays}
-                  onChange={(e) => set("erpDays", e.target.value)}
-                  placeholder="0"
-                />
+              {/* Departure Checkpoint */}
+              <div style={s.row}>
+                <label style={s.lbl}>Departure Checkpoint</label>
+                <div style={s.ctrl}>
+                  <select
+                    style={s.sel(errors.departCheckpoint)}
+                    value={form.departCheckpoint}
+                    onChange={(e) => set("departCheckpoint", e.target.value)}
+                  >
+                    <option value="">Select Departure Checkpoint</option>
+                    <option value="woodlands">Woodlands Checkpoint</option>
+                    <option value="tuas">Tuas Checkpoint</option>
+                  </select>
+                  {errors.departCheckpoint && (
+                    <div style={s.err}>{errors.departCheckpoint}</div>
+                  )}
+                </div>
               </div>
+
+              {/* ERP Days */}
+              <div style={s.row}>
+                <label style={s.lbl}>
+                  No. of days using ERP-priced roads
+                  <br />
+                  <span
+                    style={{ fontWeight: 400, fontSize: 11, color: "#888" }}
+                  >
+                    (during ERP-operating hours — only relevant if no IU/OBU)
+                  </span>
+                </label>
+                <div style={s.ctrl}>
+                  <input
+                    type="number"
+                    min="0"
+                    style={s.inp(false)}
+                    value={form.erpDays}
+                    onChange={(e) => set("erpDays", e.target.value)}
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+
+              <div style={s.emptyFlex} />
             </div>
 
-            <div style={{ marginTop: 8 }}>
+            <div style={s.btnGroup}>
               <button style={s.btnP} onClick={handleCalculate}>
                 Calculate
               </button>
+              <button
+                style={{
+                  ...s.btnS,
+                  background: "#e3f2fd",
+                  color: "#1976d2",
+                  border: "1px solid #2196f3",
+                }}
+                onClick={handleQuickFill}
+              >
+                ⚡ Quick Fill
+              </button>
+
               <button style={s.btnS} onClick={handleReset}>
                 Reset
               </button>
             </div>
-          </div>
-
-          {result && !result.error && <ResultTable r={result} />}
-          {result?.error && (
-            <div style={{ ...s.errBanner, marginTop: 16 }}>{result.error}</div>
-          )}
-        </>
-      )}
-
-      {/* ── Test Cases ── */}
-      {tab === "tests" && (
-        <div>
-          <div style={s.info}>
-            8 test cases covering pre-2027, post-2027, and boundary-straddling
-            scenarios. Click <strong>▶ Run</strong> to execute each one against
-            the calculation engine.
-          </div>
-          {TEST_CASES.map((tc) => (
-            <div key={tc.id} style={s.tcCard}>
-              <div style={s.tcT}>
-                #{tc.id} — {tc.label}
-                <span
-                  style={s.pill(
-                    tc.params.entryDt >= CUTOFF_2027
-                      ? "post"
-                      : tc.params.departureDt >= CUTOFF_2027
-                        ? "pre"
-                        : "pre",
-                  )}
-                >
-                  {tc.params.entryDt >= CUTOFF_2027
-                    ? "post-2027"
-                    : tc.params.departureDt >= CUTOFF_2027
-                      ? "straddles 2027"
-                      : "pre-2027"}
-                </span>
+            {result && !result.error && <ResultTable r={result} />}
+            {result?.error && (
+              <div style={{ ...s.errBanner, marginTop: 16 }}>
+                {result.error}
               </div>
-              <div style={s.tcD}>{tc.desc}</div>
-              <div style={s.tcN}>
-                <strong>Expected:</strong> {tc.note}
-              </div>
-              <button style={s.tcB} onClick={() => runTest(tc)}>
-                ▶ Run
-              </button>
-              <TestResult res={testRes[tc.id]} tc={tc} />
+            )}
+          </>
+        )}
+
+        {/* ── Test Cases ── */}
+        {tab === "tests" && (
+          <div>
+            <div style={s.info}>
+              8 test cases covering pre-2027, post-2027, and boundary-straddling
+              scenarios. Click <strong>▶ Run</strong> to execute each one
+              against the calculation engine.
             </div>
-          ))}
-        </div>
-      )}
-    </div>
+            {TEST_CASES.map((tc) => (
+              <div key={tc.id} style={s.tcCard}>
+                <div style={s.tcT}>
+                  #{tc.id} — {tc.label}
+                  <span
+                    style={s.pill(
+                      tc.params.entryDt >= CUTOFF_2027
+                        ? "post"
+                        : tc.params.departureDt >= CUTOFF_2027
+                          ? "pre"
+                          : "pre",
+                    )}
+                  >
+                    {tc.params.entryDt >= CUTOFF_2027
+                      ? "post-2027"
+                      : tc.params.departureDt >= CUTOFF_2027
+                        ? "straddles 2027"
+                        : "pre-2027"}
+                  </span>
+                </div>
+                <div style={s.tcD}>{tc.desc}</div>
+                <div style={s.tcN}>
+                  <strong>Expected:</strong> {tc.note}
+                </div>
+                <button style={s.tcB} onClick={() => runTest(tc)}>
+                  ▶ Run
+                </button>
+                <TestResult res={testRes[tc.id]} tc={tc} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 }
