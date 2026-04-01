@@ -11,6 +11,7 @@ interface TestCase {
     entryDt: Date;
     departureDt: Date;
   } & Record<string, any>;
+  expectedTotal: number;
   note: string;
 }
 
@@ -18,9 +19,15 @@ interface TestCaseCardProps {
   testCase: TestCase;
   result?: CalculationResult | CalculationError;
   onRun: (testCase: TestCase) => void;
+  isRunning?: boolean;
 }
 
-export function TestCaseCard({ testCase, result, onRun }: TestCaseCardProps) {
+export function TestCaseCard({
+  testCase,
+  result,
+  onRun,
+  isRunning = false,
+}: TestCaseCardProps) {
   const isPeriod =
     testCase.params.entryDt >= CUTOFF_2027
       ? "post"
@@ -45,12 +52,34 @@ export function TestCaseCard({ testCase, result, onRun }: TestCaseCardProps) {
       </div>
       <div style={testCaseStyles.tcD}>{testCase.desc}</div>
       <div style={testCaseStyles.tcN}>
-        <strong>Expected:</strong> {testCase.note}
+        <strong>Expected Total:</strong> ${testCase.expectedTotal.toFixed(2)}
       </div>
-      <button style={testCaseStyles.tcB} onClick={() => onRun(testCase)}>
-        ▶ Run
+      <button
+        style={testCaseStyles.tcB}
+        onClick={() => onRun(testCase)}
+        disabled={isRunning}
+      >
+        {isRunning ? (
+          <>
+            <span
+              style={{
+                display: "inline-block",
+                width: 14,
+                height: 14,
+                border: "2px solid #fff",
+                borderTop: "2px solid transparent",
+                borderRadius: "50%",
+                animation: "spin 1s linear infinite",
+                marginRight: 6,
+              }}
+            />
+            Running...
+          </>
+        ) : (
+          "▶ Run"
+        )}
       </button>
-      <TestResult result={result} testCase={testCase} />
+      {!isRunning && <TestResult result={result} testCase={testCase} />}
     </div>
   );
 }

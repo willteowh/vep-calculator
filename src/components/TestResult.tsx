@@ -7,6 +7,7 @@ interface TestCase {
   label: string;
   desc: string;
   params: object;
+  expectedTotal: number;
   note: string;
 }
 
@@ -19,9 +20,11 @@ export function TestResult({ result, testCase }: TestResultProps) {
   if (!result) return null;
 
   const ok = !("error" in result);
+  const totalMatches =
+    ok && Math.abs(result.grandTotal - testCase.expectedTotal) < 0.01;
 
   return (
-    <div style={testCaseStyles.tcR(ok)}>
+    <div style={testCaseStyles.tcR(ok && totalMatches)}>
       {"error" in result ? (
         <strong>{result.error}</strong>
       ) : (
@@ -55,11 +58,21 @@ export function TestResult({ result, testCase }: TestResultProps) {
           <div
             style={{
               fontWeight: 700,
-              color: ok ? "#1a6e2e" : RED,
+              color: totalMatches ? "#2e7d32" : RED,
               fontSize: 13,
             }}
           >
             Grand Total: {fmt(result.grandTotal)}
+            {totalMatches && (
+              <span style={{ marginLeft: 8, color: "#2e7d32", fontSize: 16 }}>
+                ✅
+              </span>
+            )}
+            {!totalMatches && (
+              <span style={{ marginLeft: 8, color: RED, fontSize: 16 }}>
+                ❌ Expected: {fmt(testCase.expectedTotal)}
+              </span>
+            )}
           </div>
           <div style={{ marginTop: 6, fontSize: 11, color: "#555" }}>
             ℹ {testCase.note}

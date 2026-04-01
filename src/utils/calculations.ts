@@ -72,37 +72,18 @@ export function isDayVEPFree(
   const deptDate = getCalendarDate(departureDt);
   const calDayDate = getCalendarDate(calDay);
 
-  // Evening waiver: if entry >= 17:00, entry day is free
+  // Entry-day exemptions (pre-2027): evenings and school holiday noons
   if (
     calDayDate.getTime() === entryDate.getTime() &&
-    entryHour >= EVENING_ENTRY_HOUR
+    (entryHour >= EVENING_ENTRY_HOUR ||
+      (isSchoolHoliday(calDay) && entryHour >= SCHOOL_HOLIDAY_ENTRY_HOUR))
   ) {
     return true;
   }
 
-  // Evening waiver: if entry >= 17:00 and exit <= 02:00, next day is free
+  // Exit short-stay waiver: if departure day and exit <= 02:00 (pre-2027), non-weekend/non-PH
   if (
     calDayDate.getTime() === deptDate.getTime() &&
-    entryHour >= EVENING_ENTRY_HOUR &&
-    deptHour <= EXIT_CUTOFF_HOUR &&
-    getDateDifferenceDays(entryDate, deptDate) === 1
-  ) {
-    return true;
-  }
-
-  // School-holiday noon waiver: if entry >= 12:00, entry day is free if school holiday
-  if (
-    calDayDate.getTime() === entryDate.getTime() &&
-    isSchoolHoliday(calDay) &&
-    entryHour >= SCHOOL_HOLIDAY_ENTRY_HOUR
-  ) {
-    return true;
-  }
-
-  // Evening waiver: if entry >= 17:00 and exit <= 02:00, exit day is free
-  if (
-    calDayDate.getTime() === deptDate.getTime() &&
-    entryHour >= EVENING_ENTRY_HOUR &&
     deptHour <= EXIT_CUTOFF_HOUR
   ) {
     return true;
@@ -112,7 +93,6 @@ export function isDayVEPFree(
   if (
     calDayDate.getTime() === deptDate.getTime() &&
     isSchoolHoliday(calDay) &&
-    entryHour >= SCHOOL_HOLIDAY_ENTRY_HOUR &&
     deptHour <= EXIT_CUTOFF_HOUR
   ) {
     return true;

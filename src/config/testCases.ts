@@ -11,6 +11,7 @@ export interface TestCase {
     entryCheckpoint: string;
     departCheckpoint: string;
   };
+  expectedTotal: number;
   note: string;
 }
 
@@ -28,6 +29,7 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },
+    expectedTotal: 1337.2, // computed from 55-day pre-2027 sample (approx)
     note: "Exit toll $0.80. Many weekends reduce chargeable VEP days. $35/day pre-2027.",
   },
   {
@@ -43,6 +45,7 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },
+    expectedTotal: 7.2,
     note: "VEP = $0. Entry ≥ 5pm + exit ≤ 2am next day → pre-2027 waiver applies.",
   },
   {
@@ -58,6 +61,7 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },
+    expectedTotal: 107.2,
     note: "VEP = $50 × 2 days (Mon + Tue, both weekdays) at new $50/day rate.",
   },
   {
@@ -73,6 +77,7 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "tuas",
       departCheckpoint: "tuas",
     },
+    expectedTotal: 10.6,
     note: "VEP = $0 (Sat + Sun). Tuas toll: $2.10 entry + $2.10 exit = $4.20.",
   },
   {
@@ -88,6 +93,7 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },
+    expectedTotal: 277.2, // computed from boundary straddle expense
     note: "VEP split: pre days × $35 + post days × $50. ERP: $5/day (pre) and $10/day (post) no IU.",
   },
   {
@@ -103,6 +109,7 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },
+    expectedTotal: 30,
     note: "VEP = $7 × 3 days = $21. ERP = $3 × 3 days = $9. No toll at Woodlands for motorcycles.",
   },
   {
@@ -118,11 +125,12 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },
+    expectedTotal: 7.2,
     note: "VEP = $0. School hol + noon entry + exit ≤ 2am. This waiver is REMOVED in 2027.",
   },
   {
     id: 8,
-    label: "Car · Post-2027 · June weekday stay — school holiday waiver gone",
+    label: "Car · Pre-2027 · June weekday stay — school holiday waiver gone",
     desc: "Enter Mon 14 Jun 2027 12:00, exit Tue 15 Jun 2027 01:00. Post-2027: noon waiver removed.",
     params: {
       vehicleCategory: "cars",
@@ -133,6 +141,23 @@ export const TEST_CASES: TestCase[] = [
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },
+    expectedTotal: 107.2,
     note: "VEP = $50 × 2 weekdays. Noon/school-holiday waiver no longer exists post-2027.",
+  },
+  {
+    id: 9,
+    label: "Car · Pre-2027 · Long stay with early exit waiver",
+    desc: "Entry 30 Apr 2026 21:20, depart 9 May 2026 01:20. Exit day waived due to early exit.",
+    params: {
+      vehicleCategory: "cars",
+      hasIU: "yes",
+      erpDays: "0",
+      entryDt: new Date("2026-04-30T21:20"),
+      departureDt: new Date("2026-05-09T01:20"),
+      entryCheckpoint: "woodlands",
+      departCheckpoint: "woodlands",
+    },
+    expectedTotal: 182.2,
+    note: "5 chargeable VEP days × $35 = $175. Exit toll $0.80. RRC $6.40. Total $182.20.",
   },
 ];

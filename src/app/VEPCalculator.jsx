@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useCalculatorForm } from "@/hooks/useCalculatorForm";
 import { calculate, CalculationOutput } from "@/utils/calculations";
@@ -14,13 +14,31 @@ import { CalculatorForm } from "@/components/CalculatorForm";
 import { ResultTable } from "@/components/ResultTable";
 import { TestCaseCard } from "@/components/TestCaseCard";
 
-import { baseStyles, infoStyles } from "@/utils/styles";
+import { baseStyles, infoStyles, buttonStyles } from "@/utils/styles";
 
 export default function VEPCalculator() {
   const { form, errors, set, setErrors, validate, reset } = useCalculatorForm();
   const [result, setResult] = useState(null);
   const [tab, setTab] = useState("calc");
   const [testResults, setTestResults] = useState({});
+  const [testSummary, setTestSummary] = useState(null);
+  const [calculateLoading, setCalculateLoading] = useState(false);
+  const [testLoading, setTestLoading] = useState(false);
+  const [runningTests, setRunningTests] = useState([]);
+
+  useEffect(() => {
+    let passed = 0;
+    let total = TEST_CASES.length;
+    TEST_CASES.forEach((tc) => {
+      const result = testResults[tc.id];
+      if (result && !("error" in result)) {
+        const totalMatches =
+          Math.abs(result.grandTotal - tc.expectedTotal) < 0.01;
+        if (totalMatches) passed++;
+      }
+    });
+    setTestSummary({ passed, total });
+  }, [testResults]);
 
   function handleCalculate() {
     const e = validate();
@@ -29,22 +47,29 @@ export default function VEPCalculator() {
       return;
     }
     setErrors({});
+    setResult(null);
+    setCalculateLoading(true);
 
-    const entryDt = new Date(form.entryDatetime);
-    const departureDt = new Date(form.departDatetime);
+    // Simulate async calculation (in a real app, this might be an actual async operation)
+    setTimeout(() => {
+      const entryDt = new Date(form.entryDatetime);
+      const departureDt = new Date(form.departDatetime);
 
-    if (departureDt <= entryDt) {
-      setErrors({ _g: "Departure must be after entry date/time." });
-      return;
-    }
+      if (departureDt <= entryDt) {
+        setErrors({ _g: "Departure must be after entry date/time." });
+        setCalculateLoading(false);
+        return;
+      }
 
-    const res = calculate({
-      ...form,
-      entryDt,
-      departureDt,
-    });
+      const res = calculate({
+        ...form,
+        entryDt,
+        departureDt,
+      });
 
-    setResult(res);
+      setResult(res);
+      setCalculateLoading(false);
+    }, 500); // Small delay to show loading animation
   }
 
   function handleQuickFill() {
@@ -78,11 +103,37 @@ export default function VEPCalculator() {
   function handleReset() {
     reset();
     setResult(null);
+    setCalculateLoading(false);
   }
 
   function handleTestRun(testCase) {
-    const res = calculate(testCase.params);
-    setTestResults((prev) => ({ ...prev, [testCase.id]: res }));
+    setTestSummary(null);
+    setTestResults((prev) => ({ ...prev, [testCase.id]: undefined }));
+    setRunningTests((prev) => [...prev, testCase.id]);
+
+    setTimeout(() => {
+      const res = calculate(testCase.params);
+      setTestResults((prev) => ({ ...prev, [testCase.id]: res }));
+      setRunningTests((prev) => prev.filter((id) => id !== testCase.id));
+    }, 500);
+  }
+
+  function handleRunAllTests() {
+    setTestLoading(true);
+    setTestSummary(null);
+    setRunningTests(TEST_CASES.map((tc) => tc.id));
+    setTestResults({});
+
+    // Simulate async test running
+    setTimeout(() => {
+      const newResults = {};
+      TEST_CASES.forEach((tc) => {
+        newResults[tc.id] = calculate(tc.params);
+      });
+      setTestResults(newResults);
+      setTestLoading(false);
+      setRunningTests([]);
+    }, 1000); // Longer delay for test running
   }
 
   const straddlesBoundary = (() => {
@@ -108,6 +159,10 @@ export default function VEPCalculator() {
             grid-column: span 2;
           }
         }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
       `}</style>
       <div style={baseStyles.wrap}>
         <div style={baseStyles.tabs}>
@@ -132,6 +187,7 @@ export default function VEPCalculator() {
               form={form}
               errors={errors}
               straddlesBoundary={straddlesBoundary}
+              loading={calculateLoading}
               onFieldChange={set}
               onCalculate={handleCalculate}
               onQuickFill={handleQuickFill}
@@ -159,16 +215,74 @@ export default function VEPCalculator() {
         {tab === "tests" && (
           <div>
             <div style={infoStyles.info}>
-              8 test cases covering pre-2027, post-2027, and boundary-straddling
+              9 test cases covering pre-2027, post-2027, and boundary-straddling
               scenarios. Click <strong>▶ Run</strong> to execute each one
-              against the calculation engine.
+              against the calculation engine, or <strong>Run All Tests</strong>{" "}
+              to execute all at once.
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <button
+                style={{
+                  ...buttonStyles.btnP,
+                  background: "#2196f3",
+                  marginRight: 8,
+                }}
+                onClick={handleRunAllTests}
+                disabled={testLoading}
+              >
+                {testLoading ? (
+                  <>
+                    <span
+                      style={{
+                        display: "inline-block",
+                        width: "16px",
+                        height: "16px",
+                        border: "2px solid #ffffff",
+                        borderTop: "2px solid transparent",
+                        borderRadius: "50%",
+                        animation: "spin 1s linear infinite",
+                        marginRight: "8px",
+                      }}
+                    ></span>
+                    Running Tests...
+                  </>
+                ) : (
+                  "Run All Tests"
+                )}
+              </button>
+              {!testLoading && testSummary && (
+                <div
+                  style={{
+                    display: "inline-block",
+                    padding: "8px 12px",
+                    backgroundColor:
+                      testSummary.passed === testSummary.total
+                        ? "#e8f5e8"
+                        : "#ffeaea",
+                    border: `1px solid ${testSummary.passed === testSummary.total ? "#4caf50" : "#f44336"}`,
+                    borderRadius: 4,
+                    fontWeight: 600,
+                    color:
+                      testSummary.passed === testSummary.total
+                        ? "#2e7d32"
+                        : "#c62828",
+                  }}
+                >
+                  {testSummary.passed}/{testSummary.total} test cases passed
+                </div>
+              )}
             </div>
             {TEST_CASES.map((tc) => (
               <TestCaseCard
                 key={tc.id}
                 testCase={tc}
-                result={testResults[tc.id]}
+                result={
+                  !testLoading && !runningTests.includes(tc.id)
+                    ? testResults[tc.id]
+                    : undefined
+                }
                 onRun={handleTestRun}
+                isRunning={testLoading || runningTests.includes(tc.id)}
               />
             ))}
           </div>

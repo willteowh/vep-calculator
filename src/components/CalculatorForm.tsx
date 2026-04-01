@@ -12,6 +12,7 @@ interface CalculatorFormProps {
   form: FormState;
   errors: FormErrors;
   straddlesBoundary: boolean;
+  loading?: boolean;
   onFieldChange: (field: keyof FormState, value: string) => void;
   onCalculate: () => void;
   onQuickFill: () => void;
@@ -22,6 +23,7 @@ export function CalculatorForm({
   form,
   errors,
   straddlesBoundary,
+  loading = false,
   onFieldChange,
   onCalculate,
   onQuickFill,
@@ -29,6 +31,12 @@ export function CalculatorForm({
 }: CalculatorFormProps) {
   return (
     <>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
       <div style={infoStyles.info}>
         <strong>Applicable to:</strong> Cars &amp; Motorcycles registered in
         Malaysia.
@@ -190,8 +198,30 @@ export function CalculatorForm({
       </div>
 
       <div style={buttonStyles.btnGroup}>
-        <button style={buttonStyles.btnP} onClick={onCalculate}>
-          {UI_LABELS.CALCULATE}
+        <button
+          style={buttonStyles.btnP}
+          onClick={onCalculate}
+          disabled={loading}
+        >
+          {loading ? (
+            <>
+              <span
+                style={{
+                  display: "inline-block",
+                  width: "16px",
+                  height: "16px",
+                  border: "2px solid #ffffff",
+                  borderTop: "2px solid transparent",
+                  borderRadius: "50%",
+                  animation: "spin 1s linear infinite",
+                  marginRight: "8px",
+                }}
+              ></span>
+              Calculating...
+            </>
+          ) : (
+            UI_LABELS.CALCULATE
+          )}
         </button>
         <button
           style={{
