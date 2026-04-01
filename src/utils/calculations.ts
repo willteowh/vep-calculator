@@ -73,7 +73,10 @@ export function isDayVEPFree(
   const calDayDate = getCalendarDate(calDay);
 
   // Evening waiver: if entry >= 17:00, entry day is free
-  if (calDayDate.getTime() === entryDate.getTime() && entryHour >= EVENING_ENTRY_HOUR) {
+  if (
+    calDayDate.getTime() === entryDate.getTime() &&
+    entryHour >= EVENING_ENTRY_HOUR
+  ) {
     return true;
   }
 

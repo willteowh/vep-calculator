@@ -34,8 +34,9 @@ export function CalculatorForm({
         Malaysia.
         <br />
         <strong>Pre-2027:</strong> VEP Cars $35/day · Motorcycles $4/day. Free
-        on: Sat/Sun/PH. Weekday evenings: entry day free if entry ≥5pm, next day free if exit ≤2am.
-        School-holiday noons: entry day free if entry ≥12pm, next day free if exit ≤2am.
+        on: Sat/Sun/PH. Weekday evenings: entry day free if entry ≥5pm, next day
+        free if exit ≤2am. School-holiday noons: entry day free if entry ≥12pm,
+        next day free if exit ≤2am.
         <br />
         <strong>From 1 Jan 2027:</strong> VEP Cars $50/day · Motorcycles $7/day.
         Free on: Sat/Sun/PH <em>only</em> (all other exemptions removed). ERP
