@@ -30,28 +30,25 @@ export function CalculatorForm({
   return (
     <>
       <div style={infoStyles.info}>
-        <strong>Applicable to:</strong> Cars &amp; Motorcycles registered
-        in Malaysia.
+        <strong>Applicable to:</strong> Cars &amp; Motorcycles registered in
+        Malaysia.
         <br />
-        <strong>Pre-2027:</strong> VEP Cars $35/day · Motorcycles $4/day.
-        Free on: Sat/Sun/PH, weekday evenings (entry ≥5pm, exit ≤2am),
-        school-holiday noons (entry ≥12pm, exit ≤2am).
+        <strong>Pre-2027:</strong> VEP Cars $35/day · Motorcycles $4/day. Free
+        on: Sat/Sun/PH. Weekday evenings: entry day free if entry ≥5pm, next day free if exit ≤2am.
+        School-holiday noons: entry day free if entry ≥12pm, next day free if exit ≤2am.
         <br />
-        <strong>From 1 Jan 2027:</strong> VEP Cars $50/day · Motorcycles
-        $7/day. Free on: Sat/Sun/PH <em>only</em> (all other exemptions
-        removed). ERP flat rate without OBU: Cars $10/day, Motorcycles
-        $3/day.
+        <strong>From 1 Jan 2027:</strong> VEP Cars $50/day · Motorcycles $7/day.
+        Free on: Sat/Sun/PH <em>only</em> (all other exemptions removed). ERP
+        flat rate without OBU: Cars $10/day, Motorcycles $3/day.
       </div>
 
       {straddlesBoundary && (
         <div style={infoStyles.warn2027}>
           ⚠️{" "}
-          <strong>
-            Your trip straddles the 1 January 2027 rate change.
-          </strong>{" "}
-          Days before 2027 will be charged at current rates; days from 1
-          Jan 2027 will be charged at the new higher rates. The breakdown
-          is shown separately in the results.
+          <strong>Your trip straddles the 1 January 2027 rate change.</strong>{" "}
+          Days before 2027 will be charged at current rates; days from 1 Jan
+          2027 will be charged at the new higher rates. The breakdown is shown
+          separately in the results.
         </div>
       )}
 
@@ -65,17 +62,11 @@ export function CalculatorForm({
             <select
               style={formStyles.sel(!!errors.vehicleCategory)}
               value={form.vehicleCategory}
-              onChange={(e) =>
-                onFieldChange("vehicleCategory", e.target.value)
-              }
+              onChange={(e) => onFieldChange("vehicleCategory", e.target.value)}
             >
               <option value="">Select category</option>
               <option value="cars">Cars</option>
               <option value="motorcycles">Motorcycles</option>
-              <option value="vans">Vans/Light Goods Vehicles</option>
-              <option value="hgv">Heavy Goods Vehicles</option>
-              <option value="taxis">Taxis</option>
-              <option value="buses">Buses</option>
             </select>
             {errors.vehicleCategory && (
               <div style={formStyles.err}>{errors.vehicleCategory}</div>
@@ -96,9 +87,7 @@ export function CalculatorForm({
               <option value="yes">Yes (IU / OBU installed)</option>
               <option value="no">No (no IU / OBU)</option>
             </select>
-            {errors.hasIU && (
-              <div style={formStyles.err}>{errors.hasIU}</div>
-            )}
+            {errors.hasIU && <div style={formStyles.err}>{errors.hasIU}</div>}
           </div>
         </div>
 
@@ -110,9 +99,7 @@ export function CalculatorForm({
               type="datetime-local"
               style={formStyles.inp(!!errors.entryDatetime)}
               value={form.entryDatetime}
-              onChange={(e) =>
-                onFieldChange("entryDatetime", e.target.value)
-              }
+              onChange={(e) => onFieldChange("entryDatetime", e.target.value)}
             />
             {errors.entryDatetime && (
               <div style={formStyles.err}>{errors.entryDatetime}</div>
@@ -129,9 +116,7 @@ export function CalculatorForm({
               style={formStyles.inp(!!errors.departDatetime)}
               value={form.departDatetime}
               min={form.entryDatetime || undefined}
-              onChange={(e) =>
-                onFieldChange("departDatetime", e.target.value)
-              }
+              onChange={(e) => onFieldChange("departDatetime", e.target.value)}
             />
             {errors.departDatetime && (
               <div style={formStyles.err}>{errors.departDatetime}</div>
@@ -146,9 +131,7 @@ export function CalculatorForm({
             <select
               style={formStyles.sel(!!errors.entryCheckpoint)}
               value={form.entryCheckpoint}
-              onChange={(e) =>
-                onFieldChange("entryCheckpoint", e.target.value)
-              }
+              onChange={(e) => onFieldChange("entryCheckpoint", e.target.value)}
             >
               <option value="">Select Entry Checkpoint</option>
               <option value="woodlands">Woodlands Checkpoint</option>

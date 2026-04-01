@@ -30,10 +30,7 @@ export function TestResult({ result, testCase }: TestResultProps) {
             <strong>Duration:</strong> {result.dur} day(s) &nbsp;|&nbsp;
             <strong> Chargeable:</strong> {result.totalChargeable}
             {result.preDays > 0 && (
-              <span style={testCaseStyles.tcN}>
-                {" "}
-                {result.preDays} pre-2027
-              </span>
+              <span style={testCaseStyles.tcN}> {result.preDays} pre-2027</span>
             )}
             {result.postDays > 0 && (
               <span style={testCaseStyles.tcN}>

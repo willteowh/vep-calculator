@@ -1,4 +1,8 @@
-import { CHECKPOINT_LABELS, CURRENCY_LOCALE, DATE_LOCALE } from "@/config/messages";
+import {
+  CHECKPOINT_LABELS,
+  CURRENCY_LOCALE,
+  DATE_LOCALE,
+} from "@/config/messages";
 
 export function fmt(n: number): string {
   return `$ ${n.toLocaleString(CURRENCY_LOCALE, {
@@ -17,8 +21,7 @@ export function fmtDt(dt: Date, cp: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
-  const label =
-    (CHECKPOINT_LABELS as Record<string, string>)[cp] || cp;
+  const label = (CHECKPOINT_LABELS as Record<string, string>)[cp] || cp;
   return `${d} ${t} at ${label}`;
 }
 

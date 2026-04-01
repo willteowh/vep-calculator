@@ -43,8 +43,8 @@ export interface CalculationResult {
   erpDaysPost: number;
   subtotal: number;
   grandTotal: number;
-  rPre: typeof RATES_PRE[keyof typeof RATES_PRE];
-  rPost: typeof RATES_POST[keyof typeof RATES_POST];
+  rPre: (typeof RATES_PRE)[keyof typeof RATES_PRE];
+  rPost: (typeof RATES_POST)[keyof typeof RATES_POST];
   error?: never;
 }
 
@@ -57,7 +57,7 @@ export type CalculationOutput = CalculationResult | CalculationError;
 export function isDayVEPFree(
   calDay: Date,
   entryDt: Date,
-  departureDt: Date
+  departureDt: Date,
 ): boolean {
   // Weekend or PH — always free in both regimes
   if (isWeekend(calDay) || isPublicHoliday(calDay)) return true;
@@ -65,35 +65,60 @@ export function isDayVEPFree(
   // Post-2027: no further exemptions
   if (isPost2027(calDay)) return false;
 
-  // Pre-2027 exemptions below
+  // Pre-2027 exemptions below - check per calendar day
   const entryHour = getHourFromDate(entryDt);
   const deptHour = getHourFromDate(departureDt);
   const entryDate = getCalendarDate(entryDt);
   const deptDate = getCalendarDate(departureDt);
-  const diffDays = getDateDifferenceDays(entryDate, deptDate);
-  const isSame = isSameDay(entryDate, deptDate);
-  const isNext = isNextDay(entryDate, deptDate);
-  const deptBy2am = deptHour <= EXIT_CUTOFF_HOUR;
+  const calDayDate = getCalendarDate(calDay);
 
-  // Evening window: entry ≥ 17:00, exit ≤ 02:00 next calendar day (or same day)
-  if (entryHour >= EVENING_ENTRY_HOUR && (isSame || (isNext && deptBy2am)))
+  // Evening waiver: if entry >= 17:00, entry day is free
+  if (calDayDate.getTime() === entryDate.getTime() && entryHour >= EVENING_ENTRY_HOUR) {
     return true;
+  }
 
-  // School-holiday noon window: entry ≥ 12:00, exit ≤ 02:00 next calendar day
+  // Evening waiver: if entry >= 17:00 and exit <= 02:00, next day is free
   if (
+    calDayDate.getTime() === deptDate.getTime() &&
+    entryHour >= EVENING_ENTRY_HOUR &&
+    deptHour <= EXIT_CUTOFF_HOUR &&
+    getDateDifferenceDays(entryDate, deptDate) === 1
+  ) {
+    return true;
+  }
+
+  // School-holiday noon waiver: if entry >= 12:00, entry day is free if school holiday
+  if (
+    calDayDate.getTime() === entryDate.getTime() &&
+    isSchoolHoliday(calDay) &&
+    entryHour >= SCHOOL_HOLIDAY_ENTRY_HOUR
+  ) {
+    return true;
+  }
+
+  // Evening waiver: if entry >= 17:00 and exit <= 02:00, exit day is free
+  if (
+    calDayDate.getTime() === deptDate.getTime() &&
+    entryHour >= EVENING_ENTRY_HOUR &&
+    deptHour <= EXIT_CUTOFF_HOUR
+  ) {
+    return true;
+  }
+
+  // School-holiday noon waiver: if entry >= 12:00 and exit <= 02:00, exit day is free if school holiday
+  if (
+    calDayDate.getTime() === deptDate.getTime() &&
     isSchoolHoliday(calDay) &&
     entryHour >= SCHOOL_HOLIDAY_ENTRY_HOUR &&
-    (isSame || (isNext && deptBy2am))
-  )
+    deptHour <= EXIT_CUTOFF_HOUR
+  ) {
     return true;
+  }
 
   return false;
 }
 
-export function countChargeableDays(
-  entryDt: Date,
-  departureDt: Date
-): number {
+export function countChargeableDays(entryDt: Date, departureDt: Date): number {
   const entryDate = getCalendarDate(entryDt);
   const deptDate = getCalendarDate(departureDt);
   const totalCal = getDateDifferenceDays(entryDate, deptDate) + 1;
@@ -113,7 +138,7 @@ export interface ChargeableDaysSplit {
 
 export function splitChargeableDays(
   entryDt: Date,
-  departureDt: Date
+  departureDt: Date,
 ): ChargeableDaysSplit {
   const entryDate = getCalendarDate(entryDt);
   const deptDate = getCalendarDate(departureDt);
@@ -157,7 +182,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
   const daysDiff = msDiff / (1000 * 60 * 60 * 24);
 
   if (msDiff < 0) return { error: ERROR_MESSAGES.INVALID_DATE_RANGE };
-  if (daysDiff > MAX_STAY_DAYS) return { error: ERROR_MESSAGES.EXCEED_DURATION };
+  if (daysDiff > MAX_STAY_DAYS)
+    return { error: ERROR_MESSAGES.EXCEED_DURATION };
 
   const isCar = vehicleCategory === VEHICLE_TYPES.CARS;
   const isMoto = vehicleCategory === VEHICLE_TYPES.MOTORCYCLES;
@@ -176,7 +202,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
   // Split chargeable days across rate boundary
   const { pre: preDays, post: postDays } = splitChargeableDays(
     entryDt,
-    departureDt
+    departureDt,
   );
   const totalChargeable = preDays + postDays;
 
@@ -195,7 +221,10 @@ export function calculate(params: CalculateParams): CalculationOutput {
   const totalCalDays = durationDays(entryDt, departureDt) || 1;
   const preCalDays = Math.min(
     totalCalDays,
-    Math.max(0, Math.round((CUTOFF_2027.getTime() - entryDt.getTime()) / 86400000))
+    Math.max(
+      0,
+      Math.round((CUTOFF_2027.getTime() - entryDt.getTime()) / 86400000),
+    ),
   );
   const postCalDays = totalCalDays - preCalDays;
   const erpDaysPre = Math.round(erpNum * (preCalDays / totalCalDays));
@@ -210,11 +239,11 @@ export function calculate(params: CalculateParams): CalculationOutput {
     const parts = [];
     if (erpDaysPre > 0)
       parts.push(
-        `$${rPre.erpNoIU.toFixed(2)}/day × ${erpDaysPre} day(s) [pre-2027]`
+        `$${rPre.erpNoIU.toFixed(2)}/day × ${erpDaysPre} day(s) [pre-2027]`,
       );
     if (erpDaysPost > 0)
       parts.push(
-        `$${rPost.erpNoIU.toFixed(2)}/day × ${erpDaysPost} day(s) [from 2027]`
+        `$${rPost.erpNoIU.toFixed(2)}/day × ${erpDaysPost} day(s) [from 2027]`,
       );
     erpNote = `$${erpCharge.toFixed(2)} — flat rate (no OBU/IU): ${parts.join(" + ")}`;
   } else {
