@@ -37,18 +37,34 @@ export function CalculatorForm({
           100% { transform: rotate(360deg); }
         }
       `}</style>
-      <div style={infoStyles.info}>
-        <strong>Applicable to:</strong> Cars &amp; Motorcycles registered in
-        Malaysia.
-        <br />
-        <strong>Pre-2027:</strong> VEP Cars $35/day · Motorcycles $4/day. Free
-        on: Sat/Sun/PH. Weekday evenings: entry day free if entry ≥5pm, next day
-        free if exit ≤2am. School-holiday noons: entry day free if entry ≥12pm,
-        next day free if exit ≤2am.
-        <br />
-        <strong>From 1 Jan 2027:</strong> VEP Cars $50/day · Motorcycles $7/day.
-        Free on: Sat/Sun/PH <em>only</em> (all other exemptions removed). ERP
-        flat rate without OBU: Cars $10/day, Motorcycles $3/day.
+      <div>
+        <h1 style={infoStyles.pageHeader}>
+          Calculate Fees and Charges for Foreign Vehicles in Singapore&nbsp;
+        </h1>
+        <h1>&nbsp;</h1>
+        <p>
+          You can check your entry and exit toll charges, VEP fees and
+          Reciprocal Road Charge to prepare for your next visit to Singapore.
+          The values from the calculator are indicative. The actual fees and
+          charges may be different depending on any changes that are determined
+          by the authorities.
+        </p>
+        <p>
+          As announced on 6 February 2026, the revised daily VEP fee, cessation
+          of free VEP days and hours for cars and motorcycles and daily
+          flat-rate ERP fee on ERP operational days for foreign-registered
+          vehicles without OBUs, will apply from 1 January 2027.&nbsp;
+        </p>
+        <p>
+          Refer to the&nbsp;
+          <a href="https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/2/news-releases/updates-foreign-registered-vehicles-entering-singapore.html">
+            news release
+          </a>
+          &nbsp;and LTA OneMotoring website for more information.
+          <br />
+          <br />
+          &nbsp;
+        </p>
       </div>
 
       {straddlesBoundary && (

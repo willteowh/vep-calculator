@@ -1,5 +1,5 @@
 import { fmt } from "@/utils/formatters";
-import { testCaseStyles, RED } from "@/utils/styles";
+import { testCaseStyles, themeColor } from "@/utils/styles";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
 
 interface TestCase {
@@ -58,7 +58,7 @@ export function TestResult({ result, testCase }: TestResultProps) {
           <div
             style={{
               fontWeight: 700,
-              color: totalMatches ? "#2e7d32" : RED,
+              color: totalMatches ? "#2e7d32" : themeColor,
               fontSize: 13,
             }}
           >
@@ -69,7 +69,7 @@ export function TestResult({ result, testCase }: TestResultProps) {
               </span>
             )}
             {!totalMatches && (
-              <span style={{ marginLeft: 8, color: RED, fontSize: 16 }}>
+              <span style={{ marginLeft: 8, color: themeColor, fontSize: 16 }}>
                 ❌ Expected: {fmt(testCase.expectedTotal)}
               </span>
             )}

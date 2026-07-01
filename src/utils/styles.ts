@@ -1,4 +1,4 @@
-export const RED = "#c8202e";
+export const themeColor = "#606fbb";
 
 export const baseStyles = {
   wrap: {
@@ -11,7 +11,7 @@ export const baseStyles = {
   } as const,
   tabs: {
     display: "flex" as const,
-    borderBottom: `2px solid ${RED}`,
+    borderBottom: `2px solid ${themeColor}`,
     marginBottom: 24,
   } as const,
   tab: (active: boolean) => ({
@@ -19,11 +19,11 @@ export const baseStyles = {
     cursor: "pointer" as const,
     fontWeight: 700,
     fontSize: 13,
-    background: active ? RED : "#f0f0f0",
+    background: active ? themeColor : "#f0f0f0",
     color: active ? "#fff" : "#555",
-    borderTop: `1px solid ${active ? RED : "#ddd"}`,
-    borderLeft: `1px solid ${active ? RED : "#ddd"}`,
-    borderRight: `1px solid ${active ? RED : "#ddd"}`,
+    borderTop: `1px solid ${active ? themeColor : "#ddd"}`,
+    borderLeft: `1px solid ${active ? themeColor : "#ddd"}`,
+    borderRight: `1px solid ${active ? themeColor : "#ddd"}`,
     borderBottom: "none",
     borderRadius: "4px 4px 0 0",
     marginRight: 4,
@@ -50,9 +50,9 @@ export const formStyles = {
   } as const,
   lbl: {
     width: "100%",
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: 700,
-    color: "#333",
+    color: "#666666",
     lineHeight: 1.4,
   } as const,
   ctrl: {
@@ -61,7 +61,7 @@ export const formStyles = {
   sel: (hasError: boolean) => ({
     width: "100%",
     padding: "10px 12px",
-    border: `1px solid ${hasError ? RED : "#bbb"}`,
+    border: `1px solid ${hasError ? themeColor : "#bbb"}`,
     borderRadius: 4,
     fontSize: 14,
     background: "#fff",
@@ -72,7 +72,7 @@ export const formStyles = {
   inp: (hasError: boolean) => ({
     width: "100%",
     padding: "10px 12px",
-    border: `1px solid ${hasError ? RED : "#bbb"}`,
+    border: `1px solid ${hasError ? themeColor : "#bbb"}`,
     borderRadius: 4,
     fontSize: 14,
     background: "#fff",
@@ -80,7 +80,7 @@ export const formStyles = {
     boxSizing: "border-box" as const,
   }),
   err: {
-    color: RED,
+    color: themeColor,
     fontSize: 11,
     marginTop: 3,
   } as const,
@@ -110,13 +110,18 @@ export const infoStyles = {
   errBanner: {
     background: "#ffeaea",
     border: "1px solid #f5c6c6",
-    borderLeft: `4px solid ${RED}`,
+    borderLeft: `4px solid ${themeColor}`,
     padding: "10px 14px",
     borderRadius: 2,
     fontSize: 13,
     marginBottom: 16,
-    color: RED,
+    color: themeColor,
   } as const,
+  pageHeader: {
+    fontSize: 30,
+    fontFamily: "Francois One, sans-serif",
+    fontWeight: 700,
+  },
 };
 
 export const buttonStyles = {
@@ -129,11 +134,11 @@ export const buttonStyles = {
     justifyContent: "center" as const,
   } as const,
   btnP: {
-    background: RED,
+    background: "#606fbb",
     color: "#fff",
     border: "none",
-    borderRadius: 3,
-    padding: "10px 28px",
+    borderRadius: 8,
+    padding: "10px 48px",
     fontSize: 14,
     fontWeight: 700,
     cursor: "pointer" as const,
@@ -144,7 +149,7 @@ export const buttonStyles = {
     color: "#555",
     border: "1px solid #bbb",
     borderRadius: 3,
-    padding: "10px 20px",
+    padding: "10px 48px",
     fontSize: 14,
     cursor: "pointer" as const,
     marginRight: 10,
@@ -152,13 +157,17 @@ export const buttonStyles = {
 };
 
 export const resultStyles = {
-  rWrap: { marginTop: 28 } as const,
+  rWrap: {
+    marginTop: 28,
+    fontFamily: "Lato, sans-serif",
+    lineHeight: "24px",
+  } as const,
   rTitle: {
     fontSize: 15,
     fontWeight: 700,
     color: "#1a1a1a",
     marginBottom: 12,
-    borderBottom: `2px solid ${RED}`,
+    borderBottom: `2px solid ${themeColor}`,
     paddingBottom: 6,
   } as const,
   tbl: {
@@ -167,7 +176,7 @@ export const resultStyles = {
     fontSize: 13,
   } as const,
   th: {
-    background: RED,
+    background: themeColor,
     color: "#fff",
     padding: "9px 12px",
     textAlign: "left" as const,
@@ -188,7 +197,7 @@ export const resultStyles = {
     verticalAlign: "top" as const,
   } as const,
   subTr: { background: "#fff3cd" } as const,
-  gTr: { background: RED } as const,
+  gTr: { background: themeColor } as const,
   gTd: {
     padding: "10px 12px",
     color: "#fff",
@@ -207,6 +216,10 @@ export const resultStyles = {
       variant === "pre" ? "#2e7d32" : variant === "post" ? "#1565c0" : "#555",
     marginLeft: 6,
   }),
+  infoFooter: {
+    marginTop: 10,
+    padding: "10px 14px",
+  },
 };
 
 export const testCaseStyles = {

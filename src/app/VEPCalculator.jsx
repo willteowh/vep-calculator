@@ -21,6 +21,9 @@ export default function VEPCalculator() {
   const [result, setResult] = useState(null);
   const [tab, setTab] = useState("calc");
   const [testResults, setTestResults] = useState({});
+  const includeTests = process.env.NEXT_PUBLIC_INCLUDE_TESTS !== "false";
+  const hideIfProd = process.env.NEXT_PUBLIC_INCLUDE_TESTS !== "false";
+
   const [testSummary, setTestSummary] = useState(null);
   const [calculateLoading, setCalculateLoading] = useState(false);
   const [testLoading, setTestLoading] = useState(false);
@@ -165,20 +168,26 @@ export default function VEPCalculator() {
         }
       `}</style>
       <div style={baseStyles.wrap}>
-        <div style={baseStyles.tabs}>
-          <button
-            style={baseStyles.tab(tab === "calc")}
-            onClick={() => setTab("calc")}
-          >
-            Fee Calculator
-          </button>
-          <button
-            style={baseStyles.tab(tab === "tests")}
-            onClick={() => setTab("tests")}
-          >
-            Test Cases
-          </button>
-        </div>
+        {hideIfProd && (
+          <div style={baseStyles.tabs}>
+            <button
+              style={baseStyles.tab(tab === "calc")}
+              onClick={() => setTab("calc")}
+            >
+              Fee Calculator
+            </button>
+            {includeTests && (
+              <button
+                style={baseStyles.tab(tab === "tests")}
+                onClick={() => {
+                  setTab("tests");
+                }}
+              >
+                Test Cases
+              </button>
+            )}
+          </div>
+        )}
 
         {/* ── Calculator Tab ── */}
         {tab === "calc" && (
@@ -212,7 +221,7 @@ export default function VEPCalculator() {
         )}
 
         {/* ── Test Cases Tab ── */}
-        {tab === "tests" && (
+        {includeTests && tab === "tests" && (
           <div>
             <div style={infoStyles.info}>
               9 test cases covering pre-2027, post-2027, and boundary-straddling
