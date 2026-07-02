@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 
 import { useCalculatorForm } from "@/hooks/useCalculatorForm";
-import { calculate, CalculationOutput } from "@/utils/calculations";
+import { calculate } from "@/utils/calculations";
 import {
   CUTOFF_2027,
   QUICK_FILL_MAX_DAYS,
@@ -21,8 +21,8 @@ export default function VEPCalculator() {
   const [result, setResult] = useState(null);
   const [tab, setTab] = useState("calc");
   const [testResults, setTestResults] = useState({});
-  const includeTests = process.env.NEXT_PUBLIC_INCLUDE_TESTS !== "false";
-  const hideIfProd = process.env.NEXT_PUBLIC_INCLUDE_TESTS !== "false";
+  const includeTests = import.meta.env.VITE_INCLUDE_TESTS !== "false";
+  const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
 
   const [testSummary, setTestSummary] = useState(null);
   const [calculateLoading, setCalculateLoading] = useState(false);
@@ -232,7 +232,7 @@ export default function VEPCalculator() {
             <div style={{ marginBottom: 16 }}>
               <button
                 style={{
-                  ...buttonStyles.btnP,
+                  ...buttonStyles.btn,
                   background: "#2196f3",
                   marginRight: 8,
                 }}

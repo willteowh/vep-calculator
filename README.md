@@ -95,14 +95,24 @@ npm install
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+3. Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Build for Production
 
 ```bash
 npm run build
-npm start
+npm run preview
 ```
+
+## Export Static Fee Calculator Only
+
+To generate a fully static exported build with only the Fee Calculator tab, run:
+
+```bash
+npm run export
+```
+
+This produces the same static HTML/CSS/JS output as `build`, but with the Test Cases tab disabled for the exported artifact.
 
 ## Usage
 
@@ -124,20 +134,19 @@ Run predefined test scenarios to validate calculations and understand different 
 
 ### Technology Stack
 
-- **Framework**: Next.js 16.2.1
-- **Frontend**: React 19.2.4
+- **Framework**: React 19.2.4
 - **Language**: TypeScript
-- **Styling**: CSS-in-JS
-- **Build Tool**: Turbopack
+- **Build Tool**: Vite
+- **Styling**: Tailwind CSS / plain CSS
 
 ### Architecture
 
 - **Modular Structure**:
-  - `/app`: Main application pages
-  - `/components`: Reusable UI components
-  - `/config`: Constants, messages, test cases
-  - `/hooks`: Custom React hooks
-  - `/utils`: Business logic, formatting, date utilities
+  - `/src`: React application source
+  - `/src/components`: Reusable UI components
+  - `/src/config`: Constants, messages, test cases
+  - `/src/hooks`: Custom React hooks
+  - `/src/utils`: Business logic, formatting, date utilities
 
 ### Key Components
 

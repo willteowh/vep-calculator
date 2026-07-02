@@ -57,7 +57,10 @@ export function CalculatorForm({
         </p>
         <p>
           Refer to the&nbsp;
-          <a href="https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/2/news-releases/updates-foreign-registered-vehicles-entering-singapore.html">
+          <a
+            style={baseStyles.link}
+            href="https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/2/news-releases/updates-foreign-registered-vehicles-entering-singapore.html"
+          >
             news release
           </a>
           &nbsp;and LTA OneMotoring website for more information.
@@ -190,14 +193,8 @@ export function CalculatorForm({
         </div>
 
         {/* ERP Days */}
-        <div style={formStyles.row}>
-          <label style={formStyles.lbl}>
-            {UI_LABELS.ERP_DAYS}
-            <br />
-            <span style={{ fontWeight: 400, fontSize: 11, color: "#888" }}>
-              {UI_LABELS.ERP_DAYS_HINT}
-            </span>
-          </label>
+        <div className="full-width" style={formStyles.row}>
+          <label style={formStyles.lbl}>{UI_LABELS.ERP_DAYS}</label>
           <div style={formStyles.ctrl}>
             <input
               type="number"
@@ -215,7 +212,7 @@ export function CalculatorForm({
 
       <div style={buttonStyles.btnGroup}>
         <button
-          style={buttonStyles.btnP}
+          style={buttonStyles.btn}
           onClick={onCalculate}
           disabled={loading}
         >
@@ -239,20 +236,18 @@ export function CalculatorForm({
             UI_LABELS.CALCULATE
           )}
         </button>
+        <button style={buttonStyles.btn} onClick={onReset}>
+          {UI_LABELS.RESET}
+        </button>
         <button
           style={{
-            ...buttonStyles.btnS,
+            ...buttonStyles.btn,
             background: "#e3f2fd",
             color: "#1976d2",
-            border: "1px solid #2196f3",
           }}
           onClick={onQuickFill}
         >
           {UI_LABELS.QUICK_FILL}
-        </button>
-
-        <button style={buttonStyles.btnS} onClick={onReset}>
-          {UI_LABELS.RESET}
         </button>
       </div>
     </>

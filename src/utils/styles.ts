@@ -1,3 +1,5 @@
+import { link } from "fs";
+
 export const themeColor = "#606fbb";
 
 export const baseStyles = {
@@ -33,6 +35,10 @@ export const baseStyles = {
     borderRadius: 4,
     padding: "24px 28px",
     background: "#fafafa",
+  } as const,
+  link: {
+    color: "#5c6bb3",
+    textDecoration: "underline",
   } as const,
 };
 
@@ -133,7 +139,7 @@ export const buttonStyles = {
     alignItems: "center" as const,
     justifyContent: "center" as const,
   } as const,
-  btnP: {
+  btn: {
     background: "#606fbb",
     color: "#fff",
     border: "none",
@@ -141,16 +147,6 @@ export const buttonStyles = {
     padding: "10px 48px",
     fontSize: 14,
     fontWeight: 700,
-    cursor: "pointer" as const,
-    marginRight: 10,
-  } as const,
-  btnS: {
-    background: "#fff",
-    color: "#555",
-    border: "1px solid #bbb",
-    borderRadius: 3,
-    padding: "10px 48px",
-    fontSize: 14,
     cursor: "pointer" as const,
     marginRight: 10,
   } as const,
@@ -173,14 +169,14 @@ export const resultStyles = {
   tbl: {
     width: "100%",
     borderCollapse: "collapse" as const,
-    fontSize: 13,
+    fontSize: 14,
   } as const,
   th: {
     background: themeColor,
     color: "#fff",
     padding: "9px 12px",
     textAlign: "left" as const,
-    fontWeight: 600,
+    fontWeight: 700,
   } as const,
   tdL: {
     padding: "8px 12px",
