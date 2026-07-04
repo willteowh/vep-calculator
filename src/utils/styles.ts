@@ -1,11 +1,12 @@
 import { link } from "fs";
 
 export const themeColor = "#606fbb";
+export const resultColor = "rgb(185, 185, 203)";
 
 export const baseStyles = {
   wrap: {
-    fontFamily: "'Segoe UI','Noto Sans',Arial,sans-serif",
-    fontSize: 14,
+    fontFamily: "Lato, sans-serif",
+    fontSize: 16,
     color: "#222",
     maxWidth: 840,
     margin: "0 auto",
@@ -67,10 +68,12 @@ export const formStyles = {
   sel: (hasError: boolean) => ({
     width: "100%",
     padding: "10px 12px",
-    border: `1px solid ${hasError ? themeColor : "#bbb"}`,
+    border: `1px solid ${hasError ? themeColor : "rgb(221, 221, 221)"}`,
     borderRadius: 4,
-    fontSize: 14,
-    background: "#fff",
+    fontSize: 16,
+    fontStyle: "italic" as const,
+    color: "rgb(102, 102, 102)",
+    background: "rgb(233, 237, 245)",
     outline: "none" as const,
     cursor: "pointer" as const,
     appearance: "none" as const,
@@ -78,10 +81,11 @@ export const formStyles = {
   inp: (hasError: boolean) => ({
     width: "100%",
     padding: "10px 12px",
-    border: `1px solid ${hasError ? themeColor : "#bbb"}`,
+    border: `1px solid ${hasError ? themeColor : "rgb(221, 221, 221)"}`,
     borderRadius: 4,
-    fontSize: 14,
-    background: "#fff",
+    fontSize: 16,
+    color: "rgb(102, 102, 102)",
+    background: "rgb(233, 237, 245)",
     outline: "none" as const,
     boxSizing: "border-box" as const,
   }),
@@ -126,8 +130,10 @@ export const infoStyles = {
   pageHeader: {
     fontSize: 30,
     fontFamily: "Francois One, sans-serif",
-    fontWeight: 700,
+    fontWeight: 400,
+    lineHeight: 1.2,
   },
+  infoBox: {} as const,
 };
 
 export const buttonStyles = {
@@ -145,7 +151,6 @@ export const buttonStyles = {
     border: "none",
     borderRadius: 8,
     padding: "10px 48px",
-    fontSize: 14,
     fontWeight: 700,
     cursor: "pointer" as const,
     marginRight: 10,
@@ -169,37 +174,47 @@ export const resultStyles = {
   tbl: {
     width: "100%",
     borderCollapse: "collapse" as const,
-    fontSize: 14,
+    fontSize: 16,
   } as const,
   th: {
-    background: themeColor,
-    color: "#fff",
-    padding: "9px 12px",
+    background: resultColor,
+    padding: "15px 10px",
     textAlign: "left" as const,
     fontWeight: 700,
+    borderBottom: "1px solid #eee",
   } as const,
   tdL: {
-    padding: "8px 12px",
+    background: resultColor,
+    padding: "15px 10px",
     borderBottom: "1px solid #eee",
     fontWeight: 600,
     color: "#333",
     width: "52%",
-    background: "#fafafa",
-    verticalAlign: "top" as const,
+    verticalAlign: "middle" as const,
   } as const,
   tdV: {
-    padding: "8px 12px",
+    padding: "15px 10px",
     borderBottom: "1px solid #eee",
+    borderRight: "1px solid rgb(221, 221, 221)",
     verticalAlign: "top" as const,
   } as const,
   subTr: { background: "#fff3cd" } as const,
-  gTr: { background: themeColor } as const,
+  footNote: {
+    fontSize: 13,
+    color: "#555",
+    fontWeight: 700,
+  },
+  gTr: {} as const,
   gTd: {
+    background: resultColor,
     padding: "10px 12px",
     color: "#fff",
     fontWeight: 700,
     fontSize: 15,
   } as const,
+  infoTr: {
+    border: "1px solid rgb(221, 221, 221)",
+  },
   pill: (variant: "pre" | "post" | "default") => ({
     display: "inline-block" as const,
     padding: "2px 8px",

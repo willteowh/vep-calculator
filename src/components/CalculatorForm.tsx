@@ -36,12 +36,14 @@ export function CalculatorForm({
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
+        .infoBox > * {
+          margin-bottom: 20px;
+        }
       `}</style>
-      <div>
+      <div className="infoBox" style={infoStyles.infoBox}>
         <h1 style={infoStyles.pageHeader}>
           Calculate Fees and Charges for Foreign Vehicles in Singapore&nbsp;
         </h1>
-        <h1>&nbsp;</h1>
         <p>
           You can check your entry and exit toll charges, VEP fees and
           Reciprocal Road Charge to prepare for your next visit to Singapore.
@@ -92,7 +94,9 @@ export function CalculatorForm({
               value={form.vehicleCategory}
               onChange={(e) => onFieldChange("vehicleCategory", e.target.value)}
             >
-              <option value="">Select category</option>
+              <option disabled value="">
+                Select category
+              </option>
               <option value="cars">Cars</option>
               <option value="motorcycles">Motorcycles</option>
             </select>
@@ -111,7 +115,9 @@ export function CalculatorForm({
               value={form.hasIU}
               onChange={(e) => onFieldChange("hasIU", e.target.value)}
             >
-              <option value="">Select</option>
+              <option disabled value="">
+                Select
+              </option>
               <option value="yes">Yes (IU / OBU installed)</option>
               <option value="no">No (no IU / OBU)</option>
             </select>
@@ -161,7 +167,9 @@ export function CalculatorForm({
               value={form.entryCheckpoint}
               onChange={(e) => onFieldChange("entryCheckpoint", e.target.value)}
             >
-              <option value="">Select Entry Checkpoint</option>
+              <option disabled value="">
+                Select Entry Checkpoint
+              </option>
               <option value="woodlands">Woodlands Checkpoint</option>
               <option value="tuas">Tuas Checkpoint</option>
             </select>
@@ -182,7 +190,9 @@ export function CalculatorForm({
                 onFieldChange("departCheckpoint", e.target.value)
               }
             >
-              <option value="">Select Departure Checkpoint</option>
+              <option disabled value="">
+                Select Departure Checkpoint
+              </option>
               <option value="woodlands">Woodlands Checkpoint</option>
               <option value="tuas">Tuas Checkpoint</option>
             </select>
