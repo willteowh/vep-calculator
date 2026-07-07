@@ -193,7 +193,6 @@ export const resultStyles = {
     borderBottom: "1px solid #eee",
     fontWeight: 600,
     color: "#333",
-    width: "52%",
     verticalAlign: "middle" as const,
   } as const,
   tdV: {
@@ -202,7 +201,6 @@ export const resultStyles = {
     borderRight: "1px solid rgb(221, 221, 221)",
     verticalAlign: "top" as const,
   } as const,
-  subTr: { background: "#fff3cd" } as const,
   footNote: {
     fontSize: 13,
     color: "#555",

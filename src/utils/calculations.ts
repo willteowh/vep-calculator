@@ -230,8 +230,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
       );
     erpNote = `$${erpCharge.toFixed(2)} — flat rate (no OBU/IU): ${parts.join(" + ")}`;
   } else {
-    erpNote =
-      "Normal charges apply based on actual gantry usage. Please refer to published ERP rates.";
+    erpNote = "Normal charges apply. Please refer to published ERP rates.";
   }
 
   const subtotal = tollTotal + vepFees;

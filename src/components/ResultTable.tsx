@@ -8,6 +8,7 @@ import {
   getDateDifferenceDays,
 } from "@/utils/dateUtils";
 import { VEPBreakdownCell } from "./VEPBreakdownCell";
+import { useEffect, useState } from "react";
 
 interface ResultTableProps {
   result: CalculationResult;
@@ -34,25 +35,64 @@ export function ResultTable({
       break;
     }
   }
+  const [appliesRRC, setAppliesRRC] = useState<boolean>(
+    form.vehicleCategory !== "motorcycles" && result.rrc > 0,
+  );
+
+  useEffect(() => {
+    setAppliesRRC(form.vehicleCategory !== "motorcycles" && result.rrc > 0);
+  }, [form.vehicleCategory, result.rrc]);
+
   return (
+    // special note display for condition hit:
+    // hasPublicHoliday => display note that the date range contains public holiday
+    // more than 14 days => display "For Foreign cars and motorcycles, please note that your vehicle is allowed in Singapore for up to 14 days from the date of your last entry, or up to the expiry date of your vehicle's insurance and road tax, whichever is earlier."
+    // if Car & No IU/OBU & no ERP day input => display "Please indicate the no. of days which you intend to drive through the ERP gantries during ERP operating hours"
     <div style={resultStyles.rWrap}>
+      {totalDays > 14 && (
+        <div
+          style={{
+            marginTop: 10,
+            marginBottom: 10,
+            color: "blue",
+            fontWeight: 600,
+          }}
+        >
+          For foreign cars and motorcycles: your vehicle is allowed in Singapore
+          for up to 14 days from the date of your last entry, or up to the
+          expiry date of your vehicle's insurance and road tax, whichever is
+          earlier.
+        </div>
+      )}
+
+      {form.vehicleCategory === "cars" &&
+        form.hasIU === "no" &&
+        (!form.erpDays || String(form.erpDays).trim() === "") && (
+          <div
+            style={{
+              marginTop: 10,
+              marginBottom: 10,
+              color: "blue",
+              fontWeight: 600,
+            }}
+          >
+            Please indicate the number of days you intend to drive through ERP
+            gantries during ERP operating hours.
+          </div>
+        )}
       {hasPublicHoliday && (
         <div
           style={{
             marginTop: 10,
             marginBottom: 10,
-            fontSize: 12,
-            color: "#d32f2f",
+            color: "blue",
             fontWeight: 600,
-            background: "#ffeaea",
-            padding: "8px 12px",
-            borderRadius: 4,
-            border: "1px solid #f5c6c6",
           }}
         >
           The Date Range you chose contains Public Holiday
         </div>
       )}
+
       <table style={resultStyles.tbl}>
         <thead>
           <tr>
@@ -125,29 +165,32 @@ export function ResultTable({
             <td style={resultStyles.tdL}>VEP Charges</td>
             <VEPBreakdownCell result={result} />
           </tr>
-          <tr style={resultStyles.subTr}>
-            <td style={{ ...resultStyles.tdL, fontWeight: 700 }}>
-              Total{" "}
+          <tr>
+            <td style={{ ...resultStyles.tdL }}>
+              Total <br />
               <span style={resultStyles.footNote}>
-                (excluding Reciprocal Road Charge and ERP charges)
+                (excluding {appliesRRC ? "Reciprocal Road Charge and " : ""}ERP
+                charges)
               </span>
             </td>
-            <td style={{ ...resultStyles.tdV, fontWeight: 700 }}>
-              {fmt(result.subtotal)}
-            </td>
+            <td style={{ ...resultStyles.tdV }}>{fmt(result.subtotal)}</td>
           </tr>
-          <tr>
-            <td style={resultStyles.tdL}>Reciprocal Road Charge (RRC)</td>
-            <td style={resultStyles.tdV}>
-              {result.rrc > 0 ? `${fmt(result.rrc)} (per entry)` : "—"}
-            </td>
-          </tr>
+          {appliesRRC && (
+            <tr>
+              <td style={resultStyles.tdL}>Reciprocal Road Charge (RRC)</td>
+              <td style={resultStyles.tdV}>
+                {result.rrc > 0 ? `${fmt(result.rrc)} (per entry)` : "—"}
+              </td>
+            </tr>
+          )}
           <tr>
             <td style={resultStyles.tdL}>ERP Charges</td>
             <td style={resultStyles.tdV}>{result.erpNote}</td>
           </tr>
           <tr style={resultStyles.gTr}>
-            <td style={resultStyles.tdL}>Total (incl. RRC &amp; ERP)</td>
+            <td style={resultStyles.tdL}>
+              {appliesRRC ? "Total (incl. RRC & ERP)" : "Total (incl. ERP)"}
+            </td>
             <td style={resultStyles.tdV}>{fmt(result.grandTotal)}</td>
           </tr>
           <tr style={resultStyles.gTr}>
@@ -187,20 +230,18 @@ export function ResultTable({
                   of any information. Please note that the information in this
                   computation table should not be taken against the
                   provider/authority. <br />
-                  <br />
-                  • From 15 February 2017, all foreign-registered cars will have
-                  to pay a Reciprocal Road Charge (RRC) on a per-entry basis
-                  when they enter Singapore via Tuas and Woodlands checkpoints.
-                  The RRC will be collected together with the Vehicle Entry
-                  Permit (VEP), toll charges and fixed Electronic Road Pricing
-                  (ERP) fees upon departure at Tuas or Woodlands Checkpoint.{" "}
-                  <br />
-                  <br />
-                  • For all foreign-registered cars, you will automatically be
-                  on the fixed ERP fee scheme if no In-vehicle Unit (IU) is
-                  installed in your vehicle. An ERP fee of S$5 daily is payable
-                  if you use ERP-priced roads during the ERP operating hours.{" "}
-                  <br />
+                  <br />• From 15 February 2017, all foreign-registered cars
+                  will have to pay a Reciprocal Road Charge (RRC) on a per-entry
+                  basis when they enter Singapore via Tuas and Woodlands
+                  checkpoints. The RRC will be collected together with the
+                  Vehicle Entry Permit (VEP), toll charges and fixed Electronic
+                  Road Pricing (ERP) fees upon departure at Tuas or Woodlands
+                  Checkpoint. <br />
+                  <br />• For all foreign-registered cars, you will
+                  automatically be on the fixed ERP fee scheme if no In-vehicle
+                  Unit (IU) is installed in your vehicle. An ERP fee of S$5
+                  daily is payable if you use ERP-priced roads during the ERP
+                  operating hours. <br />
                   <br />• For vehicles with IUs, please note that separate ERP
                   charges will apply. Click{" "}
                   <a
