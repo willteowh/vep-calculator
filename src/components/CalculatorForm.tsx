@@ -11,6 +11,7 @@ import Datetime from "react-datetime";
 import moment, { Moment } from "moment";
 import "react-datetime/css/react-datetime.css";
 import "./DatetimePicker.css";
+import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 
 interface CalculatorFormProps {
   form: FormState;
@@ -34,7 +35,7 @@ export function CalculatorForm({
   onReset,
 }: CalculatorFormProps) {
   const minEntryMoment = moment().subtract(14, "days");
-  const maxExitMoment = moment("2027-12-31T23:59");
+  const maxExitMoment = moment(CALCULATOR_MAX_EXIT_DATE);
   const entryMoment = form.entryDatetime ? moment(form.entryDatetime) : null;
 
   const isValidEntryDate = (current: Moment) =>
@@ -154,13 +155,22 @@ export function CalculatorForm({
           <label style={formStyles.lbl}>{UI_LABELS.ENTRY_DATETIME}</label>
           <div style={formStyles.ctrl}>
             <Datetime
-              value={form.entryDatetime ? moment(form.entryDatetime) : null}
+              value={
+                form.entryDatetime
+                  ? moment(form.entryDatetime, "DD/MM/YYYYTHH:mm")
+                  : null
+              }
               dateFormat="DD/MM/YYYY"
               timeFormat="HH:mm"
               isValidDate={isValidEntryDate}
               inputProps={{
                 style: formStyles.inp(!!errors.entryDatetime),
                 placeholder: "dd/mm/yyyy hh:mm",
+                onFocus: () => {
+                  if (!form.entryDatetime) {
+                    onFieldChange("entryDatetime", moment().format("DD/MM/YYYYTHH:mm"));
+                  }
+                },
               }}
               onChange={(value) => {
                 if (moment.isMoment(value) && value.isValid()) {
@@ -182,13 +192,22 @@ export function CalculatorForm({
           <label style={formStyles.lbl}>{UI_LABELS.DEPART_DATETIME}</label>
           <div style={formStyles.ctrl}>
             <Datetime
-              value={form.departDatetime ? moment(form.departDatetime) : null}
+              value={
+                form.departDatetime
+                  ? moment(form.departDatetime, "DD/MM/YYYYTHH:mm")
+                  : null
+              }
               dateFormat="DD/MM/YYYY"
               timeFormat="HH:mm"
               isValidDate={isValidDepartDate}
               inputProps={{
                 style: formStyles.inp(!!errors.departDatetime),
                 placeholder: "dd/mm/yyyy hh:mm",
+                onFocus: () => {
+                  if (!form.departDatetime) {
+                    onFieldChange("departDatetime", moment().format("DD/MM/YYYYTHH:mm"));
+                  }
+                },
               }}
               onChange={(value) => {
                 if (moment.isMoment(value) && value.isValid()) {
