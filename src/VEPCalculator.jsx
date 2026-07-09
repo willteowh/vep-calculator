@@ -20,6 +20,7 @@ import { baseStyles, infoStyles, buttonStyles } from "@/utils/styles";
 export default function VEPCalculator() {
   const { form, errors, set, setErrors, validate, reset } = useCalculatorForm();
   const [result, setResult] = useState(null);
+  const [resetVersion, setResetVersion] = useState(0);
   const [tab, setTab] = useState("calc");
   const [testResults, setTestResults] = useState({});
   const includeTests = import.meta.env.VITE_INCLUDE_TESTS !== "false";
@@ -109,6 +110,7 @@ export default function VEPCalculator() {
 
   function handleReset() {
     reset();
+    setResetVersion((prev) => prev + 1);
     setResult(null);
     setCalculateLoading(false);
   }
@@ -201,6 +203,7 @@ export default function VEPCalculator() {
               errors={errors}
               straddlesBoundary={straddlesBoundary}
               loading={calculateLoading}
+              resetVersion={resetVersion}
               onFieldChange={set}
               onCalculate={handleCalculate}
               onQuickFill={handleQuickFill}

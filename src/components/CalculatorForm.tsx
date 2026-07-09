@@ -18,6 +18,7 @@ interface CalculatorFormProps {
   errors: FormErrors;
   straddlesBoundary: boolean;
   loading?: boolean;
+  resetVersion: number;
   onFieldChange: (field: keyof FormState, value: string) => void;
   onCalculate: () => void;
   onQuickFill: () => void;
@@ -29,11 +30,14 @@ export function CalculatorForm({
   errors,
   straddlesBoundary,
   loading = false,
+  resetVersion,
   onFieldChange,
   onCalculate,
   onQuickFill,
   onReset,
 }: CalculatorFormProps) {
+  const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
+
   const minEntryMoment = moment().subtract(14, "days");
   const maxExitMoment = moment(CALCULATOR_MAX_EXIT_DATE);
   const entryMoment = form.entryDatetime
@@ -181,6 +185,7 @@ export function CalculatorForm({
           <label style={formStyles.lbl}>{UI_LABELS.ENTRY_DATETIME}</label>
           <div style={formStyles.ctrl}>
             <Datetime
+              key={`entry-datetime-${resetVersion}`}
               value={
                 form.entryDatetime
                   ? moment(form.entryDatetime, "DD/MM/YYYYTHH:mm")
@@ -189,7 +194,6 @@ export function CalculatorForm({
               dateFormat="DD/MM/YYYY"
               timeFormat="HH:mm"
               isValidDate={isValidEntryDate}
-              isValidTime={isValidEntryTime}
               inputProps={{
                 style: formStyles.inp(!!errors.entryDatetime),
                 placeholder: "dd/mm/yyyy hh:mm",
@@ -208,6 +212,10 @@ export function CalculatorForm({
                     "entryDatetime",
                     value.format("DD/MM/YYYYTHH:mm"),
                   );
+                  return;
+                }
+                if (typeof value === "string" && value.trim() === "") {
+                  onFieldChange("entryDatetime", "");
                 }
               }}
             />
@@ -222,6 +230,7 @@ export function CalculatorForm({
           <label style={formStyles.lbl}>{UI_LABELS.DEPART_DATETIME}</label>
           <div style={formStyles.ctrl}>
             <Datetime
+              key={`depart-datetime-${resetVersion}`}
               value={
                 form.departDatetime
                   ? moment(form.departDatetime, "DD/MM/YYYYTHH:mm")
@@ -230,7 +239,6 @@ export function CalculatorForm({
               dateFormat="DD/MM/YYYY"
               timeFormat="HH:mm"
               isValidDate={isValidDepartDate}
-              isValidTime={isValidDepartTime}
               inputProps={{
                 style: formStyles.inp(!!errors.departDatetime),
                 placeholder: "dd/mm/yyyy hh:mm",
@@ -249,6 +257,10 @@ export function CalculatorForm({
                     "departDatetime",
                     value.format("DD/MM/YYYYTHH:mm"),
                   );
+                  return;
+                }
+                if (typeof value === "string" && value.trim() === "") {
+                  onFieldChange("departDatetime", "");
                 }
               }}
             />
@@ -348,16 +360,18 @@ export function CalculatorForm({
         <button style={buttonStyles.btn} onClick={onReset}>
           {UI_LABELS.RESET}
         </button>
-        <button
-          style={{
-            ...buttonStyles.btn,
-            background: "#e3f2fd",
-            color: "#1976d2",
-          }}
-          onClick={onQuickFill}
-        >
-          {UI_LABELS.QUICK_FILL}
-        </button>
+        {hideIfProd && (
+          <button
+            style={{
+              ...buttonStyles.btn,
+              background: "#e3f2fd",
+              color: "#1976d2",
+            }}
+            onClick={onQuickFill}
+          >
+            {UI_LABELS.QUICK_FILL}
+          </button>
+        )}
       </div>
     </>
   );
