@@ -163,7 +163,11 @@ export function ResultTable({
           </tr>
           <tr>
             <td style={resultStyles.tdL}>VEP Charges</td>
-            <VEPBreakdownCell result={result} />
+            {result.vepFees > 0 ? (
+              <VEPBreakdownCell result={result} />
+            ) : (
+              <td style={resultStyles.tdV}>{fmt(0)}</td>
+            )}
           </tr>
           <tr>
             <td style={{ ...resultStyles.tdL }}>
@@ -185,7 +189,35 @@ export function ResultTable({
           )}
           <tr>
             <td style={resultStyles.tdL}>ERP Charges</td>
-            <td style={resultStyles.tdV}>{result.erpNote}</td>
+            <td style={resultStyles.tdV}>
+              {form.vehicleCategory === "cars" && form.hasIU === "no" ? (
+                <div>
+                  {result.erpDaysPre > 0 && (
+                    <div>
+                      {result.erpDaysPre} day(s) × ${result.rPre.erpNoIU}/day =
+                      {fmt(result.erpDaysPre * result.rPre.erpNoIU)}
+                    </div>
+                  )}
+                  {result.erpDaysPost > 0 && (
+                    <div>
+                      {result.erpDaysPost} day(s) × ${result.rPost.erpNoIU}/day
+                      = $ {fmt(result.erpDaysPost * result.rPost.erpNoIU)}
+                    </div>
+                  )}
+                  {result.erpDaysPre === 0 && result.erpDaysPost === 0 && (
+                    <div>$ 0.00 (no ERP days)</div>
+                  )}
+                  {/* hide total */}
+                  {/* <div style={{ fontWeight: 600, marginTop: 5 }}>
+                    Total: {fmt(result.erpCharge)}
+                  </div> */}
+                </div>
+              ) : form.vehicleCategory === "cars" ? (
+                result.erpNote
+              ) : (
+                "Separate ERP Charges Apply"
+              )}
+            </td>
           </tr>
           <tr style={resultStyles.gTr}>
             <td style={resultStyles.tdL}>

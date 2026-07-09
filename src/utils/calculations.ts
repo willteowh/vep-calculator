@@ -170,9 +170,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
 
   const isCar = vehicleCategory === VEHICLE_TYPES.CARS;
   const isMoto = vehicleCategory === VEHICLE_TYPES.MOTORCYCLES;
-  if (!isCar && !isMoto) {
-    return { error: ERROR_MESSAGES.INVALID_VEHICLE };
-  }
+  const hasVEPRate = isCar || isMoto;
 
   const entryCP = (entryCheckpoint || "").toLowerCase();
   const deptCP = (departCheckpoint || "").toLowerCase();
@@ -189,16 +187,20 @@ export function calculate(params: CalculateParams): CalculationOutput {
   );
   const totalChargeable = preDays + postDays;
 
-  const rPre = RATES_PRE[vehicleCategory as keyof typeof RATES_PRE];
-  const rPost = RATES_POST[vehicleCategory as keyof typeof RATES_POST];
+  const rPre = hasVEPRate
+    ? RATES_PRE[vehicleCategory as keyof typeof RATES_PRE]
+    : null;
+  const rPost = hasVEPRate
+    ? RATES_POST[vehicleCategory as keyof typeof RATES_POST]
+    : null;
 
-  const vepFeePre = preDays * rPre.vepPerDay;
-  const vepFeePost = postDays * rPost.vepPerDay;
+  const vepFeePre = hasVEPRate ? preDays * rPre!.vepPerDay : 0;
+  const vepFeePost = hasVEPRate ? postDays * rPost!.vepPerDay : 0;
   const vepFees = vepFeePre + vepFeePost;
 
   const rrcCharge = RRC[vehicleCategory as keyof typeof RRC];
 
-  // ERP calculation
+  // ERP calculation (only for vehicles with VEP rates)
   const noIU = hasIU === "no";
   const erpNum = parseInt(erpDays, 10) || 0;
   const totalCalDays = durationDays(entryDt, departureDt) || 1;
@@ -209,36 +211,52 @@ export function calculate(params: CalculateParams): CalculationOutput {
       Math.round((CUTOFF_2027.getTime() - entryDt.getTime()) / 86400000),
     ),
   );
-  const postCalDays = totalCalDays - preCalDays;
   const erpDaysPre = Math.round(erpNum * (preCalDays / totalCalDays));
   const erpDaysPost = erpNum - erpDaysPre;
 
   let erpCharge = 0;
   let erpNote = "";
-  if (noIU) {
-    const chargePre = erpDaysPre * rPre.erpNoIU;
-    const chargePost = erpDaysPost * rPost.erpNoIU;
+  if (hasVEPRate && noIU) {
+    const chargePre = erpDaysPre * rPre!.erpNoIU;
+    const chargePost = erpDaysPost * rPost!.erpNoIU;
     erpCharge = chargePre + chargePost;
     const parts = [];
     if (erpDaysPre > 0)
-      parts.push(
-        `$${rPre.erpNoIU.toFixed(2)}/day × ${erpDaysPre} day(s) [pre-2027]`,
-      );
+      parts.push(`$${rPre.erpNoIU.toFixed(2)}/day × ${erpDaysPre} day(s)`);
     if (erpDaysPost > 0)
-      parts.push(
-        `$${rPost.erpNoIU.toFixed(2)}/day × ${erpDaysPost} day(s) [from 2027]`,
-      );
+      parts.push(`$${rPost.erpNoIU.toFixed(2)}/day × ${erpDaysPost} day(s)`);
     erpNote = `$${erpCharge.toFixed(2)} — flat rate (no OBU/IU): ${parts.join(" + ")}`;
-  } else {
+  } else if (hasVEPRate) {
     erpNote = "Normal charges apply. Please refer to published ERP rates.";
+  } else {
+    erpNote = "";
   }
 
   const subtotal = tollTotal + vepFees;
   const grandTotal = subtotal + rrcCharge + erpCharge;
   const dur = durationDays(entryDt, departureDt);
 
+  const getVehicleTypeName = () => {
+    switch (vehicleCategory) {
+      case VEHICLE_TYPES.CARS:
+        return "Cars";
+      case VEHICLE_TYPES.MOTORCYCLES:
+        return "Motorcycles";
+      case VEHICLE_TYPES.VANS:
+        return "Vans/Light Goods Vehicles";
+      case VEHICLE_TYPES.HEAVY_GOODS:
+        return "Heavy Goods Vehicles";
+      case VEHICLE_TYPES.TAXIS:
+        return "Taxis";
+      case VEHICLE_TYPES.BUSES:
+        return "Buses";
+      default:
+        return vehicleCategory;
+    }
+  };
+
   return {
-    vehicleType: isCar ? "Cars" : "Motorcycles",
+    vehicleType: getVehicleTypeName(),
     dur,
     totalChargeable,
     preDays,
@@ -256,7 +274,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
     erpDaysPost,
     subtotal,
     grandTotal,
-    rPre,
-    rPost,
+    rPre: rPre || RATES_PRE[VEHICLE_TYPES.CARS],
+    rPost: rPost || RATES_POST[VEHICLE_TYPES.CARS],
   };
 }

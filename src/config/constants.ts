@@ -56,6 +56,10 @@ export const CUTOFF_2027 = new Date("2027-01-01T00:00:00");
 export const VEHICLE_TYPES = {
   CARS: "cars",
   MOTORCYCLES: "motorcycles",
+  VANS: "vans",
+  HEAVY_GOODS: "heavyGoods",
+  TAXIS: "taxis",
+  BUSES: "buses",
 } as const;
 
 // Checkpoints
@@ -87,6 +91,8 @@ export const RATES_POST = {
 } as const;
 
 // Toll charges — unchanged across periods
+// Entry toll: free if entering from Woodlands; charged only at Tuas
+// Exit toll: always charged based on checkpoint and vehicle category
 export const TOLLS = {
   cars: {
     entry: { woodlands: 0, tuas: 2.1 },
@@ -96,10 +102,30 @@ export const TOLLS = {
     entry: { woodlands: 0, tuas: 0 },
     exit: { woodlands: 0, tuas: 0 },
   },
+  vans: {
+    entry: { woodlands: 0, tuas: 5.6 },
+    exit: { woodlands: 1.5, tuas: 5.6 },
+  },
+  heavyGoods: {
+    entry: { woodlands: 0, tuas: 11.3 },
+    exit: { woodlands: 2.0, tuas: 11.3 },
+  },
+  taxis: {
+    entry: { woodlands: 0, tuas: 1.6 },
+    exit: { woodlands: 0.4, tuas: 1.6 },
+  },
+  buses: {
+    entry: { woodlands: 0, tuas: 2.5 },
+    exit: { woodlands: 0.6, tuas: 2.5 },
+  },
 } as const;
 
 // RRC — cars only, per entry
 export const RRC = {
   cars: 6.4,
   motorcycles: 0,
+  vans: 0,
+  heavyGoods: 0,
+  taxis: 0,
+  buses: 0,
 } as const;

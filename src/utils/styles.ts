@@ -21,7 +21,6 @@ export const baseStyles = {
     padding: "9px 22px",
     cursor: "pointer" as const,
     fontWeight: 700,
-    fontSize: 13,
     background: active ? themeColor : "#f0f0f0",
     color: active ? "#fff" : "#555",
     borderTop: `1px solid ${active ? themeColor : "#ddd"}`,
@@ -95,7 +94,6 @@ export const formStyles = {
   }),
   err: {
     color: themeColor,
-    fontSize: 11,
     marginTop: 3,
   } as const,
 };
@@ -107,7 +105,6 @@ export const infoStyles = {
     borderLeft: `4px solid #f9a825`,
     padding: "11px 14px",
     borderRadius: 2,
-    fontSize: 12,
     marginBottom: 16,
     lineHeight: 1.7,
   } as const,
@@ -117,7 +114,6 @@ export const infoStyles = {
     borderLeft: "4px solid #1976d2",
     padding: "11px 14px",
     borderRadius: 2,
-    fontSize: 12,
     marginBottom: 16,
     lineHeight: 1.7,
   } as const,
@@ -127,7 +123,6 @@ export const infoStyles = {
     borderLeft: `4px solid ${themeColor}`,
     padding: "10px 14px",
     borderRadius: 2,
-    fontSize: 13,
     marginBottom: 16,
     color: themeColor,
   } as const,
@@ -168,7 +163,6 @@ export const resultStyles = {
     lineHeight: "24px",
   } as const,
   rTitle: {
-    fontSize: 15,
     fontWeight: 700,
     color: "#1a1a1a",
     marginBottom: 12,

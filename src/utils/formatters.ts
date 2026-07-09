@@ -5,7 +5,7 @@ import {
 } from "@/config/messages";
 
 export function fmt(n: number): string {
-  return `$${n.toLocaleString(CURRENCY_LOCALE, {
+  return `$ ${n.toLocaleString(CURRENCY_LOCALE, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;

@@ -29,6 +29,12 @@ export function CalculatorForm({
   onQuickFill,
   onReset,
 }: CalculatorFormProps) {
+  // Calculate date constraints
+  const today = new Date();
+  const minEntryDate = new Date(today);
+  minEntryDate.setDate(minEntryDate.getDate() - 14);
+  const minEntryDateStr = minEntryDate.toISOString().slice(0, 16);
+  const maxExitDateStr = "2027-12-31T23:59";
   return (
     <>
       <style>{`
@@ -77,7 +83,7 @@ export function CalculatorForm({
           ⚠️{" "}
           <strong>Your trip straddles the 1 January 2027 rate change.</strong>{" "}
           Days before 2027 will be charged at current rates; days from 1 Jan
-          2027 will be charged at the new higher rates. The breakdown is shown
+          2027 will be charged at the new rates. The breakdown is shown
           separately in the results.
         </div>
       )}
@@ -99,6 +105,10 @@ export function CalculatorForm({
               </option>
               <option value="cars">Cars</option>
               <option value="motorcycles">Motorcycles</option>
+              <option value="vans">Vans/Light Goods Vehicles</option>
+              <option value="heavyGoods">Heavy Goods Vehicles</option>
+              <option value="taxis">Taxis</option>
+              <option value="buses">Buses</option>
             </select>
             {errors.vehicleCategory && (
               <div style={formStyles.err}>{errors.vehicleCategory}</div>
@@ -133,6 +143,7 @@ export function CalculatorForm({
               type="datetime-local"
               style={formStyles.inp(!!errors.entryDatetime)}
               value={form.entryDatetime}
+              min={minEntryDateStr}
               onChange={(e) => onFieldChange("entryDatetime", e.target.value)}
             />
             {errors.entryDatetime && (
@@ -150,6 +161,7 @@ export function CalculatorForm({
               style={formStyles.inp(!!errors.departDatetime)}
               value={form.departDatetime}
               min={form.entryDatetime || undefined}
+              max={maxExitDateStr}
               onChange={(e) => onFieldChange("departDatetime", e.target.value)}
             />
             {errors.departDatetime && (
