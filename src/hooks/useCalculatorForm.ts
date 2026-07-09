@@ -42,7 +42,7 @@ export function useCalculatorForm() {
   const validate = (): FormErrors => {
     const e: FormErrors = {};
     if (!form.vehicleCategory) e.vehicleCategory = "Required";
-    if (!form.hasIU) e.hasIU = "Required";
+    if (form.vehicleCategory === "cars" && !form.hasIU) e.hasIU = "Required";
     if (!form.entryDatetime) e.entryDatetime = "Required";
     if (!form.departDatetime) e.departDatetime = "Required";
     if (!form.entryCheckpoint) e.entryCheckpoint = "Required";

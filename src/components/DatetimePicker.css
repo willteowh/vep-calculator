@@ -2,6 +2,18 @@
   font-family: Lato, sans-serif;
 }
 
+.rdt input,
+.rdt input:focus {
+  color: rgb(102, 102, 102) !important;
+  background: rgb(233, 237, 245);
+  font-family: Lato, sans-serif;
+}
+
+.rdt input::placeholder {
+  color: rgb(102, 102, 102) !important;
+  opacity: 1;
+}
+
 .rdtPicker {
   border: 1px solid #d2d6e3;
   border-radius: 2px;

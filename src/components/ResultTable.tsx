@@ -1,7 +1,7 @@
 import { fmt, fmtDt } from "@/utils/formatters";
 import { resultStyles } from "@/utils/styles";
 import { CalculationResult } from "@/utils/calculations";
-import { FormState } from "@/hooks/useCalculatorForm";
+import { baseStyles } from "@/utils/styles";
 import {
   isPublicHoliday,
   getCalendarDate,
@@ -52,10 +52,10 @@ export function ResultTable({ result }: ResultTableProps) {
             fontWeight: 600,
           }}
         >
-          For foreign cars and motorcycles: your vehicle is allowed in Singapore
-          for up to 14 days from the date of your last entry, or up to the
-          expiry date of your vehicle's insurance and road tax, whichever is
-          earlier.
+          For Foreign cars and motorcycles, please note that your vehicle is
+          allowed in Singapore for up to 14 days from the date of your last
+          entry, or up to the expiry date of your vehicle's insurance and road
+          tax, whichever is earlier.
         </div>
       )}
 
@@ -199,7 +199,7 @@ export function ResultTable({ result }: ResultTableProps) {
                     </div>
                   )}
                   {result.erpDaysPre === 0 && result.erpDaysPost === 0 && (
-                    <div>$ 0.00 (no ERP days)</div>
+                    <div>$ 0.00 </div>
                   )}
                   {/* hide total */}
                   {/* <div style={{ fontWeight: 600, marginTop: 5 }}>
@@ -207,7 +207,18 @@ export function ResultTable({ result }: ResultTableProps) {
                   </div> */}
                 </div>
               ) : result.vehicleCategory === "cars" ? (
-                result.erpNote
+                <>
+                  Normal charges apply. Please refer to ERP rates{" "}
+                  <a
+                    style={baseStyles.link}
+                    href="https://onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html#vehicle_rates"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    published
+                  </a>
+                  .
+                </>
               ) : (
                 "Separate ERP Charges Apply"
               )}
@@ -215,7 +226,11 @@ export function ResultTable({ result }: ResultTableProps) {
           </tr>
           <tr style={resultStyles.gTr}>
             <td style={resultStyles.tdL}>
-              {appliesRRC ? "Total (incl. RRC & ERP)" : "Total (incl. ERP)"}
+              Total <br />
+              <span style={resultStyles.footNote}>
+                (including {appliesRRC ? "Reciprocal Road Charge and " : ""}ERP
+                charges)
+              </span>
             </td>
             <td style={resultStyles.tdV}>{fmt(result.grandTotal)}</td>
           </tr>
@@ -235,6 +250,7 @@ export function ResultTable({ result }: ResultTableProps) {
                   (applicable for foreign-registered cars and motorcycles).
                   Click{" "}
                   <a
+                    style={baseStyles.link}
                     href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/entering_and_exiting_singapore/cars-and-motorcycles-registered-in-malaysia.html"
                     target="_blank"
                   >
@@ -271,7 +287,8 @@ export function ResultTable({ result }: ResultTableProps) {
                   <br />• For vehicles with IUs, please note that separate ERP
                   charges will apply. Click{" "}
                   <a
-                    href="/content/onemotoring/home/driving/ERP.html"
+                    style={baseStyles.link}
+                    href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
                     target="_blank"
                   >
                     here
@@ -300,7 +317,7 @@ export function ResultTable({ result }: ResultTableProps) {
                   <br />• Should you require any information on keeping or using
                   a vehicle in Singapore, please log on to our{" "}
                   <a
-                    href="/content/onemotoring/home/driving/entering_and_exiting_singapore.html"
+                    href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/entering_and_exiting_singapore.html"
                     target="_blank"
                   >
                     website
@@ -312,7 +329,7 @@ export function ResultTable({ result }: ResultTableProps) {
                   payable irrespective of the number of gantries passed through
                   on that day by the foreign-registered car. Please click{" "}
                   <a
-                    href="/content/onemotoring/home/driving/ERP.html"
+                    href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
                     target="_blank"
                   >
                     here

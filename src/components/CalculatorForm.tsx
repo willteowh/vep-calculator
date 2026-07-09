@@ -36,11 +36,20 @@ export function CalculatorForm({
 }: CalculatorFormProps) {
   const minEntryMoment = moment().subtract(14, "days");
   const maxExitMoment = moment(CALCULATOR_MAX_EXIT_DATE);
-  const entryMoment = form.entryDatetime ? moment(form.entryDatetime) : null;
+  const entryMoment = form.entryDatetime
+    ? moment(form.entryDatetime, "DD/MM/YYYYTHH:mm", true)
+    : null;
+  const departMoment = form.departDatetime
+    ? moment(form.departDatetime, "DD/MM/YYYYTHH:mm", true)
+    : null;
 
-  const isValidEntryDate = (current: Moment) =>
-    current.isSameOrAfter(minEntryMoment, "day") &&
-    current.isSameOrBefore(maxExitMoment, "day");
+  const isValidEntryDate = (current: Moment) => {
+    const maxDate = departMoment?.isValid() ? departMoment : maxExitMoment;
+    return (
+      current.isSameOrAfter(minEntryMoment, "day") &&
+      current.isSameOrBefore(maxDate, "day")
+    );
+  };
 
   const isValidDepartDate = (current: Moment) => {
     const minDate = entryMoment?.isValid() ? entryMoment : minEntryMoment;
@@ -48,6 +57,20 @@ export function CalculatorForm({
       current.isSameOrAfter(minDate, "day") &&
       current.isSameOrBefore(maxExitMoment, "day")
     );
+  };
+
+  const isValidEntryTime = (current: Moment) => {
+    if (departMoment?.isValid() && current.isSame(departMoment, "day")) {
+      return current.isSameOrBefore(departMoment);
+    }
+    return true;
+  };
+
+  const isValidDepartTime = (current: Moment) => {
+    if (entryMoment?.isValid() && current.isSame(entryMoment, "day")) {
+      return current.isSameOrAfter(entryMoment);
+    }
+    return true;
   };
 
   return (
@@ -81,7 +104,7 @@ export function CalculatorForm({
         <p>
           Refer to the&nbsp;
           <a
-            style={baseStyles.link}
+            style={baseStyles.linkUnderline}
             href="https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/2/news-releases/updates-foreign-registered-vehicles-entering-singapore.html"
           >
             news release
@@ -113,7 +136,9 @@ export function CalculatorForm({
             <select
               style={formStyles.sel(!!errors.vehicleCategory)}
               value={form.vehicleCategory}
-              onChange={(e) => onFieldChange("vehicleCategory", e.target.value)}
+              onChange={(e) => {
+                onFieldChange("vehicleCategory", e.target.value);
+              }}
             >
               <option disabled value="">
                 Select category
@@ -136,6 +161,7 @@ export function CalculatorForm({
           <label style={formStyles.lbl}>{UI_LABELS.HAS_IU}</label>
           <div style={formStyles.ctrl}>
             <select
+              disabled={form.vehicleCategory !== "cars"}
               style={formStyles.sel(!!errors.hasIU)}
               value={form.hasIU}
               onChange={(e) => onFieldChange("hasIU", e.target.value)}
@@ -163,12 +189,16 @@ export function CalculatorForm({
               dateFormat="DD/MM/YYYY"
               timeFormat="HH:mm"
               isValidDate={isValidEntryDate}
+              isValidTime={isValidEntryTime}
               inputProps={{
                 style: formStyles.inp(!!errors.entryDatetime),
                 placeholder: "dd/mm/yyyy hh:mm",
                 onFocus: () => {
                   if (!form.entryDatetime) {
-                    onFieldChange("entryDatetime", moment().format("DD/MM/YYYYTHH:mm"));
+                    onFieldChange(
+                      "entryDatetime",
+                      moment().format("DD/MM/YYYYTHH:mm"),
+                    );
                   }
                 },
               }}
@@ -200,12 +230,16 @@ export function CalculatorForm({
               dateFormat="DD/MM/YYYY"
               timeFormat="HH:mm"
               isValidDate={isValidDepartDate}
+              isValidTime={isValidDepartTime}
               inputProps={{
                 style: formStyles.inp(!!errors.departDatetime),
                 placeholder: "dd/mm/yyyy hh:mm",
                 onFocus: () => {
                   if (!form.departDatetime) {
-                    onFieldChange("departDatetime", moment().format("DD/MM/YYYYTHH:mm"));
+                    onFieldChange(
+                      "departDatetime",
+                      moment().format("DD/MM/YYYYTHH:mm"),
+                    );
                   }
                 },
               }}
@@ -273,12 +307,11 @@ export function CalculatorForm({
           <label style={formStyles.lbl}>{UI_LABELS.ERP_DAYS}</label>
           <div style={formStyles.ctrl}>
             <input
-              type="number"
-              min="0"
+              disabled={form.vehicleCategory !== "cars"}
+              type="text"
               style={formStyles.inp(false)}
               value={form.erpDays}
               onChange={(e) => onFieldChange("erpDays", e.target.value)}
-              placeholder="0"
             />
           </div>
         </div>

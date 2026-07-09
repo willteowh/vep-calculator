@@ -32,11 +32,14 @@ export const baseStyles = {
   }),
   card: {
     border: "1px solid #ddd",
-    borderRadius: 4,
+    borderRadius: 2,
     padding: "24px 28px",
     background: "#fafafa",
   } as const,
   link: {
+    color: "#5c6bb3",
+  } as const,
+  linkUnderline: {
     color: "#5c6bb3",
     textDecoration: "underline",
   } as const,
@@ -68,7 +71,7 @@ export const formStyles = {
     width: "100%",
     padding: "10px 35px 10px 12px",
     border: `1px solid ${hasError ? themeColor : "rgb(221, 221, 221)"}`,
-    borderRadius: 4,
+    borderRadius: 2,
     fontSize: 16,
     fontStyle: "italic" as const,
     color: "rgb(102, 102, 102)",
@@ -85,7 +88,7 @@ export const formStyles = {
     width: "100%",
     padding: "10px 12px",
     border: `1px solid ${hasError ? themeColor : "rgb(221, 221, 221)"}`,
-    borderRadius: 4,
+    borderRadius: 2,
     fontSize: 16,
     color: "rgb(102, 102, 102)",
     background: "rgb(233, 237, 245)",
@@ -232,7 +235,7 @@ export const resultStyles = {
 export const testCaseStyles = {
   tcCard: {
     border: "1px solid #ddd",
-    borderRadius: 4,
+    borderRadius: 2,
     padding: "16px 20px",
     marginBottom: 12,
     background: "#fafafa",

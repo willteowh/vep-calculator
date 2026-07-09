@@ -234,7 +234,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
       parts.push(`$${rPost.erpNoIU.toFixed(2)}/day × ${erpDaysPost} day(s)`);
     erpNote = `$${erpCharge.toFixed(2)} — flat rate (no OBU/IU): ${parts.join(" + ")}`;
   } else if (hasVEPRate) {
-    erpNote = "Normal charges apply. Please refer to published ERP rates.";
+    erpNote = "Normal charges apply. Please refer to ERP rates published.";
   } else {
     erpNote = "";
   }

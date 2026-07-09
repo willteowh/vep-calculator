@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import moment from "moment";
 
 import { useCalculatorForm } from "@/hooks/useCalculatorForm";
 import { calculate } from "@/utils/calculations";
@@ -55,8 +56,11 @@ export default function VEPCalculator() {
 
     // Simulate async calculation (in a real app, this might be an actual async operation)
     setTimeout(() => {
-      const entryDt = new Date(form.entryDatetime);
-      const departureDt = new Date(form.departDatetime);
+      const entryDt = moment(form.entryDatetime, "DD/MM/YYYYTHH:mm").toDate();
+      const departureDt = moment(
+        form.departDatetime,
+        "DD/MM/YYYYTHH:mm",
+      ).toDate();
 
       if (departureDt <= entryDt) {
         setErrors({ _g: "Departure must be after entry date/time." });
@@ -89,8 +93,8 @@ export default function VEPCalculator() {
     const randomForm = {
       vehicleCategory: Math.random() > 0.5 ? "cars" : "motorcycles",
       hasIU: Math.random() > 0.5 ? "yes" : "no",
-      entryDatetime: entryDate.toISOString().slice(0, 16),
-      departDatetime: departDate.toISOString().slice(0, 16),
+      entryDatetime: moment(entryDate).format("DD/MM/YYYYTHH:mm"),
+      departDatetime: moment(departDate).format("DD/MM/YYYYTHH:mm"),
       entryCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
       departCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
       erpDays: Math.floor(Math.random() * stayDays).toString(),
@@ -141,8 +145,8 @@ export default function VEPCalculator() {
 
   const straddlesBoundary = (() => {
     if (!form.entryDatetime || !form.departDatetime) return false;
-    const entry = new Date(form.entryDatetime);
-    const dept = new Date(form.departDatetime);
+    const entry = moment(form.entryDatetime, "DD/MM/YYYYTHH:mm").toDate();
+    const dept = moment(form.departDatetime, "DD/MM/YYYYTHH:mm").toDate();
     return entry < CUTOFF_2027 && dept >= CUTOFF_2027;
   })();
 
