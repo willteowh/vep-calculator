@@ -203,14 +203,7 @@ export default function VEPCalculator() {
               onReset={handleReset}
             />
 
-            {result && !("error" in result) && (
-              <ResultTable
-                result={result}
-                form={form}
-                entryDt={new Date(form.entryDatetime)}
-                departureDt={new Date(form.departDatetime)}
-              />
-            )}
+            {result && !("error" in result) && <ResultTable result={result} />}
 
             {result && "error" in result && (
               <div style={{ ...infoStyles.errBanner, marginTop: 16 }}>

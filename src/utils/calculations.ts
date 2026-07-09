@@ -26,6 +26,13 @@ import {
 
 export interface CalculationResult {
   vehicleType: string;
+  vehicleCategory: string;
+  hasIU: string;
+  entryDatetime: string;
+  departDatetime: string;
+  entryCheckpoint: string;
+  departCheckpoint: string;
+  erpDays: string;
   dur: number;
   totalChargeable: number;
   preDays: number;
@@ -257,6 +264,13 @@ export function calculate(params: CalculateParams): CalculationOutput {
 
   return {
     vehicleType: getVehicleTypeName(),
+    vehicleCategory,
+    hasIU,
+    entryDatetime: entryDt.toISOString().slice(0, 16),
+    departDatetime: departureDt.toISOString().slice(0, 16),
+    entryCheckpoint,
+    departCheckpoint,
+    erpDays,
     dur,
     totalChargeable,
     preDays,

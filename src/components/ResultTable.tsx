@@ -12,17 +12,11 @@ import { useEffect, useState } from "react";
 
 interface ResultTableProps {
   result: CalculationResult;
-  form: FormState;
-  entryDt: Date;
-  departureDt: Date;
 }
 
-export function ResultTable({
-  result,
-  form,
-  entryDt,
-  departureDt,
-}: ResultTableProps) {
+export function ResultTable({ result }: ResultTableProps) {
+  const entryDt = new Date(result.entryDatetime);
+  const departureDt = new Date(result.departDatetime);
   const entryDate = getCalendarDate(entryDt);
   const deptDate = getCalendarDate(departureDt);
   const totalDays = getDateDifferenceDays(entryDate, deptDate) + 1;
@@ -36,12 +30,12 @@ export function ResultTable({
     }
   }
   const [appliesRRC, setAppliesRRC] = useState<boolean>(
-    form.vehicleCategory !== "motorcycles" && result.rrc > 0,
+    result.vehicleCategory !== "motorcycles" && result.rrc > 0,
   );
 
   useEffect(() => {
-    setAppliesRRC(form.vehicleCategory !== "motorcycles" && result.rrc > 0);
-  }, [form.vehicleCategory, result.rrc]);
+    setAppliesRRC(result.vehicleCategory !== "motorcycles" && result.rrc > 0);
+  }, [result.vehicleCategory, result.rrc]);
 
   return (
     // special note display for condition hit:
@@ -65,9 +59,9 @@ export function ResultTable({
         </div>
       )}
 
-      {form.vehicleCategory === "cars" &&
-        form.hasIU === "no" &&
-        (!form.erpDays || String(form.erpDays).trim() === "") && (
+      {result.vehicleCategory === "cars" &&
+        result.hasIU === "no" &&
+        (!result.erpDays || String(result.erpDays).trim() === "") && (
           <div
             style={{
               marginTop: 10,
@@ -109,13 +103,13 @@ export function ResultTable({
           <tr>
             <td style={resultStyles.tdL}>Entry</td>
             <td style={resultStyles.tdV}>
-              {fmtDt(entryDt, form.entryCheckpoint)}
+              {fmtDt(entryDt, result.entryCheckpoint)}
             </td>
           </tr>
           <tr>
             <td style={resultStyles.tdL}>Departure</td>
             <td style={resultStyles.tdV}>
-              {fmtDt(departureDt, form.departCheckpoint)}
+              {fmtDt(departureDt, result.departCheckpoint)}
             </td>
           </tr>
           <tr>
@@ -190,7 +184,7 @@ export function ResultTable({
           <tr>
             <td style={resultStyles.tdL}>ERP Charges</td>
             <td style={resultStyles.tdV}>
-              {form.vehicleCategory === "cars" && form.hasIU === "no" ? (
+              {result.vehicleCategory === "cars" && result.hasIU === "no" ? (
                 <div>
                   {result.erpDaysPre > 0 && (
                     <div>
@@ -212,7 +206,7 @@ export function ResultTable({
                     Total: {fmt(result.erpCharge)}
                   </div> */}
                 </div>
-              ) : form.vehicleCategory === "cars" ? (
+              ) : result.vehicleCategory === "cars" ? (
                 result.erpNote
               ) : (
                 "Separate ERP Charges Apply"

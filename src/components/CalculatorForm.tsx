@@ -7,6 +7,10 @@ import {
   baseStyles,
 } from "@/utils/styles";
 import { FormState, FormErrors } from "@/hooks/useCalculatorForm";
+import Datetime from "react-datetime";
+import moment, { Moment } from "moment";
+import "react-datetime/css/react-datetime.css";
+import "./DatetimePicker.css";
 
 interface CalculatorFormProps {
   form: FormState;
@@ -29,12 +33,22 @@ export function CalculatorForm({
   onQuickFill,
   onReset,
 }: CalculatorFormProps) {
-  // Calculate date constraints
-  const today = new Date();
-  const minEntryDate = new Date(today);
-  minEntryDate.setDate(minEntryDate.getDate() - 14);
-  const minEntryDateStr = minEntryDate.toISOString().slice(0, 16);
-  const maxExitDateStr = "2027-12-31T23:59";
+  const minEntryMoment = moment().subtract(14, "days");
+  const maxExitMoment = moment("2027-12-31T23:59");
+  const entryMoment = form.entryDatetime ? moment(form.entryDatetime) : null;
+
+  const isValidEntryDate = (current: Moment) =>
+    current.isSameOrAfter(minEntryMoment, "day") &&
+    current.isSameOrBefore(maxExitMoment, "day");
+
+  const isValidDepartDate = (current: Moment) => {
+    const minDate = entryMoment?.isValid() ? entryMoment : minEntryMoment;
+    return (
+      current.isSameOrAfter(minDate, "day") &&
+      current.isSameOrBefore(maxExitMoment, "day")
+    );
+  };
+
   return (
     <>
       <style>{`
@@ -139,12 +153,23 @@ export function CalculatorForm({
         <div style={formStyles.row}>
           <label style={formStyles.lbl}>{UI_LABELS.ENTRY_DATETIME}</label>
           <div style={formStyles.ctrl}>
-            <input
-              type="datetime-local"
-              style={formStyles.inp(!!errors.entryDatetime)}
-              value={form.entryDatetime}
-              min={minEntryDateStr}
-              onChange={(e) => onFieldChange("entryDatetime", e.target.value)}
+            <Datetime
+              value={form.entryDatetime ? moment(form.entryDatetime) : null}
+              dateFormat="DD/MM/YYYY"
+              timeFormat="HH:mm"
+              isValidDate={isValidEntryDate}
+              inputProps={{
+                style: formStyles.inp(!!errors.entryDatetime),
+                placeholder: "dd/mm/yyyy hh:mm",
+              }}
+              onChange={(value) => {
+                if (moment.isMoment(value) && value.isValid()) {
+                  onFieldChange(
+                    "entryDatetime",
+                    value.format("DD/MM/YYYYTHH:mm"),
+                  );
+                }
+              }}
             />
             {errors.entryDatetime && (
               <div style={formStyles.err}>{errors.entryDatetime}</div>
@@ -156,13 +181,23 @@ export function CalculatorForm({
         <div style={formStyles.row}>
           <label style={formStyles.lbl}>{UI_LABELS.DEPART_DATETIME}</label>
           <div style={formStyles.ctrl}>
-            <input
-              type="datetime-local"
-              style={formStyles.inp(!!errors.departDatetime)}
-              value={form.departDatetime}
-              min={form.entryDatetime || undefined}
-              max={maxExitDateStr}
-              onChange={(e) => onFieldChange("departDatetime", e.target.value)}
+            <Datetime
+              value={form.departDatetime ? moment(form.departDatetime) : null}
+              dateFormat="DD/MM/YYYY"
+              timeFormat="HH:mm"
+              isValidDate={isValidDepartDate}
+              inputProps={{
+                style: formStyles.inp(!!errors.departDatetime),
+                placeholder: "dd/mm/yyyy hh:mm",
+              }}
+              onChange={(value) => {
+                if (moment.isMoment(value) && value.isValid()) {
+                  onFieldChange(
+                    "departDatetime",
+                    value.format("DD/MM/YYYYTHH:mm"),
+                  );
+                }
+              }}
             />
             {errors.departDatetime && (
               <div style={formStyles.err}>{errors.departDatetime}</div>
