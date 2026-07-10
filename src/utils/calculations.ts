@@ -262,12 +262,17 @@ export function calculate(params: CalculateParams): CalculationOutput {
     }
   };
 
+  const toLocalISO = (dt: Date) => {
+    const pad = (n: number) => String(n).padStart(2, "0");
+    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  };
+
   return {
     vehicleType: getVehicleTypeName(),
     vehicleCategory,
     hasIU,
-    entryDatetime: entryDt.toISOString().slice(0, 16),
-    departDatetime: departureDt.toISOString().slice(0, 16),
+    entryDatetime: toLocalISO(entryDt),
+    departDatetime: toLocalISO(departureDt),
     entryCheckpoint,
     departCheckpoint,
     erpDays,
