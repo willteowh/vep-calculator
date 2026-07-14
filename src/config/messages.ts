@@ -15,7 +15,7 @@ export const UI_LABELS = {
   ERP_DAYS: "No. of days using ERP-priced roads (during ERP-operating hours)",
   CALCULATE: "Calculate",
   QUICK_FILL: "⚡ Quick Fill",
-  RESET: "Reset",
+  RESET: "Clear",
 } as const;
 
 export const CHECKPOINT_LABELS = {

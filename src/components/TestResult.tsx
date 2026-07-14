@@ -1,5 +1,4 @@
 import { fmt } from "@/utils/formatters";
-import { testCaseStyles, themeColor } from "@/utils/styles";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
 
 interface TestCase {
@@ -22,9 +21,19 @@ export function TestResult({ result, testCase }: TestResultProps) {
   const ok = !("error" in result);
   const totalMatches =
     ok && Math.abs(result.grandTotal - testCase.expectedTotal) < 0.01;
+  const themeColor = "#606fbb";
 
   return (
-    <div style={testCaseStyles.tcR(ok && totalMatches)}>
+    <div
+      style={{
+        marginTop: 10,
+        fontSize: 12,
+        padding: "10px 12px",
+        borderRadius: 3,
+        background: ok && totalMatches ? "#f0faf0" : "#fff3f3",
+        border: `1px solid ${ok && totalMatches ? "#b2dfb2" : "#f5c6c6"}`,
+      }}
+    >
       {"error" in result ? (
         <strong>{result.error}</strong>
       ) : (
@@ -33,10 +42,31 @@ export function TestResult({ result, testCase }: TestResultProps) {
             <strong>Duration:</strong> {result.dur} day(s) &nbsp;|&nbsp;
             <strong> Chargeable:</strong> {result.totalChargeable}
             {result.preDays > 0 && (
-              <span style={testCaseStyles.tcN}> {result.preDays} pre-2027</span>
+              <span
+                style={{
+                  fontSize: 12,
+                  color: "#336",
+                  background: "#eef2ff",
+                  padding: "6px 10px",
+                  borderRadius: 3,
+                  marginBottom: 8,
+                }}
+              >
+                {" "}
+                {result.preDays} pre-2027
+              </span>
             )}
             {result.postDays > 0 && (
-              <span style={testCaseStyles.tcN}>
+              <span
+                style={{
+                  fontSize: 12,
+                  color: "#336",
+                  background: "#eef2ff",
+                  padding: "6px 10px",
+                  borderRadius: 3,
+                  marginBottom: 8,
+                }}
+              >
                 {" "}
                 {result.postDays} from 2027
               </span>

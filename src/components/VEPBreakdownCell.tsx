@@ -1,5 +1,4 @@
 import { fmt } from "@/utils/formatters";
-import { resultStyles } from "@/utils/styles";
 import { CalculationResult } from "@/utils/calculations";
 
 interface VEPBreakdownCellProps {
@@ -8,7 +7,14 @@ interface VEPBreakdownCellProps {
 
 export function VEPBreakdownCell({ result }: VEPBreakdownCellProps) {
   return (
-    <td style={resultStyles.tdV}>
+    <td
+      style={{
+        padding: "15px 10px",
+        borderBottom: "1px solid #eee",
+        borderRight: "1px solid rgb(221, 221, 221)",
+        verticalAlign: "top",
+      }}
+    >
       {result.preDays > 0 && (
         <div>
           {result.preDays} day(s) × ${result.rPre.vepPerDay}/day{" "}

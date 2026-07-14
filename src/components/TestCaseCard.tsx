@@ -1,4 +1,3 @@
-import { testCaseStyles, resultStyles } from "@/utils/styles";
 import { CUTOFF_2027 } from "@/config/constants";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
 import { TestResult } from "./TestResult";
@@ -28,6 +27,37 @@ export function TestCaseCard({
   onRun,
   isRunning = false,
 }: TestCaseCardProps) {
+  const tcCardStyle = {
+    border: "1px solid #ddd",
+    borderRadius: 2,
+    padding: "16px 20px",
+    marginBottom: 12,
+    background: "#fafafa",
+  } as const;
+  const tcTitleStyle = {
+    fontWeight: 700,
+    fontSize: 13,
+    marginBottom: 4,
+  } as const;
+  const tcDescStyle = { fontSize: 12, color: "#555", marginBottom: 8 } as const;
+  const tcExpectedStyle = {
+    fontSize: 12,
+    color: "#336",
+    background: "#eef2ff",
+    padding: "6px 10px",
+    borderRadius: 3,
+    marginBottom: 8,
+  } as const;
+  const tcButtonStyle = {
+    background: "#0056a6",
+    color: "#fff",
+    border: "none",
+    borderRadius: 3,
+    padding: "6px 16px",
+    fontSize: 12,
+    cursor: "pointer",
+  } as const;
+
   const isPeriod =
     testCase.params.entryDt >= CUTOFF_2027
       ? "post"
@@ -43,19 +73,40 @@ export function TestCaseCard({
         : "pre-2027";
 
   return (
-    <div style={testCaseStyles.tcCard}>
-      <div style={testCaseStyles.tcT}>
+    <div style={tcCardStyle}>
+      <div style={tcTitleStyle}>
         #{testCase.id} — {testCase.label}
-        <span style={resultStyles.pill(isPeriod as "pre" | "post" | "default")}>
+        <span
+          style={{
+            display: "inline-block",
+            padding: "2px 8px",
+            borderRadius: 10,
+            fontSize: 11,
+            fontWeight: 700,
+            background:
+              isPeriod === "pre"
+                ? "#e8f5e9"
+                : isPeriod === "post"
+                  ? "#e3f2fd"
+                  : "#eee",
+            color:
+              isPeriod === "pre"
+                ? "#2e7d32"
+                : isPeriod === "post"
+                  ? "#1565c0"
+                  : "#555",
+            marginLeft: 6,
+          }}
+        >
           {periodLabel}
         </span>
       </div>
-      <div style={testCaseStyles.tcD}>{testCase.desc}</div>
-      <div style={testCaseStyles.tcN}>
+      <div style={tcDescStyle}>{testCase.desc}</div>
+      <div style={tcExpectedStyle}>
         <strong>Expected Total:</strong> ${testCase.expectedTotal.toFixed(2)}
       </div>
       <button
-        style={testCaseStyles.tcB}
+        style={tcButtonStyle}
         onClick={() => onRun(testCase)}
         disabled={isRunning}
       >

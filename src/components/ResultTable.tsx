@@ -1,7 +1,5 @@
 import { fmt, fmtDt } from "@/utils/formatters";
-import { resultStyles } from "@/utils/styles";
 import { CalculationResult } from "@/utils/calculations";
-import { baseStyles } from "@/utils/styles";
 import {
   isPublicHoliday,
   getCalendarDate,
@@ -15,6 +13,57 @@ interface ResultTableProps {
 }
 
 export function ResultTable({ result }: ResultTableProps) {
+  const resultColor = "rgb(185, 185, 203)";
+  const resultStyles = {
+    rWrap: {
+      marginTop: 28,
+      fontFamily: '"Noto Sans", sans-serif',
+      lineHeight: "24px",
+    },
+    tbl: {
+      width: "100%",
+      borderCollapse: "collapse",
+      fontSize: 16,
+    },
+    th: {
+      background: resultColor,
+      padding: "15px 10px",
+      textAlign: "left",
+      fontWeight: 700,
+      borderBottom: "1px solid #eee",
+    },
+    tdL: {
+      background: resultColor,
+      padding: "15px 10px",
+      borderBottom: "1px solid #eee",
+      fontWeight: 600,
+      color: "#333",
+      verticalAlign: "middle",
+    },
+    tdV: {
+      padding: "15px 10px",
+      borderBottom: "1px solid #eee",
+      borderRight: "1px solid rgb(221, 221, 221)",
+      verticalAlign: "top",
+    },
+    footNote: {
+      fontSize: 13,
+      color: "#555",
+      fontWeight: 700,
+    },
+    gTr: {},
+    infoTr: {
+      border: "1px solid rgb(221, 221, 221)",
+    },
+    infoFooter: {
+      marginTop: 10,
+      padding: "10px 14px",
+    },
+  } as const;
+  const baseStyles = {
+    link: { color: "#5c6bb3" },
+  } as const;
+
   const entryDt = new Date(result.entryDatetime);
   const departureDt = new Date(result.departDatetime);
   const entryDate = getCalendarDate(entryDt);

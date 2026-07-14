@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import moment from "moment";
 
 import { useCalculatorForm } from "@/hooks/useCalculatorForm";
 import { calculate } from "@/utils/calculations";
@@ -15,9 +14,69 @@ import { CalculatorForm } from "@/components/CalculatorForm";
 import { ResultTable } from "@/components/ResultTable";
 import { TestCaseCard } from "@/components/TestCaseCard";
 
-import { baseStyles, infoStyles, buttonStyles } from "@/utils/styles";
-
 export default function VEPCalculator() {
+  const themeColor = "#606fbb";
+  const baseStyles = {
+    wrap: {
+      fontFamily: '"Noto Sans", sans-serif',
+      fontSize: 16,
+      color: "#222",
+      maxWidth: 840,
+      margin: "0 auto",
+      padding: 16,
+    },
+    tabs: {
+      display: "flex",
+      borderBottom: `2px solid ${themeColor}`,
+      marginBottom: 24,
+    },
+    tab: (active) => ({
+      padding: "9px 22px",
+      cursor: "pointer",
+      fontWeight: 700,
+      background: active ? themeColor : "#f0f0f0",
+      color: active ? "#fff" : "#555",
+      borderTop: `1px solid ${active ? themeColor : "#ddd"}`,
+      borderLeft: `1px solid ${active ? themeColor : "#ddd"}`,
+      borderRight: `1px solid ${active ? themeColor : "#ddd"}`,
+      borderBottom: "none",
+      borderRadius: "4px 4px 0 0",
+      marginRight: 4,
+    }),
+  };
+  const infoStyles = {
+    info: {
+      background: "#fff8e1",
+      border: "1px solid #ffe082",
+      borderLeft: "4px solid #f9a825",
+      padding: "11px 14px",
+      borderRadius: 2,
+      marginBottom: 16,
+      lineHeight: 1.7,
+    },
+    errBanner: {
+      background: "#ffeaea",
+      border: "1px solid #f5c6c6",
+      borderLeft: `4px solid ${themeColor}`,
+      padding: "10px 14px",
+      borderRadius: 2,
+      marginBottom: 16,
+      color: themeColor,
+    },
+  };
+  const buttonStyles = {
+    btn: {
+      background: "#606fbb",
+      color: "#fff",
+      border: "none",
+      borderRadius: 8,
+      padding: "10px 48px",
+      fontWeight: 700,
+      cursor: "pointer",
+      marginRight: 10,
+    },
+  };
+
   const { form, errors, set, setErrors, validate, reset } = useCalculatorForm();
   const [result, setResult] = useState(null);
   const [resetVersion, setResetVersion] = useState(0);
@@ -30,6 +89,11 @@ export default function VEPCalculator() {
   const [calculateLoading, setCalculateLoading] = useState(false);
   const [testLoading, setTestLoading] = useState(false);
   const [runningTests, setRunningTests] = useState([]);
+
+  const formatDateTimeLocal = (date) => {
+    const pad = (value) => String(value).padStart(2, "0");
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  };
 
   useEffect(() => {
     let passed = 0;
@@ -57,11 +121,8 @@ export default function VEPCalculator() {
 
     // Simulate async calculation (in a real app, this might be an actual async operation)
     setTimeout(() => {
-      const entryDt = moment(form.entryDatetime, "DD/MM/YYYYTHH:mm").toDate();
-      const departureDt = moment(
-        form.departDatetime,
-        "DD/MM/YYYYTHH:mm",
-      ).toDate();
+      const entryDt = new Date(form.entryDatetime);
+      const departureDt = new Date(form.departDatetime);
 
       if (departureDt <= entryDt) {
         setErrors({ _g: "Departure must be after entry date/time." });
@@ -94,8 +155,8 @@ export default function VEPCalculator() {
     const randomForm = {
       vehicleCategory: Math.random() > 0.5 ? "cars" : "motorcycles",
       hasIU: Math.random() > 0.5 ? "yes" : "no",
-      entryDatetime: moment(entryDate).format("DD/MM/YYYYTHH:mm"),
-      departDatetime: moment(departDate).format("DD/MM/YYYYTHH:mm"),
+      entryDatetime: formatDateTimeLocal(entryDate),
+      departDatetime: formatDateTimeLocal(departDate),
       entryCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
       departCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
       erpDays: Math.floor(Math.random() * stayDays).toString(),
@@ -147,8 +208,8 @@ export default function VEPCalculator() {
 
   const straddlesBoundary = (() => {
     if (!form.entryDatetime || !form.departDatetime) return false;
-    const entry = moment(form.entryDatetime, "DD/MM/YYYYTHH:mm").toDate();
-    const dept = moment(form.departDatetime, "DD/MM/YYYYTHH:mm").toDate();
+    const entry = new Date(form.entryDatetime);
+    const dept = new Date(form.departDatetime);
     return entry < CUTOFF_2027 && dept >= CUTOFF_2027;
   })();
 
