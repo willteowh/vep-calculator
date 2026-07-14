@@ -18,7 +18,6 @@ export default function VEPCalculator() {
   const themeColor = "#606fbb";
   const baseStyles = {
     wrap: {
-      fontFamily: '"Noto Sans", sans-serif',
       fontSize: 16,
       color: "#222",
       maxWidth: 840,
@@ -262,7 +261,6 @@ export default function VEPCalculator() {
             <CalculatorForm
               form={form}
               errors={errors}
-              straddlesBoundary={straddlesBoundary}
               loading={calculateLoading}
               resetVersion={resetVersion}
               onFieldChange={set}
@@ -271,7 +269,12 @@ export default function VEPCalculator() {
               onReset={handleReset}
             />
 
-            {result && !("error" in result) && <ResultTable result={result} />}
+            {result && !("error" in result) && (
+              <ResultTable
+                result={result}
+                straddlesBoundary={straddlesBoundary}
+              />
+            )}
 
             {result && "error" in result && (
               <div style={{ ...infoStyles.errBanner, marginTop: 16 }}>

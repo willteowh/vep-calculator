@@ -15,12 +15,33 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import dayjs, { Dayjs } from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
+import {
+  pageHeaderStyle,
+  formCardStyle,
+  baseButtonStyle,
+  tertiaryButtonStyle,
+  primaryButtonStyle,
+  quickFillButtonStyle,
+  labelStyle,
+  introParagraphStyle,
+  linkStyle,
+  inputStyle,
+  selectPlaceholderStyle,
+  textFieldPlaceholderStyle,
+} from "./calculatorFormStyles";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface CalculatorFormProps {
   form: FormState;
   errors: FormErrors;
-  straddlesBoundary: boolean;
   loading?: boolean;
   resetVersion: number;
   onFieldChange: (field: keyof FormState, value: string) => void;
@@ -32,7 +53,6 @@ interface CalculatorFormProps {
 export function CalculatorForm({
   form,
   errors,
-  straddlesBoundary,
   loading = false,
   resetVersion,
   onFieldChange,
@@ -41,103 +61,31 @@ export function CalculatorForm({
   onReset,
 }: CalculatorFormProps) {
   const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
-  const pageHeaderStyle = {
-    fontSize: 30,
-    fontFamily: '"Noto Sans", sans-serif',
-    fontWeight: 700,
-    lineHeight: 1.2,
-  } as const;
 
-  const formatDateTimeLocal = (date: Date) => {
-    const pad = (value: number) => String(value).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  };
+  const minEntryDate = dayjs().subtract(14, "days");
+  const maxExitDate = dayjs(CALCULATOR_MAX_EXIT_DATE);
+  const minEntryDayjs = minEntryDate;
+  const maxExitDayjs = maxExitDate;
 
-  const minEntryDate = new Date();
-  minEntryDate.setDate(minEntryDate.getDate() - 14);
-
-  const minEntry = formatDateTimeLocal(minEntryDate);
-  const maxExit = formatDateTimeLocal(new Date(CALCULATOR_MAX_EXIT_DATE));
-  const maxEntry = form.departDatetime || maxExit;
-  const minDepart = form.entryDatetime || minEntry;
-
-  const handleEntryChange = (value: string) => {
-    onFieldChange("entryDatetime", value);
-    if (form.departDatetime && value && form.departDatetime < value) {
-      onFieldChange("departDatetime", value);
+  const handleEntryChange = (value: Dayjs | null) => {
+    if (value) {
+      const isoString = value.format("YYYY-MM-DDTHH:mm");
+      onFieldChange("entryDatetime", isoString);
+      if (form.departDatetime && isoString && form.departDatetime < isoString) {
+        onFieldChange("departDatetime", isoString);
+      }
     }
   };
 
-  const handleDepartChange = (value: string) => {
-    onFieldChange("departDatetime", value);
-    if (form.entryDatetime && value && form.entryDatetime > value) {
-      onFieldChange("entryDatetime", value);
+  const handleDepartChange = (value: Dayjs | null) => {
+    if (value) {
+      const isoString = value.format("YYYY-MM-DDTHH:mm");
+      onFieldChange("departDatetime", isoString);
+      if (form.entryDatetime && isoString && form.entryDatetime > isoString) {
+        onFieldChange("entryDatetime", isoString);
+      }
     }
   };
-
-  const formCardStyle = {
-    backgroundColor: "#fff",
-    border: "1px solid #e1e5eb",
-    borderRadius: 4,
-    padding: { xs: 2, md: 3 },
-    mt: 4,
-    mb: 4,
-  } as const;
-
-  const tertiaryButtonStyle = {
-    color: "#2c2f36",
-    borderColor: "transparent",
-    backgroundColor: "transparent",
-    fontWeight: 700,
-    textTransform: "none",
-    px: 3,
-    py: 1.5,
-    borderRadius: 999,
-    "&:hover": {
-      borderColor: "transparent",
-      backgroundColor: "rgba(0, 0, 0, 0.04)",
-    },
-  } as const;
-
-  const primaryButtonStyle = {
-    borderRadius: 999,
-    textTransform: "none",
-    fontWeight: 700,
-    px: 5,
-    py: 1.5,
-    backgroundColor: "#4546a9",
-    "&:hover": {
-      backgroundColor: "#3d3f97",
-    },
-  } as const;
-
-  const quickFillButtonStyle = {
-    minWidth: 40,
-    width: 40,
-    height: 40,
-    borderRadius: 999,
-    p: 0,
-    fontSize: 18,
-    fontWeight: 700,
-    lineHeight: 1,
-  } as const;
-
-  const labelStyle = {
-    display: "block",
-    mb: 0.75,
-    color: "#4b5563",
-    fontSize: 14,
-    fontWeight: 600,
-  } as const;
-
-  const introParagraphStyle = {
-    fontWeight: 400,
-  } as const;
-
-  const linkStyle = {
-    color: "#3B3A99",
-    textDecoration: "underline",
-  } as const;
 
   return (
     <>
@@ -179,14 +127,6 @@ export function CalculatorForm({
         </Typography>
       </Box>
 
-      {straddlesBoundary && (
-        <Alert severity="warning" sx={{ mb: 2 }}>
-          <strong>Your trip straddles the 1 January 2027 rate change.</strong>{" "}
-          Days before 2027 will be charged at current rates; days from 1 Jan
-          2027 will be charged at the new rates. The breakdown is shown
-          separately in the results.
-        </Alert>
-      )}
       <Box>
         <Box sx={formCardStyle}>
           <Grid container spacing={2.5}>
@@ -197,10 +137,13 @@ export function CalculatorForm({
               <FormControl fullWidth error={!!errors.vehicleCategory}>
                 <Select
                   displayEmpty
+                  size="small"
                   value={form.vehicleCategory}
                   onChange={(e) =>
                     onFieldChange("vehicleCategory", e.target.value)
                   }
+                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                  IconComponent={ExpandMoreIcon}
                 >
                   <MenuItem value="">Please select</MenuItem>
                   <MenuItem value="cars">Cars</MenuItem>
@@ -223,13 +166,14 @@ export function CalculatorForm({
               <FormControl fullWidth error={!!errors.hasIU}>
                 <Select
                   displayEmpty
+                  size="small"
                   disabled={form.vehicleCategory !== "cars"}
                   value={form.hasIU}
                   onChange={(e) => onFieldChange("hasIU", e.target.value)}
+                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                  IconComponent={ExpandMoreIcon}
                 >
-                  <MenuItem value="">
-                    <em>Please select</em>
-                  </MenuItem>
+                  <MenuItem value="">Please select</MenuItem>
                   <MenuItem value="yes">Yes (IU / OBU installed)</MenuItem>
                   <MenuItem value="no">No (no IU / OBU)</MenuItem>
                 </Select>
@@ -243,17 +187,26 @@ export function CalculatorForm({
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.ENTRY_DATETIME}*
               </Typography>
-              <TextField
+              <DateTimePicker
                 fullWidth
-                error={!!errors.entryDatetime}
-                helperText={errors.entryDatetime || ""}
-                type="datetime-local"
-                value={form.entryDatetime}
-                onChange={(e) => handleEntryChange(e.target.value)}
+                value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
+                onChange={handleEntryChange}
+                format="DD/MM/YYYY HH:mm"
+                minDateTime={minEntryDayjs}
+                maxDateTime={maxExitDayjs}
+                ampm={false}
+                reduceAnimations
                 slotProps={{
-                  htmlInput: {
-                    min: minEntry,
-                    max: maxEntry,
+                  textField: {
+                    fullWidth: true,
+                    size: "small",
+                    error: !!errors.entryDatetime,
+                    helperText: errors.entryDatetime || "",
+                    sx: {
+                      width: "100%",
+                      ...inputStyle,
+                      ...textFieldPlaceholderStyle,
+                    },
                   },
                 }}
               />
@@ -263,17 +216,26 @@ export function CalculatorForm({
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.DEPART_DATETIME}*
               </Typography>
-              <TextField
+              <DateTimePicker
                 fullWidth
-                error={!!errors.departDatetime}
-                helperText={errors.departDatetime || ""}
-                type="datetime-local"
-                value={form.departDatetime}
-                onChange={(e) => handleDepartChange(e.target.value)}
+                value={form.departDatetime ? dayjs(form.departDatetime) : null}
+                onChange={handleDepartChange}
+                format="DD/MM/YYYY HH:mm"
+                minDateTime={minEntryDayjs}
+                maxDateTime={maxExitDayjs}
+                ampm={false}
+                reduceAnimations
                 slotProps={{
-                  htmlInput: {
-                    min: minDepart,
-                    max: maxExit,
+                  textField: {
+                    fullWidth: true,
+                    size: "small",
+                    error: !!errors.departDatetime,
+                    helperText: errors.departDatetime || "",
+                    sx: {
+                      width: "100%",
+                      ...inputStyle,
+                      ...textFieldPlaceholderStyle,
+                    },
                   },
                 }}
               />
@@ -286,14 +248,15 @@ export function CalculatorForm({
               <FormControl fullWidth error={!!errors.entryCheckpoint}>
                 <Select
                   displayEmpty
+                  size="small"
                   value={form.entryCheckpoint}
                   onChange={(e) =>
                     onFieldChange("entryCheckpoint", e.target.value)
                   }
+                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                  IconComponent={ExpandMoreIcon}
                 >
-                  <MenuItem value="">
-                    <em>Please select</em>
-                  </MenuItem>
+                  <MenuItem value="">Please select</MenuItem>
                   <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
                   <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
                 </Select>
@@ -310,14 +273,15 @@ export function CalculatorForm({
               <FormControl fullWidth error={!!errors.departCheckpoint}>
                 <Select
                   displayEmpty
+                  size="small"
                   value={form.departCheckpoint}
                   onChange={(e) =>
                     onFieldChange("departCheckpoint", e.target.value)
                   }
+                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                  IconComponent={ExpandMoreIcon}
                 >
-                  <MenuItem value="">
-                    <em>Please select</em>
-                  </MenuItem>
+                  <MenuItem value="">Please select</MenuItem>
                   <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
                   <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
                 </Select>
@@ -333,65 +297,73 @@ export function CalculatorForm({
               </Typography>
               <TextField
                 fullWidth
+                size="small"
                 disabled={form.vehicleCategory !== "cars"}
+                type="number"
                 value={form.erpDays}
                 onChange={(e) => onFieldChange("erpDays", e.target.value)}
                 helperText="Only include travel during ERP operating hours"
+                sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
+                slotProps={{
+                  formHelperText: {
+                    sx: { fontSize: 16, ml: 0, color: "#6B768A" },
+                  },
+                }}
               />
             </Grid>
           </Grid>
+        </Box>
 
-          <Box
-            mt={3}
-            sx={{
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+        <Box
+          sx={{
+            mt: 3,
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {/* Centered Clear + Calculate */}
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            sx={{ alignItems: "center" }}
           >
-            {/* Centered Clear + Calculate */}
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              spacing={2}
-              alignItems="center"
+            <Button variant="text" onClick={onReset} sx={tertiaryButtonStyle}>
+              Clear
+            </Button>
+            <Button
+              variant="contained"
+              onClick={onCalculate}
+              disabled={loading}
+              sx={primaryButtonStyle}
             >
-              <Button variant="text" onClick={onReset} sx={tertiaryButtonStyle}>
-                Clear
-              </Button>
-              <Button
-                variant="contained"
-                onClick={onCalculate}
-                disabled={loading}
-                sx={primaryButtonStyle}
-              >
-                {loading ? (
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <CircularProgress size={16} color="inherit" />
-                    Calculating...
-                  </Box>
-                ) : (
-                  UI_LABELS.CALCULATE
-                )}
-              </Button>
-            </Stack>
+              {loading ? (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <CircularProgress size={16} color="inherit" />
+                  Calculating...
+                </Box>
+              ) : (
+                UI_LABELS.CALCULATE
+              )}
+            </Button>
+          </Stack>
 
-            {/* Quick Fill floated to the right */}
-            {hideIfProd && (
-              <Box sx={{ position: "absolute", right: 0 }}>
-                <Button
-                  variant="outlined"
-                  color="info"
-                  onClick={onQuickFill}
-                  sx={quickFillButtonStyle}
-                  aria-label="Quick Fill"
-                  title="Quick Fill"
-                >
-                  ⚡
-                </Button>
-              </Box>
-            )}
-          </Box>
+          {/* Quick Fill floated to the right */}
+          {hideIfProd && (
+            <Box sx={{ position: "absolute", right: 0 }}>
+              <Button
+                variant="outlined"
+                color="info"
+                onClick={onQuickFill}
+                sx={quickFillButtonStyle}
+                aria-label="Quick Fill"
+                title="Quick Fill"
+              >
+                ⚡
+              </Button>
+            </Box>
+          )}
         </Box>
       </Box>
 
