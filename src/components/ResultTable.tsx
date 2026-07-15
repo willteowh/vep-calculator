@@ -1,4 +1,4 @@
-import { fmt, fmtDt } from "@/utils/formatters";
+import { fmt } from "@/utils/formatters";
 import { CalculationResult } from "@/utils/calculations";
 import {
   isPublicHoliday,
@@ -10,12 +10,17 @@ import {
   Box,
   Card,
   CardContent,
-  Divider,
   Link,
-  Stack,
   Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
-import { linkStyle } from "./calculatorFormStyles";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { formCardStyle, linkStyle } from "./calculatorFormStyles";
 
 interface ResultTableProps {
   result: CalculationResult;
@@ -24,74 +29,96 @@ interface ResultTableProps {
 
 export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
   const resultStyles = {
-    rWrap: {
+    wrapper: {
+      ...formCardStyle,
       paddingTop: "24px",
       display: "flex",
       flexDirection: "column",
       gap: "12px",
-      lineHeight: "24px",
     },
-    summaryCard: {
-      border: "1px solid #e5e7eb",
-      boxShadow: "none",
+    tableContainer: {
+      border: "1px solid #E1E4E8",
+      borderRadius: "8px",
+      mt: 0,
+      mb: 0,
+      p: 0,
+      overflow: "hidden",
+      backgroundColor: "#fff",
+      "& .MuiTableCell-root": { fontSize: "1rem" },
     },
-    summaryHeader: {
-      px: 2,
-      py: 1.5,
+    tableStyle: {
+      width: "100%",
+      borderCollapse: "separate",
+      borderSpacing: 0,
+    },
+    tableHead: {
+      backgroundColor: "#F5F5FF",
+      borderBottom: "1px solid #E1E4E8",
+    },
+    tableHeaderCell: {
       fontWeight: 700,
-      backgroundColor: "#f3f4f7",
+      color: "#333",
+      padding: "12px 16px",
       borderBottom: "1px solid #e5e7eb",
     },
-    row: {
-      px: 2,
-      py: 1.5,
-      display: "flex",
-      alignItems: "flex-start",
-      justifyContent: "space-between",
-      gap: 2,
+    tableCell: {
+      padding: "12px 16px",
+      borderBottom: "1px solid #e5e7eb",
     },
-    rowLabel: {
-      minWidth: 220,
-      fontWeight: 600,
+    itemCell: {
       color: "#333",
     },
-    rowValue: {
-      flex: 1,
-      textAlign: "left",
+    totalCell: {
+      backgroundColor: "#f5f5ff",
     },
-    footNote: {
-      fontSize: "1rem",
-      color: "#555",
-      fontWeight: 700,
+    amountCell: {
+      textAlign: "right" as const,
+      color: "#333",
     },
-    disclaimerCard: {
-      border: "1px solid #e5e7eb",
-      boxShadow: "none",
-    },
-    infoFooter: {
-      padding: "10px 14px",
-    },
-    noticeCard: {
-      mb: 1,
-      border: "1px solid #e5e7eb",
-      boxShadow: "none",
-    },
+    subTextCell: {},
     warningCard: {
       backgroundColor: "#fff7e6",
-      borderLeft: "4px solid #ed6c02",
+      border: "1px solid #ed6c02",
+      boxShadow: "none",
+      borderRadius: "8px",
     },
     infoCard: {
       backgroundColor: "#eef5ff",
-      borderLeft: "4px solid #0288d1",
+      border: "1px solid #0288d1",
+      borderRadius: "8px",
+      py: 0.5,
+      boxShadow: "none",
     },
     noticeContent: {
+      display: "flex",
+      alignItems: "center",
       py: 1,
       "&:last-child": {
         pb: 1,
       },
-      fontWeight: 600,
+    },
+    InfoIcon: {
+      color: "#2847D8",
+      flexShrink: 0,
+      mr: 2,
+      fontSize: 18,
+    },
+    erpInfoText: {
+      fontSize: 18,
+      lineHeight: 1.4,
+      fontWeight: 400,
+      color: "#2C2F36",
+    },
+    disclaimerCard: {
+      border: "1px solid #e5e7eb",
+      boxShadow: "none",
+      backgroundColor: "#F2F2FA",
+    },
+    disclaimerContent: {
+      lineHeight: 1.6,
     },
   } as const;
+
   const entryDt = new Date(result.entryDatetime);
   const departureDt = new Date(result.departDatetime);
   const entryDate = getCalendarDate(entryDt);
@@ -115,15 +142,14 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
   }, [result.vehicleCategory, result.rrc]);
 
   return (
-    // special note display for condition hit:
-    // hasPublicHoliday => display note that the date range contains public holiday
-    // more than 14 days => display "For Foreign cars and motorcycles, please note that your vehicle is allowed in Singapore for up to 14 days from the date of your last entry, or up to the expiry date of your vehicle's insurance and road tax, whichever is earlier."
-    // if Car & No IU/OBU & no ERP day input => display "Please indicate the no. of days which you intend to drive through the ERP gantries during ERP operating hours"
-    <Box sx={resultStyles.rWrap}>
+    <Box sx={resultStyles.wrapper}>
       {straddlesBoundary && (
-        <Card sx={{ ...resultStyles.noticeCard, ...resultStyles.warningCard }}>
+        <Card sx={resultStyles.infoCard}>
           <CardContent sx={resultStyles.noticeContent}>
-            <strong>Your trip straddles the 1 January 2027 rate change.</strong>{" "}
+            <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
+            <strong>
+              Your trip straddles the 1 January 2027 rate change.
+            </strong>{" "}
             Days before 2027 will be charged at current rates; days from 1 Jan
             2027 will be charged at the new rates. The breakdown is shown
             separately in the results.
@@ -132,8 +158,9 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
       )}
 
       {totalDays > 14 && (
-        <Card sx={{ ...resultStyles.noticeCard, ...resultStyles.infoCard }}>
+        <Card sx={resultStyles.infoCard}>
           <CardContent sx={resultStyles.noticeContent}>
+            <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
             For Foreign cars and motorcycles, please note that your vehicle is
             allowed in Singapore for up to 14 days from the date of your last
             entry, or up to the expiry date of your vehicle's insurance and road
@@ -145,175 +172,206 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
       {result.vehicleCategory === "cars" &&
         result.hasIU === "no" &&
         (!result.erpDays || String(result.erpDays).trim() === "") && (
-          <Card sx={{ ...resultStyles.noticeCard, ...resultStyles.infoCard }}>
+          <Card sx={resultStyles.infoCard}>
             <CardContent sx={resultStyles.noticeContent}>
-              Please indicate the number of days you intend to drive through ERP
+              <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
+              Please indicate the number of days intend to drive through ERP
               gantries during ERP operating hours.
             </CardContent>
           </Card>
         )}
+
       {hasPublicHoliday && (
-        <Card sx={{ ...resultStyles.noticeCard, ...resultStyles.infoCard }}>
+        <Card sx={resultStyles.infoCard}>
           <CardContent sx={resultStyles.noticeContent}>
+            <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
             The Date Range you chose contains Public Holiday
           </CardContent>
         </Card>
       )}
 
-      <Card sx={resultStyles.summaryCard}>
-        <Box sx={resultStyles.summaryHeader}>
-          Result: For Foreign-registered vehicles only
-        </Box>
-        <Stack divider={<Divider />}>
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>Vehicle Type</Typography>
-            <Typography sx={resultStyles.rowValue}>
-              {result.vehicleType}
-            </Typography>
-          </Box>
+      <Typography variant="h6" sx={{ fontWeight: 700 }}>
+        Result: For Foreign-registered vehicles only
+      </Typography>
 
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>Entry</Typography>
-            <Typography sx={resultStyles.rowValue}>
-              {fmtDt(entryDt, result.entryCheckpoint)}
-            </Typography>
-          </Box>
+      <TableContainer sx={resultStyles.tableContainer}>
+        <Table sx={resultStyles.tableStyle}>
+          <TableHead>
+            <TableRow sx={resultStyles.tableHead}>
+              <TableCell sx={resultStyles.tableHeaderCell}>Item</TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableHeaderCell, textAlign: "right" }}
+              >
+                Amount <br /> ($)
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+              >
+                Toll Charges
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+              >
+                {fmt(result.tollTotal)}
+              </TableCell>
+            </TableRow>
 
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>Departure</Typography>
-            <Typography sx={resultStyles.rowValue}>
-              {fmtDt(departureDt, result.departCheckpoint)}
-            </Typography>
-          </Box>
-
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>Duration of Stay</Typography>
-            <Typography sx={resultStyles.rowValue}>
-              {result.dur} day(s)
-            </Typography>
-          </Box>
-
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>Toll Charges</Typography>
-            <Typography sx={resultStyles.rowValue}>
-              {fmt(result.tollTotal)}
-            </Typography>
-          </Box>
-
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>VEP Charges</Typography>
-            <Box sx={resultStyles.rowValue}>
-              {result.vepFees > 0 ? (
-                <>
+            <TableRow>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+              >
+                <Box
+                  sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
+                >
+                  <Typography component="span" sx={resultStyles.subTextCell}>
+                    VEP Charges
+                  </Typography>
                   {result.preDays > 0 && (
-                    <Box>
-                      {result.preDays} day(s) × ${result.rPre.vepPerDay}/day ={" "}
-                      {fmt(result.vepFeePre)}
-                    </Box>
+                    <Typography component="span" sx={resultStyles.subTextCell}>
+                      {result.preDays} day(s) × ${result.rPre.vepPerDay}/day
+                    </Typography>
                   )}
                   {result.postDays > 0 && (
-                    <Box>
-                      {result.postDays} day(s) × ${result.rPost.vepPerDay}/day ={" "}
-                      {fmt(result.vepFeePost)}
-                    </Box>
+                    <Typography component="span" sx={resultStyles.subTextCell}>
+                      {result.postDays} day(s) × ${result.rPost.vepPerDay}/day
+                    </Typography>
                   )}
-                  {result.preDays === 0 && result.postDays === 0 && (
-                    <Box>$0.00 (all days waived)</Box>
-                  )}
-                </>
-              ) : (
-                <Typography>{fmt(0)}</Typography>
-              )}
-            </Box>
-          </Box>
+                </Box>
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+              >
+                {fmt(result.vepFees)}
+              </TableCell>
+            </TableRow>
 
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>
-              Total <br />
-              <Typography component="span" sx={resultStyles.footNote}>
-                (excluding {appliesRRC ? "Reciprocal Road Charge and " : ""}ERP
-                charges)
-              </Typography>
-            </Typography>
-            <Typography sx={resultStyles.rowValue}>
-              {fmt(result.subtotal)}
-            </Typography>
-          </Box>
+            <TableRow>
+              <TableCell
+                sx={{
+                  ...resultStyles.tableCell,
+                  ...resultStyles.itemCell,
+                  ...resultStyles.totalCell,
+                }}
+              >
+                <Typography sx={{ fontWeight: 600 }}>Total</Typography>
+                (excluding {appliesRRC ? "Reciprocal Road Charge and " : ""}
+                ERP charges)
+              </TableCell>
+              <TableCell
+                sx={{
+                  ...resultStyles.tableCell,
+                  ...resultStyles.amountCell,
+                  ...resultStyles.totalCell,
+                }}
+              >
+                <Typography sx={{ fontWeight: 600 }}>
+                  {fmt(result.subtotal)}
+                </Typography>
+              </TableCell>
+            </TableRow>
 
-          {appliesRRC && (
-            <Box sx={resultStyles.row}>
-              <Typography sx={resultStyles.rowLabel}>
-                Reciprocal Road Charge (RRC)
-              </Typography>
-              <Typography sx={resultStyles.rowValue}>
-                {result.rrc > 0 ? `${fmt(result.rrc)} (per entry)` : "—"}
-              </Typography>
-            </Box>
-          )}
+            {appliesRRC && (
+              <TableRow>
+                <TableCell
+                  sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+                >
+                  Reciprocal Road Charge (RRC)
+                </TableCell>
+                <TableCell
+                  sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+                >
+                  {result.rrc > 0 ? `${fmt(result.rrc)} (per entry)` : "—"}
+                </TableCell>
+              </TableRow>
+            )}
 
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>ERP Charges</Typography>
-            <Box sx={resultStyles.rowValue}>
-              {result.vehicleCategory === "cars" && result.hasIU === "no" ? (
-                <>
-                  {result.erpDaysPre > 0 && (
-                    <Box>
-                      {result.erpDaysPre} day(s) × ${result.rPre.erpNoIU}/day =
+            <TableRow>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+              >
+                ERP Charges
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+              >
+                {fmt(result.erpCharge)}
+              </TableCell>
+            </TableRow>
+
+            {result.vehicleCategory === "cars" && result.hasIU === "no" && (
+              <>
+                {result.erpDaysPre > 0 && (
+                  <TableRow>
+                    <TableCell sx={resultStyles.subTextCell}>
+                      {result.erpDaysPre} day(s) × ${result.rPre.erpNoIU}/day
+                    </TableCell>
+                    <TableCell
+                      sx={{ ...resultStyles.subTextCell, textAlign: "right" }}
+                    >
                       {fmt(result.erpDaysPre * result.rPre.erpNoIU)}
-                    </Box>
-                  )}
-                  {result.erpDaysPost > 0 && (
-                    <Box>
+                    </TableCell>
+                  </TableRow>
+                )}
+                {result.erpDaysPost > 0 && (
+                  <TableRow>
+                    <TableCell sx={resultStyles.subTextCell}>
                       {result.erpDaysPost} day(s) × ${result.rPost.erpNoIU}/day
-                      = $ {fmt(result.erpDaysPost * result.rPost.erpNoIU)}
-                    </Box>
-                  )}
-                  {result.erpDaysPre === 0 && result.erpDaysPost === 0 && (
-                    <Box>$ 0.00</Box>
-                  )}
-                </>
-              ) : result.vehicleCategory === "cars" ? (
-                <>
-                  Normal charges apply. Please refer to ERP rates{" "}
-                  <Link
-                    sx={linkStyle}
-                    href="https://onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html#vehicle_rates"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    published
-                  </Link>
-                  .
-                </>
-              ) : (
-                "Separate ERP Charges Apply"
-              )}
-            </Box>
-          </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{ ...resultStyles.subTextCell, textAlign: "right" }}
+                    >
+                      ${fmt(result.erpDaysPost * result.rPost.erpNoIU)}
+                    </TableCell>
+                  </TableRow>
+                )}
+              </>
+            )}
 
-          <Box sx={resultStyles.row}>
-            <Typography sx={resultStyles.rowLabel}>
-              Total <br />
-              <Typography component="span" sx={resultStyles.footNote}>
-                (including {appliesRRC ? "Reciprocal Road Charge and " : ""}ERP
-                charges)
-              </Typography>
-            </Typography>
-            <Typography sx={resultStyles.rowValue}>
-              {fmt(result.grandTotal)}
-            </Typography>
-          </Box>
-        </Stack>
-      </Card>
+            <TableRow>
+              <TableCell
+                sx={{
+                  ...resultStyles.tableCell,
+                  ...resultStyles.itemCell,
+                  ...resultStyles.totalCell,
+                }}
+              >
+                <Typography sx={{ fontWeight: 600 }}>Total</Typography>
+                (including {appliesRRC ? "Reciprocal Road Charge and " : ""}
+                ERP charges)
+              </TableCell>
+              <TableCell
+                sx={{
+                  ...resultStyles.tableCell,
+                  ...resultStyles.amountCell,
+                  ...resultStyles.totalCell,
+                }}
+              >
+                <Typography sx={{ fontWeight: 600 }}>
+                  {fmt(result.grandTotal)}
+                </Typography>
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Box
+        aria-hidden
+        sx={{
+          mt: 1.25,
+          mb: 1.25,
+          borderBottom: "1px solid #d9dde5",
+          width: "100%",
+        }}
+      />
 
       <Card sx={resultStyles.disclaimerCard}>
-        <CardContent sx={resultStyles.infoFooter}>
-          <Typography
-            component="p"
-            sx={{
-              lineHeight: 1.6,
-            }}
-          >
+        <CardContent>
+          <Typography component="p" sx={resultStyles.disclaimerContent}>
             Please note that the above charges shown in the table do not include
             any fines or outstanding charges your vehicle might have incurred in
             its past/current visit to Singapore, and do not take into
@@ -321,7 +379,7 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
             foreign-registered cars and motorcycles). Click{" "}
             <Link
               sx={linkStyle}
-              href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/entering_and_exiting_singapore/cars-and-motorcycles-registered-in-malaysia.html"
+              href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/entering_and_exiting_singapore/cars-and-motorcycles-registered-in-malaysia.html"
               target="_blank"
             >
               here
@@ -329,7 +387,7 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
             to enquire VEP-fee free days.
             <br />
             <br />
-            Disclaimers <br />
+            <strong>Disclaimers</strong>
             <br />• Please be advised that the information derived from this
             computation table is a rough indication on the payable fees/charges
             amount. It is subjected to change as may be required or determined
@@ -355,7 +413,7 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
             will apply. Click{" "}
             <Link
               sx={linkStyle}
-              href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
+              href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
               target="_blank"
             >
               here
@@ -363,7 +421,7 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
             to enquire ERP rates*. <br />
             <br />
             • All terms and conditions outlined in the application for the
-            International Circulation Permit (ICP), Visitor’s Permit (VP), ASEAN
+            International Circulation Permit (ICP), Visitor's Permit (VP), ASEAN
             Goods Vehicle Permit (GVP) and ASEAN Public Service Vehicle Permit
             (PSVP) remains in force for other foreign-registered vehicles into
             Singapore, other than Vehicle Entry Permit (VEP) for
@@ -383,7 +441,8 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
             <br />• Should you require any information on keeping or using a
             vehicle in Singapore, please log on to our{" "}
             <Link
-              href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/entering_and_exiting_singapore.html"
+              sx={linkStyle}
+              href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/entering_and_exiting_singapore.html"
               target="_blank"
             >
               website
@@ -395,14 +454,13 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
             irrespective of the number of gantries passed through on that day by
             the foreign-registered car. Please click{" "}
             <Link
-              href="www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
+              sx={linkStyle}
+              href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
               target="_blank"
             >
               here
             </Link>{" "}
             to learn more about ERP and applicable charges.
-            <br />
-            <br />
           </Typography>
         </CardContent>
       </Card>

@@ -127,10 +127,10 @@ export function CalculatorForm({
         </Typography>
       </Box>
 
-      <Box>
+      <Box sx={{ mb: 4 }}>
         <Box sx={formCardStyle}>
           <Grid container spacing={2.5}>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.VEHICLE_CATEGORY}*
               </Typography>
@@ -159,7 +159,7 @@ export function CalculatorForm({
               </FormControl>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.HAS_IU}*
               </Typography>
@@ -183,12 +183,11 @@ export function CalculatorForm({
               </FormControl>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.ENTRY_DATETIME}*
               </Typography>
               <DateTimePicker
-                fullWidth
                 value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
                 onChange={handleEntryChange}
                 format="DD/MM/YYYY HH:mm"
@@ -212,12 +211,11 @@ export function CalculatorForm({
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.DEPART_DATETIME}*
               </Typography>
               <DateTimePicker
-                fullWidth
                 value={form.departDatetime ? dayjs(form.departDatetime) : null}
                 onChange={handleDepartChange}
                 format="DD/MM/YYYY HH:mm"
@@ -241,7 +239,7 @@ export function CalculatorForm({
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.ENTRY_CHECKPOINT}*
               </Typography>
@@ -266,7 +264,7 @@ export function CalculatorForm({
               </FormControl>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.DEPART_CHECKPOINT}*
               </Typography>
@@ -291,7 +289,7 @@ export function CalculatorForm({
               </FormControl>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 No. of days using ERP-priced roads*
               </Typography>
@@ -311,59 +309,74 @@ export function CalculatorForm({
                 }}
               />
             </Grid>
-          </Grid>
-        </Box>
 
-        <Box
-          sx={{
-            mt: 3,
-            position: "relative",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          {/* Centered Clear + Calculate */}
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={2}
-            sx={{ alignItems: "center" }}
-          >
-            <Button variant="text" onClick={onReset} sx={tertiaryButtonStyle}>
-              Clear
-            </Button>
-            <Button
-              variant="contained"
-              onClick={onCalculate}
-              disabled={loading}
-              sx={primaryButtonStyle}
-            >
-              {loading ? (
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <CircularProgress size={16} color="inherit" />
-                  Calculating...
-                </Box>
-              ) : (
-                UI_LABELS.CALCULATE
-              )}
-            </Button>
-          </Stack>
-
-          {/* Quick Fill floated to the right */}
-          {hideIfProd && (
-            <Box sx={{ position: "absolute", right: 0 }}>
-              <Button
-                variant="outlined"
-                color="info"
-                onClick={onQuickFill}
-                sx={quickFillButtonStyle}
-                aria-label="Quick Fill"
-                title="Quick Fill"
+            <Box
+              aria-hidden
+              sx={{
+                mt: 1.25,
+                borderBottom: "1px solid #d9dde5",
+                width: "100%",
+              }}
+            />
+            <Grid size={{ xs: 12 }}>
+              <Box
+                sx={{
+                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                ⚡
-              </Button>
-            </Box>
-          )}
+                {/* Centered Clear + Calculate */}
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={2}
+                  sx={{ alignItems: "center" }}
+                >
+                  <Button
+                    variant="text"
+                    onClick={onReset}
+                    sx={tertiaryButtonStyle}
+                  >
+                    Clear
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={onCalculate}
+                    disabled={loading}
+                    sx={primaryButtonStyle}
+                  >
+                    {loading ? (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <CircularProgress size={16} color="inherit" />
+                        Calculating...
+                      </Box>
+                    ) : (
+                      UI_LABELS.CALCULATE
+                    )}
+                  </Button>
+                </Stack>
+
+                {/* Quick Fill floated to the right */}
+                {hideIfProd && (
+                  <Box sx={{ position: "absolute", right: 0 }}>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      onClick={onQuickFill}
+                      sx={quickFillButtonStyle}
+                      aria-label="Quick Fill"
+                      title="Quick Fill"
+                    >
+                      ⚡
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            </Grid>
+          </Grid>
         </Box>
       </Box>
 

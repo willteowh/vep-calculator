@@ -20,7 +20,7 @@ export default function VEPCalculator() {
     wrap: {
       fontSize: 16,
       color: "#222",
-      maxWidth: 840,
+      maxWidth: 960,
       margin: "0 auto",
       padding: 16,
     },
