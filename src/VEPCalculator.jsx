@@ -9,10 +9,12 @@ import {
   QUICK_FILL_STAY_DAYS_MAX,
 } from "@/config/constants";
 import { TEST_CASES } from "@/config/testCases";
+import { Box } from "@mui/material";
 
 import { CalculatorForm } from "@/components/CalculatorForm";
 import { ResultTable } from "@/components/ResultTable";
 import { TestCaseCard } from "@/components/TestCaseCard";
+import { formCardStyle } from "@/components/calculatorFormStyles";
 
 export default function VEPCalculator() {
   const themeColor = "#606fbb";
@@ -257,7 +259,7 @@ export default function VEPCalculator() {
 
         {/* ── Calculator Tab ── */}
         {tab === "calc" && (
-          <>
+          <Box sx={formCardStyle}>
             <CalculatorForm
               form={form}
               errors={errors}
@@ -281,7 +283,7 @@ export default function VEPCalculator() {
                 {result.error}
               </div>
             )}
-          </>
+          </Box>
         )}
 
         {/* ── Test Cases Tab ── */}

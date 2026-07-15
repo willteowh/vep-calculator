@@ -20,7 +20,7 @@ import {
   TableRow,
 } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { formCardStyle, linkStyle } from "./calculatorFormStyles";
+import { linkStyle } from "./calculatorFormStyles";
 
 interface ResultTableProps {
   result: CalculationResult;
@@ -30,7 +30,6 @@ interface ResultTableProps {
 export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
   const resultStyles = {
     wrapper: {
-      ...formCardStyle,
       paddingTop: "24px",
       display: "flex",
       flexDirection: "column",
@@ -143,6 +142,15 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
 
   return (
     <Box sx={resultStyles.wrapper}>
+      <Box
+        aria-hidden
+        sx={{
+          mb: 2,
+          borderBottom: "1px solid #d9dde5",
+          width: "100%",
+        }}
+      />
+
       {straddlesBoundary && (
         <Card sx={resultStyles.infoCard}>
           <CardContent sx={resultStyles.noticeContent}>

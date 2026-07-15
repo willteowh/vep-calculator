@@ -23,7 +23,6 @@ import timezone from "dayjs/plugin/timezone";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import {
   pageHeaderStyle,
-  formCardStyle,
   baseButtonStyle,
   tertiaryButtonStyle,
   primaryButtonStyle,
@@ -127,257 +126,243 @@ export function CalculatorForm({
         </Typography>
       </Box>
 
-      <Box sx={{ mb: 4 }}>
-        <Box sx={formCardStyle}>
-          <Grid container spacing={2.5}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                {UI_LABELS.VEHICLE_CATEGORY}*
-              </Typography>
-              <FormControl fullWidth error={!!errors.vehicleCategory}>
-                <Select
-                  displayEmpty
-                  size="small"
-                  value={form.vehicleCategory}
-                  onChange={(e) =>
-                    onFieldChange("vehicleCategory", e.target.value)
-                  }
-                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                  IconComponent={ExpandMoreIcon}
-                >
-                  <MenuItem value="">Please select</MenuItem>
-                  <MenuItem value="cars">Cars</MenuItem>
-                  <MenuItem value="motorcycles">Motorcycles</MenuItem>
-                  <MenuItem value="vans">Vans/Light Goods Vehicles</MenuItem>
-                  <MenuItem value="heavyGoods">Heavy Goods Vehicles</MenuItem>
-                  <MenuItem value="taxis">Taxis</MenuItem>
-                  <MenuItem value="buses">Buses</MenuItem>
-                </Select>
-                {errors.vehicleCategory && (
-                  <FormHelperText>{errors.vehicleCategory}</FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
+      <Box>
+        <Grid container spacing={2.5}>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography component="label" sx={labelStyle}>
+              {UI_LABELS.VEHICLE_CATEGORY}*
+            </Typography>
+            <FormControl fullWidth error={!!errors.vehicleCategory}>
+              <Select
+                displayEmpty
+                size="small"
+                value={form.vehicleCategory}
+                onChange={(e) =>
+                  onFieldChange("vehicleCategory", e.target.value)
+                }
+                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                IconComponent={ExpandMoreIcon}
+              >
+                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="cars">Cars</MenuItem>
+                <MenuItem value="motorcycles">Motorcycles</MenuItem>
+                <MenuItem value="vans">Vans/Light Goods Vehicles</MenuItem>
+                <MenuItem value="heavyGoods">Heavy Goods Vehicles</MenuItem>
+                <MenuItem value="taxis">Taxis</MenuItem>
+                <MenuItem value="buses">Buses</MenuItem>
+              </Select>
+              {errors.vehicleCategory && (
+                <FormHelperText>{errors.vehicleCategory}</FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
 
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                {UI_LABELS.HAS_IU}*
-              </Typography>
-              <FormControl fullWidth error={!!errors.hasIU}>
-                <Select
-                  displayEmpty
-                  size="small"
-                  disabled={form.vehicleCategory !== "cars"}
-                  value={form.hasIU}
-                  onChange={(e) => onFieldChange("hasIU", e.target.value)}
-                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                  IconComponent={ExpandMoreIcon}
-                >
-                  <MenuItem value="">Please select</MenuItem>
-                  <MenuItem value="yes">Yes (IU / OBU installed)</MenuItem>
-                  <MenuItem value="no">No (no IU / OBU)</MenuItem>
-                </Select>
-                {errors.hasIU && (
-                  <FormHelperText>{errors.hasIU}</FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                {UI_LABELS.ENTRY_DATETIME}*
-              </Typography>
-              <DateTimePicker
-                value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
-                onChange={handleEntryChange}
-                format="DD/MM/YYYY HH:mm"
-                minDateTime={minEntryDayjs}
-                maxDateTime={maxExitDayjs}
-                ampm={false}
-                reduceAnimations
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    size: "small",
-                    error: !!errors.entryDatetime,
-                    helperText: errors.entryDatetime || "",
-                    sx: {
-                      width: "100%",
-                      ...inputStyle,
-                      ...textFieldPlaceholderStyle,
-                    },
-                  },
-                }}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                {UI_LABELS.DEPART_DATETIME}*
-              </Typography>
-              <DateTimePicker
-                value={form.departDatetime ? dayjs(form.departDatetime) : null}
-                onChange={handleDepartChange}
-                format="DD/MM/YYYY HH:mm"
-                minDateTime={minEntryDayjs}
-                maxDateTime={maxExitDayjs}
-                ampm={false}
-                reduceAnimations
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                    size: "small",
-                    error: !!errors.departDatetime,
-                    helperText: errors.departDatetime || "",
-                    sx: {
-                      width: "100%",
-                      ...inputStyle,
-                      ...textFieldPlaceholderStyle,
-                    },
-                  },
-                }}
-              />
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                {UI_LABELS.ENTRY_CHECKPOINT}*
-              </Typography>
-              <FormControl fullWidth error={!!errors.entryCheckpoint}>
-                <Select
-                  displayEmpty
-                  size="small"
-                  value={form.entryCheckpoint}
-                  onChange={(e) =>
-                    onFieldChange("entryCheckpoint", e.target.value)
-                  }
-                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                  IconComponent={ExpandMoreIcon}
-                >
-                  <MenuItem value="">Please select</MenuItem>
-                  <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
-                  <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
-                </Select>
-                {errors.entryCheckpoint && (
-                  <FormHelperText>{errors.entryCheckpoint}</FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                {UI_LABELS.DEPART_CHECKPOINT}*
-              </Typography>
-              <FormControl fullWidth error={!!errors.departCheckpoint}>
-                <Select
-                  displayEmpty
-                  size="small"
-                  value={form.departCheckpoint}
-                  onChange={(e) =>
-                    onFieldChange("departCheckpoint", e.target.value)
-                  }
-                  sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                  IconComponent={ExpandMoreIcon}
-                >
-                  <MenuItem value="">Please select</MenuItem>
-                  <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
-                  <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
-                </Select>
-                {errors.departCheckpoint && (
-                  <FormHelperText>{errors.departCheckpoint}</FormHelperText>
-                )}
-              </FormControl>
-            </Grid>
-
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                No. of days using ERP-priced roads*
-              </Typography>
-              <TextField
-                fullWidth
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography component="label" sx={labelStyle}>
+              {UI_LABELS.HAS_IU}*
+            </Typography>
+            <FormControl fullWidth error={!!errors.hasIU}>
+              <Select
+                displayEmpty
                 size="small"
                 disabled={form.vehicleCategory !== "cars"}
-                type="number"
-                value={form.erpDays}
-                onChange={(e) => onFieldChange("erpDays", e.target.value)}
-                helperText="Only include travel during ERP operating hours"
-                sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
-                slotProps={{
-                  formHelperText: {
-                    sx: { fontSize: 16, ml: 0, color: "#6B768A" },
-                  },
-                }}
-              />
-            </Grid>
+                value={form.hasIU}
+                onChange={(e) => onFieldChange("hasIU", e.target.value)}
+                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                IconComponent={ExpandMoreIcon}
+              >
+                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="yes">Yes (IU / OBU installed)</MenuItem>
+                <MenuItem value="no">No (no IU / OBU)</MenuItem>
+              </Select>
+              {errors.hasIU && <FormHelperText>{errors.hasIU}</FormHelperText>}
+            </FormControl>
+          </Grid>
 
-            <Box
-              aria-hidden
-              sx={{
-                mt: 1.25,
-                borderBottom: "1px solid #d9dde5",
-                width: "100%",
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography component="label" sx={labelStyle}>
+              {UI_LABELS.ENTRY_DATETIME}*
+            </Typography>
+            <DateTimePicker
+              value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
+              onChange={handleEntryChange}
+              format="DD/MM/YYYY HH:mm"
+              minDateTime={minEntryDayjs}
+              maxDateTime={maxExitDayjs}
+              ampm={false}
+              reduceAnimations
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: "small",
+                  error: !!errors.entryDatetime,
+                  helperText: errors.entryDatetime || "",
+                  sx: {
+                    width: "100%",
+                    ...inputStyle,
+                    ...textFieldPlaceholderStyle,
+                  },
+                },
               }}
             />
-            <Grid size={{ xs: 12 }}>
-              <Box
-                sx={{
-                  position: "relative",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                {/* Centered Clear + Calculate */}
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={2}
-                  sx={{ alignItems: "center" }}
-                >
-                  <Button
-                    variant="text"
-                    onClick={onReset}
-                    sx={tertiaryButtonStyle}
-                  >
-                    Clear
-                  </Button>
-                  <Button
-                    variant="contained"
-                    onClick={onCalculate}
-                    disabled={loading}
-                    sx={primaryButtonStyle}
-                  >
-                    {loading ? (
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <CircularProgress size={16} color="inherit" />
-                        Calculating...
-                      </Box>
-                    ) : (
-                      UI_LABELS.CALCULATE
-                    )}
-                  </Button>
-                </Stack>
-
-                {/* Quick Fill floated to the right */}
-                {hideIfProd && (
-                  <Box sx={{ position: "absolute", right: 0 }}>
-                    <Button
-                      variant="outlined"
-                      color="info"
-                      onClick={onQuickFill}
-                      sx={quickFillButtonStyle}
-                      aria-label="Quick Fill"
-                      title="Quick Fill"
-                    >
-                      ⚡
-                    </Button>
-                  </Box>
-                )}
-              </Box>
-            </Grid>
           </Grid>
-        </Box>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography component="label" sx={labelStyle}>
+              {UI_LABELS.DEPART_DATETIME}*
+            </Typography>
+            <DateTimePicker
+              value={form.departDatetime ? dayjs(form.departDatetime) : null}
+              onChange={handleDepartChange}
+              format="DD/MM/YYYY HH:mm"
+              minDateTime={minEntryDayjs}
+              maxDateTime={maxExitDayjs}
+              ampm={false}
+              reduceAnimations
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                  size: "small",
+                  error: !!errors.departDatetime,
+                  helperText: errors.departDatetime || "",
+                  sx: {
+                    width: "100%",
+                    ...inputStyle,
+                    ...textFieldPlaceholderStyle,
+                  },
+                },
+              }}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography component="label" sx={labelStyle}>
+              {UI_LABELS.ENTRY_CHECKPOINT}*
+            </Typography>
+            <FormControl fullWidth error={!!errors.entryCheckpoint}>
+              <Select
+                displayEmpty
+                size="small"
+                value={form.entryCheckpoint}
+                onChange={(e) =>
+                  onFieldChange("entryCheckpoint", e.target.value)
+                }
+                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                IconComponent={ExpandMoreIcon}
+              >
+                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
+                <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
+              </Select>
+              {errors.entryCheckpoint && (
+                <FormHelperText>{errors.entryCheckpoint}</FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography component="label" sx={labelStyle}>
+              {UI_LABELS.DEPART_CHECKPOINT}*
+            </Typography>
+            <FormControl fullWidth error={!!errors.departCheckpoint}>
+              <Select
+                displayEmpty
+                size="small"
+                value={form.departCheckpoint}
+                onChange={(e) =>
+                  onFieldChange("departCheckpoint", e.target.value)
+                }
+                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                IconComponent={ExpandMoreIcon}
+              >
+                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
+                <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
+              </Select>
+              {errors.departCheckpoint && (
+                <FormHelperText>{errors.departCheckpoint}</FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Typography component="label" sx={labelStyle}>
+              No. of days using ERP-priced roads*
+            </Typography>
+            <TextField
+              fullWidth
+              size="small"
+              disabled={form.vehicleCategory !== "cars"}
+              type="number"
+              value={form.erpDays}
+              onChange={(e) => onFieldChange("erpDays", e.target.value)}
+              helperText="Only include travel during ERP operating hours"
+              sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
+              slotProps={{
+                formHelperText: {
+                  sx: { fontSize: 16, ml: 0, color: "#6B768A" },
+                },
+              }}
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <Box
+              sx={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {/* Centered Clear + Calculate */}
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={2}
+                sx={{ alignItems: "center" }}
+              >
+                <Button
+                  variant="text"
+                  onClick={onReset}
+                  sx={tertiaryButtonStyle}
+                >
+                  Clear
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={onCalculate}
+                  disabled={loading}
+                  sx={primaryButtonStyle}
+                >
+                  {loading ? (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <CircularProgress size={16} color="inherit" />
+                      Calculating...
+                    </Box>
+                  ) : (
+                    UI_LABELS.CALCULATE
+                  )}
+                </Button>
+              </Stack>
+
+              {/* Quick Fill floated to the right */}
+              {hideIfProd && (
+                <Box sx={{ position: "absolute", right: 0 }}>
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    onClick={onQuickFill}
+                    sx={quickFillButtonStyle}
+                    aria-label="Quick Fill"
+                    title="Quick Fill"
+                  >
+                    ⚡
+                  </Button>
+                </Box>
+              )}
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
 
       {errors._g && (
