@@ -8,7 +8,7 @@ export const formCardStyle = {
   backgroundColor: "#fff",
   //   border: "1px solid #e1e5eb",
   borderRadius: 4,
-  padding: { xs: 2, md: 3 },
+  padding: 3,
   mt: 2,
   mb: 2,
   boxShadow: "0px 1px 4px 0px rgba(0, 0, 0, 0.16)",
@@ -97,6 +97,9 @@ export const inputStyle = {
       height: "48px",
       padding: 0,
     },
+  "& .MuiPickersInputBase-sectionsContainer": {
+    color: "#8991A1",
+  },
   "& .MuiOutlinedInput-notchedOutline": {
     borderColor: "#C4C8D0",
   },
@@ -168,7 +171,7 @@ export const selectPlaceholderStyle = {
 } as const;
 
 export const textFieldPlaceholderStyle = {
-  "&::placeholder": {
+  "& input::placeholder": {
     color: "#8991A1",
     fontStyle: "normal",
     opacity: 1,

@@ -20,6 +20,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import { useState } from "react";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import {
   tertiaryButtonStyle,
@@ -66,6 +67,8 @@ export function CalculatorForm({
   onReset,
 }: CalculatorFormProps) {
   const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
+  const [entryPickerOpen, setEntryPickerOpen] = useState(false);
+  const [departPickerOpen, setDepartPickerOpen] = useState(false);
 
   const minEntryDate = dayjs().subtract(14, "days");
   const maxExitDate = dayjs(CALCULATOR_MAX_EXIT_DATE);
@@ -92,6 +95,20 @@ export function CalculatorForm({
     }
   };
 
+  const openEntryDateTimePicker = () => {
+    if (!form.entryDatetime) {
+      handleEntryChange(dayjs());
+    }
+    setEntryPickerOpen(true);
+  };
+
+  const openDepartDateTimePicker = () => {
+    if (!form.departDatetime) {
+      handleDepartChange(dayjs());
+    }
+    setDepartPickerOpen(true);
+  };
+
   return (
     <>
       <Box>
@@ -106,7 +123,6 @@ export function CalculatorForm({
             <FormControl fullWidth error={!!errors.vehicleCategory}>
               <Select
                 displayEmpty
-                size="small"
                 value={form.vehicleCategory}
                 onChange={(e) =>
                   onFieldChange("vehicleCategory", e.target.value)
@@ -117,7 +133,9 @@ export function CalculatorForm({
                 }}
                 IconComponent={ExpandMoreIcon}
               >
-                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="" disabled>
+                  <em>Please select</em>
+                </MenuItem>
                 <MenuItem value="cars">Cars</MenuItem>
                 <MenuItem value="motorcycles">Motorcycles</MenuItem>
                 <MenuItem value="vans">Vans/Light Goods Vehicles</MenuItem>
@@ -141,14 +159,15 @@ export function CalculatorForm({
             <FormControl fullWidth error={!!errors.hasIU}>
               <Select
                 displayEmpty
-                size="small"
                 disabled={form.vehicleCategory !== "cars"}
                 value={form.hasIU}
                 onChange={(e) => onFieldChange("hasIU", e.target.value)}
                 sx={{ ...inputStyle, ...selectPlaceholderStyle }}
                 IconComponent={ExpandMoreIcon}
               >
-                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="">
+                  <em>Please select</em>
+                </MenuItem>
                 <MenuItem value="yes">Yes (IU / OBU installed)</MenuItem>
                 <MenuItem value="no">No (no IU / OBU)</MenuItem>
               </Select>
@@ -166,6 +185,9 @@ export function CalculatorForm({
             <DateTimePicker
               value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
               onChange={handleEntryChange}
+              open={entryPickerOpen}
+              onOpen={() => setEntryPickerOpen(true)}
+              onClose={() => setEntryPickerOpen(false)}
               format="DD/MM/YYYY HH:mm"
               minDateTime={minEntryDayjs}
               maxDateTime={maxExitDayjs}
@@ -177,12 +199,18 @@ export function CalculatorForm({
                 textField: {
                   fullWidth: true,
                   size: "small",
+                  onClick: openEntryDateTimePicker,
                   error: !!errors.entryDatetime,
                   helperText: errors.entryDatetime || "",
                   sx: {
                     width: "100%",
                     ...inputStyle,
                     ...textFieldPlaceholderStyle,
+                    ...(form.entryDatetime && {
+                      "& .MuiPickersInputBase-sectionsContainer": {
+                        color: "#23272E",
+                      },
+                    }),
                   },
                 },
               }}
@@ -199,6 +227,9 @@ export function CalculatorForm({
             <DateTimePicker
               value={form.departDatetime ? dayjs(form.departDatetime) : null}
               onChange={handleDepartChange}
+              open={departPickerOpen}
+              onOpen={() => setDepartPickerOpen(true)}
+              onClose={() => setDepartPickerOpen(false)}
               format="DD/MM/YYYY HH:mm"
               minDateTime={minEntryDayjs}
               maxDateTime={maxExitDayjs}
@@ -211,12 +242,18 @@ export function CalculatorForm({
                 textField: {
                   fullWidth: true,
                   size: "small",
+                  onClick: openDepartDateTimePicker,
                   error: !!errors.departDatetime,
                   helperText: errors.departDatetime || "",
                   sx: {
                     width: "100%",
                     ...inputStyle,
                     ...textFieldPlaceholderStyle,
+                    ...(form.departDatetime && {
+                      "& .MuiPickersInputBase-sectionsContainer": {
+                        color: "#23272E",
+                      },
+                    }),
                   },
                 },
               }}
@@ -233,7 +270,6 @@ export function CalculatorForm({
             <FormControl fullWidth error={!!errors.entryCheckpoint}>
               <Select
                 displayEmpty
-                size="small"
                 value={form.entryCheckpoint}
                 onChange={(e) =>
                   onFieldChange("entryCheckpoint", e.target.value)
@@ -241,7 +277,9 @@ export function CalculatorForm({
                 sx={{ ...inputStyle, ...selectPlaceholderStyle }}
                 IconComponent={ExpandMoreIcon}
               >
-                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="" disabled>
+                  <em>Please select</em>
+                </MenuItem>
                 <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
                 <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
               </Select>
@@ -268,7 +306,9 @@ export function CalculatorForm({
                 sx={{ ...inputStyle, ...selectPlaceholderStyle }}
                 IconComponent={ExpandMoreIcon}
               >
-                <MenuItem value="">Please select</MenuItem>
+                <MenuItem value="" disabled>
+                  <em>Please select</em>
+                </MenuItem>
                 <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
                 <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
               </Select>
@@ -320,6 +360,7 @@ export function CalculatorForm({
                   variant="text"
                   onClick={onReset}
                   sx={tertiaryButtonStyle}
+                  disableRipple
                 >
                   Clear
                 </Button>
@@ -327,6 +368,7 @@ export function CalculatorForm({
                   variant="contained"
                   onClick={onCalculate}
                   sx={primaryButtonStyle}
+                  disableRipple
                 >
                   {UI_LABELS.CALCULATE}
                 </Button>

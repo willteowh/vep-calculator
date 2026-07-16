@@ -290,6 +290,7 @@ export default function VEPCalculator() {
                 <Link
                   sx={linkStyle}
                   href="https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/2/news-releases/updates-foreign-registered-vehicles-entering-singapore.html"
+                  target="_blank"
                 >
                   news release
                 </Link>
