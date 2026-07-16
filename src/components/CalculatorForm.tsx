@@ -22,21 +22,27 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import {
-  pageHeaderStyle,
-  baseButtonStyle,
   tertiaryButtonStyle,
   primaryButtonStyle,
   quickFillButtonStyle,
   labelStyle,
-  introParagraphStyle,
-  linkStyle,
+  asteriskStyle,
   inputStyle,
+  datepickerStyle,
   selectPlaceholderStyle,
   textFieldPlaceholderStyle,
 } from "./calculatorFormStyles";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+const dateTimePlaceholderLocaleText = {
+  fieldDayPlaceholder: () => "DD",
+  fieldMonthPlaceholder: () => "MM",
+  fieldYearPlaceholder: () => "YYYY",
+  fieldHoursPlaceholder: () => "HH",
+  fieldMinutesPlaceholder: () => "MM",
+} as const;
 
 interface CalculatorFormProps {
   form: FormState;
@@ -88,49 +94,14 @@ export function CalculatorForm({
 
   return (
     <>
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        .infoBox > * {
-          margin-bottom: 20px;
-        }
-      `}</style>
-      <Box className="infoBox">
-        <Typography component="h1" style={pageHeaderStyle}>
-          Calculate Fees and Charges for Foreign Vehicles in Singapore
-        </Typography>
-        <Typography sx={introParagraphStyle}>
-          You can check your entry and exit toll charges, VEP fees and
-          Reciprocal Road Charge to prepare for your next visit to Singapore.
-          The values from the calculator are indicative. The actual fees and
-          charges may be different depending on any changes that are determined
-          by the authorities.
-        </Typography>
-        <Typography sx={introParagraphStyle}>
-          As announced on 6 February 2026, the revised daily VEP fee, cessation
-          of free VEP days and hours for cars and motorcycles and daily
-          flat-rate ERP fee on ERP operational days for foreign-registered
-          vehicles without OBUs, will apply from 1 January 2027.&nbsp;
-        </Typography>
-        <Typography sx={introParagraphStyle}>
-          Refer to the&nbsp;
-          <Link
-            sx={linkStyle}
-            href="https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/2/news-releases/updates-foreign-registered-vehicles-entering-singapore.html"
-          >
-            news release
-          </Link>
-          &nbsp;and LTA OneMotoring website for more information.
-        </Typography>
-      </Box>
-
       <Box>
         <Grid container spacing={2.5}>
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.VEHICLE_CATEGORY}*
+              {UI_LABELS.VEHICLE_CATEGORY}
+              <Typography component="span" sx={asteriskStyle}>
+                *
+              </Typography>
             </Typography>
             <FormControl fullWidth error={!!errors.vehicleCategory}>
               <Select
@@ -140,7 +111,10 @@ export function CalculatorForm({
                 onChange={(e) =>
                   onFieldChange("vehicleCategory", e.target.value)
                 }
-                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                sx={{
+                  ...inputStyle,
+                  ...selectPlaceholderStyle,
+                }}
                 IconComponent={ExpandMoreIcon}
               >
                 <MenuItem value="">Please select</MenuItem>
@@ -159,7 +133,10 @@ export function CalculatorForm({
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.HAS_IU}*
+              {UI_LABELS.HAS_IU}
+              <Typography component="span" sx={asteriskStyle}>
+                *
+              </Typography>
             </Typography>
             <FormControl fullWidth error={!!errors.hasIU}>
               <Select
@@ -181,7 +158,10 @@ export function CalculatorForm({
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.ENTRY_DATETIME}*
+              {UI_LABELS.ENTRY_DATETIME}
+              <Typography component="span" sx={asteriskStyle}>
+                *
+              </Typography>
             </Typography>
             <DateTimePicker
               value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
@@ -191,6 +171,8 @@ export function CalculatorForm({
               maxDateTime={maxExitDayjs}
               ampm={false}
               reduceAnimations
+              disableOpenPicker
+              localeText={dateTimePlaceholderLocaleText}
               slotProps={{
                 textField: {
                   fullWidth: true,
@@ -209,7 +191,10 @@ export function CalculatorForm({
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.DEPART_DATETIME}*
+              {UI_LABELS.DEPART_DATETIME}
+              <Typography component="span" sx={asteriskStyle}>
+                *
+              </Typography>
             </Typography>
             <DateTimePicker
               value={form.departDatetime ? dayjs(form.departDatetime) : null}
@@ -219,6 +204,9 @@ export function CalculatorForm({
               maxDateTime={maxExitDayjs}
               ampm={false}
               reduceAnimations
+              disableOpenPicker
+              sx={datepickerStyle}
+              localeText={dateTimePlaceholderLocaleText}
               slotProps={{
                 textField: {
                   fullWidth: true,
@@ -237,7 +225,10 @@ export function CalculatorForm({
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.ENTRY_CHECKPOINT}*
+              {UI_LABELS.ENTRY_CHECKPOINT}
+              <Typography component="span" sx={asteriskStyle}>
+                *
+              </Typography>
             </Typography>
             <FormControl fullWidth error={!!errors.entryCheckpoint}>
               <Select
@@ -262,12 +253,14 @@ export function CalculatorForm({
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.DEPART_CHECKPOINT}*
+              {UI_LABELS.DEPART_CHECKPOINT}
+              <Typography component="span" sx={asteriskStyle}>
+                *
+              </Typography>
             </Typography>
             <FormControl fullWidth error={!!errors.departCheckpoint}>
               <Select
                 displayEmpty
-                size="small"
                 value={form.departCheckpoint}
                 onChange={(e) =>
                   onFieldChange("departCheckpoint", e.target.value)
@@ -287,11 +280,13 @@ export function CalculatorForm({
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
-              No. of days using ERP-priced roads*
+              No. of days using ERP-priced roads
+              <Typography component="span" sx={asteriskStyle}>
+                *
+              </Typography>
             </Typography>
             <TextField
               fullWidth
-              size="small"
               disabled={form.vehicleCategory !== "cars"}
               type="number"
               value={form.erpDays}
@@ -300,13 +295,13 @@ export function CalculatorForm({
               sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
               slotProps={{
                 formHelperText: {
-                  sx: { fontSize: 16, ml: 0, color: "#6B768A" },
+                  sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
                 },
               }}
             />
           </Grid>
 
-          <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
             <Box
               sx={{
                 position: "relative",
@@ -331,17 +326,9 @@ export function CalculatorForm({
                 <Button
                   variant="contained"
                   onClick={onCalculate}
-                  disabled={loading}
                   sx={primaryButtonStyle}
                 >
-                  {loading ? (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <CircularProgress size={16} color="inherit" />
-                      Calculating...
-                    </Box>
-                  ) : (
-                    UI_LABELS.CALCULATE
-                  )}
+                  {UI_LABELS.CALCULATE}
                 </Button>
               </Stack>
 

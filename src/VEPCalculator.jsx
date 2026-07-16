@@ -9,11 +9,15 @@ import {
   QUICK_FILL_STAY_DAYS_MAX,
 } from "@/config/constants";
 import { TEST_CASES } from "@/config/testCases";
-import { Box } from "@mui/material";
-
+import { Box, Typography, Link } from "@mui/material";
 import { CalculatorForm } from "@/components/CalculatorForm";
 import { ResultTable } from "@/components/ResultTable";
 import { TestCaseCard } from "@/components/TestCaseCard";
+import {
+  pageHeaderStyle,
+  introParagraphStyle,
+  linkStyle,
+} from "@/components/calculatorFormStyles";
 import { formCardStyle } from "@/components/calculatorFormStyles";
 
 export default function VEPCalculator() {
@@ -234,6 +238,9 @@ export default function VEPCalculator() {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
+        .infoBox > * {
+          margin-bottom: 20px;
+        }
       `}</style>
       <div style={baseStyles.wrap}>
         {hideIfProd && (
@@ -259,30 +266,62 @@ export default function VEPCalculator() {
 
         {/* ── Calculator Tab ── */}
         {tab === "calc" && (
-          <Box sx={formCardStyle}>
-            <CalculatorForm
-              form={form}
-              errors={errors}
-              loading={calculateLoading}
-              resetVersion={resetVersion}
-              onFieldChange={set}
-              onCalculate={handleCalculate}
-              onQuickFill={handleQuickFill}
-              onReset={handleReset}
-            />
+          <Box>
+            <Box className="infoBox">
+              <Typography component="h1" style={pageHeaderStyle}>
+                Calculate Fees and Charges for Foreign Vehicles in Singapore
+              </Typography>
+              <Typography sx={introParagraphStyle}>
+                You can check your entry and exit toll charges, VEP fees and
+                Reciprocal Road Charge to prepare for your next visit to
+                Singapore. The values from the calculator are indicative. The
+                actual fees and charges may be different depending on any
+                changes that are determined by the authorities.
+              </Typography>
+              <Typography sx={introParagraphStyle}>
+                As announced on 6 February 2026, the revised daily VEP fee,
+                cessation of free VEP days and hours for cars and motorcycles
+                and daily flat-rate ERP fee on ERP operational days for
+                foreign-registered vehicles without OBUs, will apply from 1
+                January 2027.&nbsp;
+              </Typography>
+              <Typography sx={introParagraphStyle}>
+                Refer to the&nbsp;
+                <Link
+                  sx={linkStyle}
+                  href="https://www.lta.gov.sg/content/ltagov/en/newsroom/2026/2/news-releases/updates-foreign-registered-vehicles-entering-singapore.html"
+                >
+                  news release
+                </Link>
+                &nbsp;and LTA OneMotoring website for more information.
+              </Typography>
+            </Box>
 
-            {result && !("error" in result) && (
-              <ResultTable
-                result={result}
-                straddlesBoundary={straddlesBoundary}
+            <Box sx={formCardStyle}>
+              <CalculatorForm
+                form={form}
+                errors={errors}
+                loading={calculateLoading}
+                resetVersion={resetVersion}
+                onFieldChange={set}
+                onCalculate={handleCalculate}
+                onQuickFill={handleQuickFill}
+                onReset={handleReset}
               />
-            )}
 
-            {result && "error" in result && (
-              <div style={{ ...infoStyles.errBanner, marginTop: 16 }}>
-                {result.error}
-              </div>
-            )}
+              {result && !("error" in result) && (
+                <ResultTable
+                  result={result}
+                  straddlesBoundary={straddlesBoundary}
+                />
+              )}
+
+              {result && "error" in result && (
+                <div style={{ ...infoStyles.errBanner, marginTop: 16 }}>
+                  {result.error}
+                </div>
+              )}
+            </Box>
           </Box>
         )}
 

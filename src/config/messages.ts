@@ -6,12 +6,12 @@ export const ERROR_MESSAGES = {
 } as const;
 
 export const UI_LABELS = {
-  VEHICLE_CATEGORY: "Vehicle Category",
+  VEHICLE_CATEGORY: "Vehicle category",
   HAS_IU: "In-Vehicle Unit / OBU installed?",
-  ENTRY_DATETIME: "Entry Date & Time",
-  DEPART_DATETIME: "Departure Date & Time",
-  ENTRY_CHECKPOINT: "Entry Checkpoint",
-  DEPART_CHECKPOINT: "Departure Checkpoint",
+  ENTRY_DATETIME: "Entry date & time",
+  DEPART_DATETIME: "Departure date & time",
+  ENTRY_CHECKPOINT: "Entry checkpoint",
+  DEPART_CHECKPOINT: "Departure checkpoint",
   ERP_DAYS: "No. of days using ERP-priced roads (during ERP-operating hours)",
   CALCULATE: "Calculate",
   QUICK_FILL: "⚡ Quick Fill",

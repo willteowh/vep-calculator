@@ -64,6 +64,10 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
       padding: "12px 16px",
       borderBottom: "1px solid #e5e7eb",
     },
+    tableFooterCell: {
+      padding: "12px 16px",
+      borderBottom: "none",
+    },
     itemCell: {
       color: "#333",
     },
@@ -112,6 +116,7 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
       border: "1px solid #e5e7eb",
       boxShadow: "none",
       backgroundColor: "#F2F2FA",
+      borderRadius: "8px",
     },
     disclaimerContent: {
       lineHeight: 1.6,
@@ -287,12 +292,12 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
                 >
-                  Reciprocal Road Charge (RRC)
+                  Reciprocal Road Charge (per entry)
                 </TableCell>
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
                 >
-                  {result.rrc > 0 ? `${fmt(result.rrc)} (per entry)` : "—"}
+                  {result.rrc > 0 ? `${fmt(result.rrc)}` : "—"}
                 </TableCell>
               </TableRow>
             )}
@@ -345,6 +350,7 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
                   ...resultStyles.tableCell,
                   ...resultStyles.itemCell,
                   ...resultStyles.totalCell,
+                  ...resultStyles.tableFooterCell,
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>Total</Typography>
@@ -356,6 +362,7 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
                   ...resultStyles.tableCell,
                   ...resultStyles.amountCell,
                   ...resultStyles.totalCell,
+                  ...resultStyles.tableFooterCell,
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>

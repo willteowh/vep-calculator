@@ -6,7 +6,7 @@ export const pageHeaderStyle = {
 
 export const formCardStyle = {
   backgroundColor: "#fff",
-  border: "1px solid #e1e5eb",
+  //   border: "1px solid #e1e5eb",
   borderRadius: 4,
   padding: { xs: 2, md: 3 },
   mt: 2,
@@ -40,6 +40,8 @@ export const primaryButtonStyle = {
   "&:hover": {
     backgroundColor: "#3d3f97",
   },
+  boxShadow: "none",
+  px: "20px;",
 } as const;
 
 export const quickFillButtonStyle = {
@@ -61,6 +63,8 @@ export const labelStyle = {
   fontWeight: 600,
 } as const;
 
+export const asteriskStyle = { color: "#CA222D", fontWeight: 600 } as const;
+
 export const introParagraphStyle = {
   fontWeight: 400,
   fontSizeL: 18,
@@ -74,7 +78,72 @@ export const linkStyle = {
 export const inputStyle = {
   px: 0,
   py: 0,
+  height: "48px",
+  fontSize: "18px",
+  color: "#23272E",
+  "& .MuiInputBase-root": {
+    height: "48px",
+    fontSize: "18px",
+    color: "#23272E",
+  },
+  "& .MuiPickersOutlinedInput-root": {
+    height: "48px",
+    fontSize: "18px",
+    color: "#23272E",
+  },
+  "& .MuiPickersInputBase-sectionsContainer, & .MuiPickersOutlinedInput-input":
+    {
+      alignItems: "center",
+      height: "48px",
+      padding: 0,
+    },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#C4C8D0",
+  },
+  "& .MuiPickersOutlinedInput-notchedOutline": {
+    borderColor: "#C4C8D0",
+  },
+  "&:not(.Mui-disabled):not(.Mui-error):hover .MuiOutlinedInput-notchedOutline":
+    {
+      borderColor: "#7F7ECD",
+    },
+  "& .MuiPickersOutlinedInput-root:not(.MuiPickersInputBase-disabled):not(.MuiPickersInputBase-error):hover .MuiPickersOutlinedInput-notchedOutline":
+    {
+      borderColor: "#7F7ECD",
+    },
+  "&.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#5957BF",
+    borderWidth: 2,
+  },
+  "& .MuiPickersOutlinedInput-root.MuiPickersInputBase-focused:not(.MuiPickersInputBase-error) .MuiPickersOutlinedInput-notchedOutline":
+    {
+      borderColor: "#5957BF",
+      borderWidth: 2,
+    },
+  "& .MuiOutlinedInput-root:not(.Mui-disabled):not(.Mui-error):hover .MuiOutlinedInput-notchedOutline":
+    {
+      borderColor: "#7F7ECD",
+    },
+  "& .MuiOutlinedInput-root.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline":
+    {
+      borderColor: "#5957BF",
+      borderWidth: 2,
+    },
 } as const;
+
+export const datepickerStyle = {
+  height: "48px",
+  fontSize: "18px",
+  color: "#23272E",
+  "& .MuiInputBase-root": {
+    height: "48px",
+    fontSize: "18px",
+    color: "#23272E",
+  },
+  "& .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#D1D5DB",
+  },
+};
 
 export const selectPlaceholderStyle = {
   color: "#000",
