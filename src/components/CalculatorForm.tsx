@@ -5,6 +5,8 @@ import {
   Box,
   Button,
   CircularProgress,
+  Card,
+  CardContent,
   FormControl,
   FormHelperText,
   Grid,
@@ -16,12 +18,14 @@ import {
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { useState } from "react";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
+import { resultStyles } from "@/utils/resultStyles";
 import {
   tertiaryButtonStyle,
   primaryButtonStyle,
@@ -75,6 +79,9 @@ export function CalculatorForm({
   const minEntryDayjs = minEntryDate;
   const maxExitDayjs = maxExitDate;
 
+  const IUApplicable =
+    form.vehicleCategory == "cars" || form.vehicleCategory == "motorcycles";
+
   const handleEntryChange = (value: Dayjs | null) => {
     if (value) {
       const isoString = value.format("YYYY-MM-DDTHH:mm");
@@ -113,66 +120,74 @@ export function CalculatorForm({
     <>
       <Box>
         <Grid container spacing={2.5}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.VEHICLE_CATEGORY}
-              <Typography component="span" sx={asteriskStyle}>
-                *
+          <Grid container size={{ sm: 12 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography component="label" sx={labelStyle}>
+                {UI_LABELS.VEHICLE_CATEGORY}
+                <Typography component="span" sx={asteriskStyle}>
+                  *
+                </Typography>
               </Typography>
-            </Typography>
-            <FormControl fullWidth error={!!errors.vehicleCategory}>
-              <Select
-                displayEmpty
-                value={form.vehicleCategory}
-                onChange={(e) =>
-                  onFieldChange("vehicleCategory", e.target.value)
-                }
-                sx={{
-                  ...inputStyle,
-                  ...selectPlaceholderStyle,
-                }}
-                IconComponent={ExpandMoreIcon}
-              >
-                <MenuItem value="" disabled>
-                  <em>Please select</em>
-                </MenuItem>
-                <MenuItem value="cars">Cars</MenuItem>
-                <MenuItem value="motorcycles">Motorcycles</MenuItem>
-                <MenuItem value="vans">Vans/Light Goods Vehicles</MenuItem>
-                <MenuItem value="heavyGoods">Heavy Goods Vehicles</MenuItem>
-                <MenuItem value="taxis">Taxis</MenuItem>
-                <MenuItem value="buses">Buses</MenuItem>
-              </Select>
-              {errors.vehicleCategory && (
-                <FormHelperText>{errors.vehicleCategory}</FormHelperText>
-              )}
-            </FormControl>
-          </Grid>
-
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.HAS_IU}
-              <Typography component="span" sx={asteriskStyle}>
-                *
-              </Typography>
-            </Typography>
-            <FormControl fullWidth error={!!errors.hasIU}>
-              <Select
-                displayEmpty
-                disabled={form.vehicleCategory !== "cars"}
-                value={form.hasIU}
-                onChange={(e) => onFieldChange("hasIU", e.target.value)}
-                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                IconComponent={ExpandMoreIcon}
-              >
-                <MenuItem value="">
-                  <em>Please select</em>
-                </MenuItem>
-                <MenuItem value="yes">Yes (IU / OBU installed)</MenuItem>
-                <MenuItem value="no">No (no IU / OBU)</MenuItem>
-              </Select>
-              {errors.hasIU && <FormHelperText>{errors.hasIU}</FormHelperText>}
-            </FormControl>
+              <FormControl fullWidth error={!!errors.vehicleCategory}>
+                <Select
+                  displayEmpty
+                  value={form.vehicleCategory}
+                  onChange={(e) =>
+                    onFieldChange("vehicleCategory", e.target.value)
+                  }
+                  sx={{
+                    ...inputStyle,
+                    ...selectPlaceholderStyle,
+                  }}
+                  IconComponent={ExpandMoreIcon}
+                >
+                  <MenuItem value="" disabled>
+                    <em>Please select</em>
+                  </MenuItem>
+                  <MenuItem value="cars">Cars</MenuItem>
+                  <MenuItem value="motorcycles">Motorcycles</MenuItem>
+                  <MenuItem value="vans">Vans/Light Goods Vehicles</MenuItem>
+                  <MenuItem value="heavyGoods">Heavy Goods Vehicles</MenuItem>
+                  <MenuItem value="taxis">Taxis</MenuItem>
+                  <MenuItem value="buses">Buses</MenuItem>
+                </Select>
+                {errors.vehicleCategory && (
+                  <FormHelperText>{errors.vehicleCategory}</FormHelperText>
+                )}
+              </FormControl>
+            </Grid>
+            {IUApplicable && (
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography component="label" sx={labelStyle}>
+                  {UI_LABELS.HAS_IU}
+                  <Typography component="span" sx={asteriskStyle}>
+                    *
+                  </Typography>
+                </Typography>
+                <FormControl fullWidth error={!!errors.hasIU}>
+                  <Select
+                    displayEmpty
+                    disabled={
+                      form.vehicleCategory !== "cars" &&
+                      form.vehicleCategory !== "motorcycles"
+                    }
+                    value={form.hasIU}
+                    onChange={(e) => onFieldChange("hasIU", e.target.value)}
+                    sx={{ ...inputStyle, ...selectPlaceholderStyle }}
+                    IconComponent={ExpandMoreIcon}
+                  >
+                    <MenuItem value="">
+                      <em>Please select</em>
+                    </MenuItem>
+                    <MenuItem value="yes">Yes (IU / OBU installed)</MenuItem>
+                    <MenuItem value="no">No (no IU / OBU)</MenuItem>
+                  </Select>
+                  {errors.hasIU && (
+                    <FormHelperText>{errors.hasIU}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
+            )}
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6 }}>
@@ -216,7 +231,6 @@ export function CalculatorForm({
               }}
             />
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
               {UI_LABELS.DEPART_DATETIME}
@@ -259,7 +273,6 @@ export function CalculatorForm({
               }}
             />
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
               {UI_LABELS.ENTRY_CHECKPOINT}
@@ -288,7 +301,6 @@ export function CalculatorForm({
               )}
             </FormControl>
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
               {UI_LABELS.DEPART_CHECKPOINT}
@@ -318,29 +330,33 @@ export function CalculatorForm({
             </FormControl>
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography component="label" sx={labelStyle}>
-              No. of days using ERP-priced roads
-              <Typography component="span" sx={asteriskStyle}>
-                *
+          {IUApplicable && (
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography component="label" sx={labelStyle}>
+                No. of days using ERP-priced roads
+                <Typography component="span" sx={asteriskStyle}>
+                  *
+                </Typography>
               </Typography>
-            </Typography>
-            <TextField
-              fullWidth
-              disabled={form.vehicleCategory !== "cars"}
-              type="number"
-              value={form.erpDays}
-              onChange={(e) => onFieldChange("erpDays", e.target.value)}
-              helperText="Only include travel during ERP operating hours"
-              sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
-              slotProps={{
-                formHelperText: {
-                  sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
-                },
-              }}
-            />
-          </Grid>
-
+              <TextField
+                fullWidth
+                disabled={
+                  form.vehicleCategory !== "cars" &&
+                  form.vehicleCategory !== "motorcycles"
+                }
+                type="number"
+                value={form.erpDays}
+                onChange={(e) => onFieldChange("erpDays", e.target.value)}
+                helperText="Only include travel during ERP operating hours"
+                sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
+                slotProps={{
+                  formHelperText: {
+                    sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
+                  },
+                }}
+              />
+            </Grid>
+          )}
           <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
             <Box
               sx={{
@@ -395,9 +411,12 @@ export function CalculatorForm({
       </Box>
 
       {errors._g && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {errors._g}
-        </Alert>
+        <Card sx={{ ...resultStyles.warningCard, mt: 2 }}>
+          <CardContent sx={resultStyles.noticeContent}>
+            <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
+            {errors._g}
+          </CardContent>
+        </Card>
       )}
     </>
   );

@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useCalculatorForm } from "@/hooks/useCalculatorForm";
 import { calculate } from "@/utils/calculations";
 import {
-  CUTOFF_2027,
   QUICK_FILL_MAX_DAYS,
   QUICK_FILL_STAY_DAYS_MAX,
 } from "@/config/constants";
@@ -211,13 +210,6 @@ export default function VEPCalculator() {
     }, 1000); // Longer delay for test running
   }
 
-  const straddlesBoundary = (() => {
-    if (!form.entryDatetime || !form.departDatetime) return false;
-    const entry = new Date(form.entryDatetime);
-    const dept = new Date(form.departDatetime);
-    return entry < CUTOFF_2027 && dept >= CUTOFF_2027;
-  })();
-
   return (
     <>
       <style>{`
@@ -311,10 +303,7 @@ export default function VEPCalculator() {
               />
 
               {result && !("error" in result) && (
-                <ResultTable
-                  result={result}
-                  straddlesBoundary={straddlesBoundary}
-                />
+                <ResultTable result={result} />
               )}
 
               {result && "error" in result && (

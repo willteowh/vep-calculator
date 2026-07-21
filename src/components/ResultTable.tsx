@@ -1,5 +1,6 @@
 import { fmt } from "@/utils/formatters";
 import { CalculationResult } from "@/utils/calculations";
+import { CUTOFF_2027 } from "@/config/constants";
 import {
   isPublicHoliday,
   getCalendarDate,
@@ -19,110 +20,15 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { resultStyles } from "@/utils/resultStyles";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { linkStyle } from "./calculatorFormStyles";
 
 interface ResultTableProps {
   result: CalculationResult;
-  straddlesBoundary: boolean;
 }
 
-export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
-  const resultStyles = {
-    wrapper: {
-      paddingTop: "24px",
-      display: "flex",
-      flexDirection: "column",
-      gap: "12px",
-    },
-    tableContainer: {
-      border: "1px solid #E1E4E8",
-      borderRadius: "8px",
-      mt: 0,
-      mb: 0,
-      p: 0,
-      overflow: "hidden",
-      backgroundColor: "#fff",
-      "& .MuiTableCell-root": { fontSize: "1rem" },
-    },
-    tableStyle: {
-      width: "100%",
-      borderCollapse: "separate",
-      borderSpacing: 0,
-    },
-    tableHead: {
-      backgroundColor: "#F5F5FF",
-      borderBottom: "1px solid #E1E4E8",
-    },
-    tableHeaderCell: {
-      fontWeight: 700,
-      color: "#333",
-      padding: "12px 16px",
-      borderBottom: "1px solid #e5e7eb",
-    },
-    tableCell: {
-      padding: "12px 16px",
-      borderBottom: "1px solid #e5e7eb",
-    },
-    tableFooterCell: {
-      padding: "12px 16px",
-      borderBottom: "none",
-    },
-    itemCell: {
-      color: "#333",
-    },
-    totalCell: {
-      backgroundColor: "#f5f5ff",
-    },
-    amountCell: {
-      textAlign: "right" as const,
-      color: "#333",
-    },
-    subTextCell: {},
-    warningCard: {
-      backgroundColor: "#fff7e6",
-      border: "1px solid #ed6c02",
-      boxShadow: "none",
-      borderRadius: "8px",
-    },
-    infoCard: {
-      backgroundColor: "#eef5ff",
-      border: "1px solid #0288d1",
-      borderRadius: "8px",
-      py: 0.5,
-      boxShadow: "none",
-    },
-    noticeContent: {
-      display: "flex",
-      alignItems: "center",
-      py: 1,
-      "&:last-child": {
-        pb: 1,
-      },
-    },
-    InfoIcon: {
-      color: "#2847D8",
-      flexShrink: 0,
-      mr: 2,
-      fontSize: 18,
-    },
-    erpInfoText: {
-      fontSize: 18,
-      lineHeight: 1.4,
-      fontWeight: 400,
-      color: "#2C2F36",
-    },
-    disclaimerCard: {
-      border: "1px solid #e5e7eb",
-      boxShadow: "none",
-      backgroundColor: "#F2F2FA",
-      borderRadius: "8px",
-    },
-    disclaimerContent: {
-      lineHeight: 1.6,
-    },
-  } as const;
-
+export function ResultTable({ result }: ResultTableProps) {
   const entryDt = new Date(result.entryDatetime);
   const departureDt = new Date(result.departDatetime);
   const entryDate = getCalendarDate(entryDt);
@@ -140,6 +46,20 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
   const [appliesRRC, setAppliesRRC] = useState<boolean>(
     result.vehicleCategory !== "motorcycles" && result.rrc > 0,
   );
+
+  const straddlesBoundary = entryDt < CUTOFF_2027 && departureDt >= CUTOFF_2027;
+  const separateERPChargesApply = [
+    "vans",
+    "heavyGoods",
+    "taxis",
+    "buses",
+  ].includes(result.vehicleCategory);
+  const normalERPChargesApply =
+    result.vehicleCategory === "cars" && result.hasIU === "yes";
+  const erpRateApplies =
+    result.vehicleCategory === "cars" &&
+    result.hasIU === "no" &&
+    Number(result.erpDays) > 0;
 
   useEffect(() => {
     setAppliesRRC(result.vehicleCategory !== "motorcycles" && result.rrc > 0);
@@ -160,12 +80,15 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
         <Card sx={resultStyles.infoCard}>
           <CardContent sx={resultStyles.noticeContent}>
             <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
-            <strong>
-              Your trip straddles the 1 January 2027 rate change.
-            </strong>{" "}
-            Days before 2027 will be charged at current rates; days from 1 Jan
-            2027 will be charged at the new rates. The breakdown is shown
-            separately in the results.
+            <span>
+              <strong>
+                Your trip straddles the 1 January 2027 rate change.
+              </strong>{" "}
+              <br />
+              Days before 2027 will be charged at current rates; days from 1 Jan
+              2027 will be charged at the new rates. The breakdown is shown
+              separately in the results.
+            </span>
           </CardContent>
         </Card>
       )}
@@ -306,43 +229,63 @@ export function ResultTable({ result, straddlesBoundary }: ResultTableProps) {
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
               >
-                ERP Charges
+                <Box
+                  sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
+                >
+                  <Typography component="span" sx={resultStyles.subTextCell}>
+                    ERP Charges
+                  </Typography>
+                  {result.vehicleCategory === "cars" &&
+                    result.hasIU === "no" && (
+                      <>
+                        {result.erpDaysPre > 0 && (
+                          <Typography
+                            component="span"
+                            sx={resultStyles.subTextCell}
+                          >
+                            {result.erpDaysPre} day(s) × ${result.rPre.erpNoIU}
+                            /day
+                          </Typography>
+                        )}
+                        {result.erpDaysPost > 0 && (
+                          <Typography
+                            component="span"
+                            sx={resultStyles.subTextCell}
+                          >
+                            {result.erpDaysPost} day(s) × $
+                            {result.rPost.erpNoIU}
+                            /day
+                          </Typography>
+                        )}
+                      </>
+                    )}
+                </Box>
               </TableCell>
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
               >
-                {fmt(result.erpCharge)}
+                <Typography>
+                  {separateERPChargesApply && <>Separate ERP charges apply.</>}
+
+                  {normalERPChargesApply && (
+                    <>
+                      Normal ERP charges apply. <br />
+                      Please refer to ERP Rates{" "}
+                      <Link
+                        sx={linkStyle}
+                        href="https://onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html#vehicle_rates"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        published
+                      </Link>
+                    </>
+                  )}
+
+                  {erpRateApplies && <>{fmt(result.erpCharge)}</>}
+                </Typography>
               </TableCell>
             </TableRow>
-
-            {result.vehicleCategory === "cars" && result.hasIU === "no" && (
-              <>
-                {result.erpDaysPre > 0 && (
-                  <TableRow>
-                    <TableCell sx={resultStyles.subTextCell}>
-                      {result.erpDaysPre} day(s) × ${result.rPre.erpNoIU}/day
-                    </TableCell>
-                    <TableCell
-                      sx={{ ...resultStyles.subTextCell, textAlign: "right" }}
-                    >
-                      {fmt(result.erpDaysPre * result.rPre.erpNoIU)}
-                    </TableCell>
-                  </TableRow>
-                )}
-                {result.erpDaysPost > 0 && (
-                  <TableRow>
-                    <TableCell sx={resultStyles.subTextCell}>
-                      {result.erpDaysPost} day(s) × ${result.rPost.erpNoIU}/day
-                    </TableCell>
-                    <TableCell
-                      sx={{ ...resultStyles.subTextCell, textAlign: "right" }}
-                    >
-                      ${fmt(result.erpDaysPost * result.rPost.erpNoIU)}
-                    </TableCell>
-                  </TableRow>
-                )}
-              </>
-            )}
 
             <TableRow>
               <TableCell
