@@ -128,7 +128,7 @@ export default function VEPCalculator() {
       const entryDt = new Date(form.entryDatetime);
       const departureDt = new Date(form.departDatetime);
 
-      if (departureDt <= entryDt) {
+      if (departureDt < entryDt) {
         setErrors({ _g: "Departure must be after entry date/time." });
         setCalculateLoading(false);
         return;
