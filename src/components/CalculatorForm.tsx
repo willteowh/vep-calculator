@@ -199,26 +199,26 @@ export function CalculatorForm({
             </Typography>
             <DateTimePicker
               value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
-              // onChange={handleEntryChange}
-              // open={entryPickerOpen}
-              // onOpen={() => setEntryPickerOpen(true)}
-              // onClose={() => setEntryPickerOpen(false)}
+              onChange={handleEntryChange}
+              open={entryPickerOpen}
+              onOpen={() => setEntryPickerOpen(true)}
+              onClose={() => setEntryPickerOpen(false)}
               format="DD/MM/YYYY HH:mm"
               minDateTime={minEntryDayjs}
               maxDateTime={maxExitDayjs}
               ampm={false}
-              // reduceAnimations
-              // disableOpenPicker
+              reduceAnimations
+              disableOpenPicker
               localeText={dateTimePlaceholderLocaleText}
               slotProps={{
                 textField: {
                   fullWidth: true,
-                  // size: "small",
-                  // onClick: openEntryDateTimePicker,
+                  size: "small",
+                  onClick: openEntryDateTimePicker,
                   error: !!errors.entryDatetime,
                   helperText: errors.entryDatetime || "",
                   sx: {
-                    // width: "100%",
+                    width: "100%",
                     ...inputStyle,
                     ...textFieldPlaceholderStyle,
                     ...(form.entryDatetime && {
@@ -230,7 +230,6 @@ export function CalculatorForm({
                 },
               }}
             />
-            <DateTimePicker />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <Typography component="label" sx={labelStyle}>
