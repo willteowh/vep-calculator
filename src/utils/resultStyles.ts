@@ -1,3 +1,5 @@
+import { BorderRight } from "@mui/icons-material";
+
 export const resultStyles = {
   wrapper: {
     paddingTop: "24px",
@@ -19,10 +21,19 @@ export const resultStyles = {
     width: "100%",
     borderCollapse: "separate",
     borderSpacing: 0,
+    // START: extra style to overwrite 1M Adobe AEM global style
+    mx: "0 !important",
+    border: "none !important",
+    "& th, & td": {
+      borderRight: "none !important",
+    },
+    // END: extra style to overwrite 1M Adobe AEM global style
   },
   tableHead: {
-    backgroundColor: "#F5F5FF",
     borderBottom: "1px solid #E1E4E8",
+    // START: extra style to overwrite 1M Adobe AEM global style
+    backgroundColor: "#F5F5FF !important",
+    // END: extra style to overwrite 1M Adobe AEM global style
   },
   tableHeaderCell: {
     fontWeight: 700,
@@ -41,8 +52,11 @@ export const resultStyles = {
   itemCell: {
     color: "#333",
   },
-  totalCell: {
-    backgroundColor: "#f5f5ff",
+  itemRow: {
+    backgroundColor: "#ffffff !important",
+  },
+  totalRow: {
+    backgroundColor: "#f5f5ff !important",
   },
   amountCell: {
     textAlign: "right" as const,

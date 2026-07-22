@@ -143,7 +143,7 @@ export function ResultTable({ result }: ResultTableProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
+            <TableRow sx={resultStyles.itemRow}>
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
               >
@@ -156,7 +156,7 @@ export function ResultTable({ result }: ResultTableProps) {
               </TableCell>
             </TableRow>
 
-            <TableRow>
+            <TableRow sx={resultStyles.itemRow}>
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
               >
@@ -166,15 +166,26 @@ export function ResultTable({ result }: ResultTableProps) {
                   <Typography component="span" sx={resultStyles.subTextCell}>
                     VEP Charges
                   </Typography>
-                  {result.preDays > 0 && (
-                    <Typography component="span" sx={resultStyles.subTextCell}>
-                      {result.preDays} day(s) × ${result.rPre.vepPerDay}/day
-                    </Typography>
-                  )}
-                  {result.postDays > 0 && (
-                    <Typography component="span" sx={resultStyles.subTextCell}>
-                      {result.postDays} day(s) × ${result.rPost.vepPerDay}/day
-                    </Typography>
+                  {result.vepFees !== 0 && (
+                    <>
+                      {result.preDays > 0 && (
+                        <Typography
+                          component="span"
+                          sx={resultStyles.subTextCell}
+                        >
+                          {result.preDays} day(s) × ${result.rPre.vepPerDay}/day
+                        </Typography>
+                      )}
+                      {result.postDays > 0 && (
+                        <Typography
+                          component="span"
+                          sx={resultStyles.subTextCell}
+                        >
+                          {result.postDays} day(s) × ${result.rPost.vepPerDay}
+                          /day
+                        </Typography>
+                      )}
+                    </>
                   )}
                 </Box>
               </TableCell>
@@ -185,12 +196,15 @@ export function ResultTable({ result }: ResultTableProps) {
               </TableCell>
             </TableRow>
 
-            <TableRow>
+            <TableRow
+              sx={{
+                ...resultStyles.totalRow,
+              }}
+            >
               <TableCell
                 sx={{
                   ...resultStyles.tableCell,
                   ...resultStyles.itemCell,
-                  ...resultStyles.totalCell,
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>Total</Typography>
@@ -201,7 +215,6 @@ export function ResultTable({ result }: ResultTableProps) {
                 sx={{
                   ...resultStyles.tableCell,
                   ...resultStyles.amountCell,
-                  ...resultStyles.totalCell,
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>
@@ -211,7 +224,7 @@ export function ResultTable({ result }: ResultTableProps) {
             </TableRow>
 
             {appliesRRC && (
-              <TableRow>
+              <TableRow sx={resultStyles.itemRow}>
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
                 >
@@ -225,7 +238,7 @@ export function ResultTable({ result }: ResultTableProps) {
               </TableRow>
             )}
 
-            <TableRow>
+            <TableRow sx={resultStyles.itemRow}>
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
               >
@@ -287,12 +300,15 @@ export function ResultTable({ result }: ResultTableProps) {
               </TableCell>
             </TableRow>
 
-            <TableRow>
+            <TableRow
+              sx={{
+                ...resultStyles.totalRow,
+              }}
+            >
               <TableCell
                 sx={{
                   ...resultStyles.tableCell,
                   ...resultStyles.itemCell,
-                  ...resultStyles.totalCell,
                   ...resultStyles.tableFooterCell,
                 }}
               >
@@ -304,7 +320,6 @@ export function ResultTable({ result }: ResultTableProps) {
                 sx={{
                   ...resultStyles.tableCell,
                   ...resultStyles.amountCell,
-                  ...resultStyles.totalCell,
                   ...resultStyles.tableFooterCell,
                 }}
               >
