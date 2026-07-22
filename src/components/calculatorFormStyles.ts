@@ -80,7 +80,7 @@ export const inputStyle = {
   py: 0,
   height: "48px",
   fontSize: "18px",
-  backgroundColor: "#fff",
+  backgroundColor: "#fff !important",
   color: "#23272E",
   "& .MuiInputBase-root": {
     height: "48px",
