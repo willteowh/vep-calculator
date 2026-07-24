@@ -55,14 +55,15 @@ export function ResultTable({ result }: ResultTableProps) {
     "buses",
   ].includes(result.vehicleCategory);
   const normalERPChargesApply =
-    result.vehicleCategory === "cars" && result.hasIU === "yes";
+    (result.vehicleCategory === "cars" && result.hasIU === "yes") ||
+    (result.vehicleCategory === "motorcycles" &&
+      result.hasIU === "yes" &&
+      departureDt >= CUTOFF_2027);
   const erpRateApplies =
     (result.vehicleCategory === "cars" &&
       result.hasIU === "no" &&
       Number(result.erpDays) > 0) ||
-    (result.vehicleCategory === "motorcycles" &&
-      result.hasIU === "no" &&
-      Number(result.erpDays) > 0);
+    (result.vehicleCategory === "motorcycles" && result.hasIU === "no");
   useEffect(() => {
     setAppliesRRC(result.vehicleCategory !== "motorcycles" && result.rrc > 0);
   }, [result.vehicleCategory, result.rrc]);
