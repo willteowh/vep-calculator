@@ -82,6 +82,11 @@ export const inputStyle = {
   fontSize: "18px",
   backgroundColor: "#fff !important",
   color: "#23272E",
+
+  "& input": {
+    backgroundColor: "#fff !important",
+  },
+
   "& .MuiInputBase-root": {
     height: "48px",
     fontSize: "18px",
