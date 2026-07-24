@@ -57,10 +57,12 @@ export function ResultTable({ result }: ResultTableProps) {
   const normalERPChargesApply =
     result.vehicleCategory === "cars" && result.hasIU === "yes";
   const erpRateApplies =
-    result.vehicleCategory === "cars" &&
-    result.hasIU === "no" &&
-    Number(result.erpDays) > 0;
-
+    (result.vehicleCategory === "cars" &&
+      result.hasIU === "no" &&
+      Number(result.erpDays) > 0) ||
+    (result.vehicleCategory === "motorcycles" &&
+      result.hasIU === "no" &&
+      Number(result.erpDays) > 0);
   useEffect(() => {
     setAppliesRRC(result.vehicleCategory !== "motorcycles" && result.rrc > 0);
   }, [result.vehicleCategory, result.rrc]);
