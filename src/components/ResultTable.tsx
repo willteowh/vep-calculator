@@ -48,6 +48,7 @@ export function ResultTable({ result }: ResultTableProps) {
   );
 
   const straddlesBoundary = entryDt < CUTOFF_2027 && departureDt >= CUTOFF_2027;
+
   const separateERPChargesApply = [
     "vans",
     "heavyGoods",
@@ -59,11 +60,13 @@ export function ResultTable({ result }: ResultTableProps) {
     (result.vehicleCategory === "motorcycles" &&
       result.hasIU === "yes" &&
       departureDt >= CUTOFF_2027);
-  const erpRateApplies =
-    (result.vehicleCategory === "cars" &&
-      result.hasIU === "no" &&
-      Number(result.erpDays) > 0) ||
-    (result.vehicleCategory === "motorcycles" && result.hasIU === "no");
+  const erpFlatRateApplies =
+    (result.vehicleCategory === "cars" && result.hasIU === "no") ||
+    (result.vehicleCategory === "motorcycles" && result.hasIU === "no") ||
+    (result.vehicleCategory === "motorcycles" &&
+      result.hasIU === "yes" &&
+      departureDt < CUTOFF_2027);
+
   useEffect(() => {
     setAppliesRRC(result.vehicleCategory !== "motorcycles" && result.rrc > 0);
   }, [result.vehicleCategory, result.rrc]);
@@ -110,7 +113,7 @@ export function ResultTable({ result }: ResultTableProps) {
 
       {result.vehicleCategory === "cars" &&
         result.hasIU === "no" &&
-        (!result.erpDays || String(result.erpDays).trim() === "") && (
+        (!result.erpDays2026 || String(result.erpDays2026).trim() === "") && (
           <Card sx={resultStyles.infoCard}>
             <CardContent sx={resultStyles.noticeContent}>
               <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
@@ -251,30 +254,28 @@ export function ResultTable({ result }: ResultTableProps) {
                   <Typography component="span" sx={resultStyles.subTextCell}>
                     ERP Charges
                   </Typography>
-                  {result.vehicleCategory === "cars" &&
-                    result.hasIU === "no" && (
-                      <>
-                        {result.erpDaysPre > 0 && (
-                          <Typography
-                            component="span"
-                            sx={resultStyles.subTextCell}
-                          >
-                            {result.erpDaysPre} day(s) × ${result.rPre.erpNoIU}
-                            /day
-                          </Typography>
-                        )}
-                        {result.erpDaysPost > 0 && (
-                          <Typography
-                            component="span"
-                            sx={resultStyles.subTextCell}
-                          >
-                            {result.erpDaysPost} day(s) × $
-                            {result.rPost.erpNoIU}
-                            /day
-                          </Typography>
-                        )}
-                      </>
-                    )}
+                  {erpFlatRateApplies && (
+                    <>
+                      {result.erpDaysPre > 0 && (
+                        <Typography
+                          component="span"
+                          sx={resultStyles.subTextCell}
+                        >
+                          {result.erpDaysPre} day(s) × ${result.rPre.erpNoIU}
+                          /day
+                        </Typography>
+                      )}
+                      {result.erpDaysPost > 0 && (
+                        <Typography
+                          component="span"
+                          sx={resultStyles.subTextCell}
+                        >
+                          {result.erpDaysPost} day(s) × ${result.rPost.erpNoIU}
+                          /day
+                        </Typography>
+                      )}
+                    </>
+                  )}
                 </Box>
               </TableCell>
               <TableCell
@@ -298,7 +299,7 @@ export function ResultTable({ result }: ResultTableProps) {
                     </>
                   )}
 
-                  {erpRateApplies && <>{fmt(result.erpCharge)}</>}
+                  {erpFlatRateApplies && <>{fmt(result.erpCharge)}</>}
                 </Typography>
               </TableCell>
             </TableRow>

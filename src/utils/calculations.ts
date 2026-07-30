@@ -32,7 +32,8 @@ export interface CalculationResult {
   departDatetime: string;
   entryCheckpoint: string;
   departCheckpoint: string;
-  erpDays: string;
+  erpDays2026: string;
+  erpDays2027: string;
   dur: number;
   totalChargeable: number;
   preDays: number;
@@ -153,7 +154,8 @@ interface CalculateParams {
   departureDt: Date;
   entryCheckpoint: string;
   departCheckpoint: string;
-  erpDays: string;
+  erpDays2026: string;
+  erpDays2027: string;
 }
 
 export function calculate(params: CalculateParams): CalculationOutput {
@@ -164,7 +166,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
     departureDt,
     entryCheckpoint,
     departCheckpoint,
-    erpDays,
+    erpDays2026,
+    erpDays2027,
   } = params;
 
   // 1. Stay Duration Check
@@ -209,7 +212,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
 
   // ERP calculation (only for vehicles with VEP rates)
   const noIU = hasIU === "no";
-  const erpNum = parseInt(erpDays, 10) || 0;
+  const erpNum2026 = parseInt(erpDays2026, 10) || 0;
+  const erpNum2027 = parseInt(erpDays2027, 10) || 0;
   const totalCalDays = durationDays(entryDt, departureDt) || 1;
   const preCalDays = Math.min(
     totalCalDays,
@@ -218,8 +222,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
       Math.round((CUTOFF_2027.getTime() - entryDt.getTime()) / 86400000),
     ),
   );
-  const erpDaysPre = Math.round(erpNum * (preCalDays / totalCalDays));
-  const erpDaysPost = erpNum - erpDaysPre;
+  const erpDaysPre = erpNum2026;
+  const erpDaysPost = erpNum2027;
 
   let erpCharge = 0;
   let erpNote = "";
@@ -275,7 +279,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
     departDatetime: toLocalISO(departureDt),
     entryCheckpoint,
     departCheckpoint,
-    erpDays,
+    erpDays2026,
+    erpDays2027,
     dur,
     totalChargeable,
     preDays,

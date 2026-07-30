@@ -22,8 +22,8 @@ export const resultStyles = {
     borderCollapse: "separate",
     borderSpacing: 0,
     // START: extra style to overwrite 1M Adobe AEM global style
-    mx: "y !important",
-    border: "none !important",
+    my: "0px !important",
+    border: "0px !important",
     "& th, & td": {
       borderRight: "none !important",
     },

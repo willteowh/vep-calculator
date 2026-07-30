@@ -1,4 +1,5 @@
 import { UI_LABELS } from "@/config/messages";
+import { CUTOFF_2027 } from "@/config/constants";
 import { FormState, FormErrors } from "@/hooks/useCalculatorForm";
 import {
   Alert,
@@ -81,6 +82,14 @@ export function CalculatorForm({
 
   const IUApplicable =
     form.vehicleCategory == "cars" || form.vehicleCategory == "motorcycles";
+
+  const showErp2026 =
+    form.entryDatetime >= "2026-01-01T00:00" &&
+    form.entryDatetime < "2027-01-01T00:00";
+
+  const showErp2027 = form.departDatetime >= "2027-01-01T00:00";
+
+  const straddleYear = showErp2026 && showErp2027;
 
   const handleEntryChange = (value: Dayjs | null) => {
     if (value) {
@@ -331,31 +340,69 @@ export function CalculatorForm({
           </Grid>
 
           {IUApplicable && (
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                No. of days using ERP-priced roads
-                <Typography component="span" sx={asteriskStyle}>
-                  *
-                </Typography>
-              </Typography>
-              <TextField
-                fullWidth
-                disabled={
-                  form.vehicleCategory !== "cars" &&
-                  form.vehicleCategory !== "motorcycles"
-                }
-                type="number"
-                value={form.erpDays}
-                onChange={(e) => onFieldChange("erpDays", e.target.value)}
-                helperText="Only include travel during ERP operating hours"
-                sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
-                slotProps={{
-                  formHelperText: {
-                    sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
-                  },
-                }}
-              />
-            </Grid>
+            <>
+              {showErp2026 && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Typography component="label" sx={labelStyle}>
+                    No. of days using ERP-priced roads{" "}
+                    {straddleYear && "in year 2026"}
+                    <Typography component="span" sx={asteriskStyle}>
+                      *
+                    </Typography>
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    disabled={
+                      form.vehicleCategory !== "cars" &&
+                      form.vehicleCategory !== "motorcycles"
+                    }
+                    type="number"
+                    value={form.erpDays2026}
+                    onChange={(e) =>
+                      onFieldChange("erpDays2026", e.target.value)
+                    }
+                    helperText="Only include travel during ERP operating hours"
+                    sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
+                    slotProps={{
+                      formHelperText: {
+                        sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
+                      },
+                    }}
+                  />
+                </Grid>
+              )}
+
+              {showErp2027 && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Typography component="label" sx={labelStyle}>
+                    No. of days using ERP-priced roads{" "}
+                    {straddleYear && "in year 2027"}
+                    <Typography component="span" sx={asteriskStyle}>
+                      *
+                    </Typography>
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    disabled={
+                      form.vehicleCategory !== "cars" &&
+                      form.vehicleCategory !== "motorcycles"
+                    }
+                    type="number"
+                    value={form.erpDays2027}
+                    onChange={(e) =>
+                      onFieldChange("erpDays2027", e.target.value)
+                    }
+                    helperText="Only include travel during ERP operating hours"
+                    sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
+                    slotProps={{
+                      formHelperText: {
+                        sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
+                      },
+                    }}
+                  />
+                </Grid>
+              )}
+            </>
           )}
           <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
             <Box

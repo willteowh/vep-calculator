@@ -5,7 +5,8 @@ export interface TestCase {
   params: {
     vehicleCategory: string;
     hasIU: string;
-    erpDays: string;
+    erpDays2026: string;
+    erpDays2027: string;
     entryDt: Date;
     departureDt: Date;
     entryCheckpoint: string;
@@ -23,7 +24,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
-      erpDays: "2",
+      erpDays2026: "2",
+      erpDays2027: "",
       entryDt: new Date("2026-03-07T22:16"),
       departureDt: new Date("2026-04-30T22:15"),
       entryCheckpoint: "woodlands",
@@ -39,7 +41,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
-      erpDays: "0",
+      erpDays2026: "0",
+      erpDays2027: "",
       entryDt: new Date("2026-04-10T17:00"),
       departureDt: new Date("2026-04-11T01:30"),
       entryCheckpoint: "woodlands",
@@ -55,7 +58,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
-      erpDays: "0",
+      erpDays2026: "0",
+      erpDays2027: "0",
       entryDt: new Date("2027-01-05T17:00"),
       departureDt: new Date("2027-01-06T01:30"),
       entryCheckpoint: "woodlands",
@@ -71,7 +75,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
-      erpDays: "0",
+      erpDays2026: "0",
+      erpDays2027: "0",
       entryDt: new Date("2027-01-02T10:00"),
       departureDt: new Date("2027-01-03T20:00"),
       entryCheckpoint: "tuas",
@@ -87,7 +92,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "no",
-      erpDays: "4",
+      erpDays2026: "2",
+      erpDays2027: "2",
       entryDt: new Date("2026-12-28T09:00"),
       departureDt: new Date("2027-01-05T18:00"),
       entryCheckpoint: "woodlands",
@@ -103,7 +109,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "motorcycles",
       hasIU: "no",
-      erpDays: "3",
+      erpDays2026: "0",
+      erpDays2027: "3",
       entryDt: new Date("2027-01-04T08:00"),
       departureDt: new Date("2027-01-06T18:00"),
       entryCheckpoint: "woodlands",
@@ -119,7 +126,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
-      erpDays: "0",
+      erpDays2026: "0",
+      erpDays2027: "0",
       entryDt: new Date("2026-06-15T12:00"),
       departureDt: new Date("2026-06-16T01:00"),
       entryCheckpoint: "woodlands",
@@ -135,7 +143,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
-      erpDays: "0",
+      erpDays2026: "0",
+      erpDays2027: "0",
       entryDt: new Date("2027-06-14T12:00"),
       departureDt: new Date("2027-06-15T01:00"),
       entryCheckpoint: "woodlands",
@@ -151,7 +160,8 @@ export const TEST_CASES: TestCase[] = [
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
-      erpDays: "0",
+      erpDays2026: "0",
+      erpDays2027: "0",
       entryDt: new Date("2026-04-30T21:20"),
       departureDt: new Date("2026-05-09T01:20"),
       entryCheckpoint: "woodlands",

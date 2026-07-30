@@ -8,7 +8,8 @@ export interface FormState {
   departDatetime: string;
   entryCheckpoint: string;
   departCheckpoint: string;
-  erpDays: string;
+  erpDays2026: string;
+  erpDays2027: string;
 }
 
 export interface FormErrors {
@@ -28,7 +29,8 @@ const INITIAL_FORM_STATE: FormState = {
   departDatetime: "",
   entryCheckpoint: "",
   departCheckpoint: "",
-  erpDays: "",
+  erpDays2026: "",
+  erpDays2027: "",
 };
 
 export function useCalculatorForm() {

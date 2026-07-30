@@ -128,6 +128,14 @@ export default function VEPCalculator() {
       const entryDt = new Date(form.entryDatetime);
       const departureDt = new Date(form.departDatetime);
 
+      // sanitise ERP day rate across year
+      const showErp2026 =
+        form.entryDatetime >= "2026-01-01T00:00" &&
+        form.entryDatetime < "2027-01-01T00:00";
+      const showErp2027 = form.departDatetime >= "2027-01-01T00:00";
+      if (!showErp2026) form.erpDays2026 = "";
+      if (!showErp2027) form.erpDays202 = "";
+
       if (departureDt < entryDt) {
         setErrors({ _g: "Departure must be after entry date/time." });
         setCalculateLoading(false);
@@ -163,7 +171,8 @@ export default function VEPCalculator() {
       departDatetime: formatDateTimeLocal(departDate),
       entryCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
       departCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
-      erpDays: Math.floor(Math.random() * stayDays).toString(),
+      erpDays2026: Math.floor(Math.random() * stayDays).toString(),
+      erpDays2027: Math.floor(Math.random() * stayDays).toString(),
     };
 
     Object.entries(randomForm).forEach(([k, v]) => {
