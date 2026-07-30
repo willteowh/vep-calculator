@@ -83,12 +83,12 @@ export function CalculatorForm({
   const IUApplicable =
     form.vehicleCategory == "cars" || form.vehicleCategory == "motorcycles";
 
+  const ERPFlatRateApplicable = IUApplicable && form.hasIU === "no";
+
   const showErp2026 =
     form.entryDatetime >= "2026-01-01T00:00" &&
     form.entryDatetime < "2027-01-01T00:00";
-
   const showErp2027 = form.departDatetime >= "2027-01-01T00:00";
-
   const straddleYear = showErp2026 && showErp2027;
 
   const handleEntryChange = (value: Dayjs | null) => {
@@ -339,7 +339,7 @@ export function CalculatorForm({
             </FormControl>
           </Grid>
 
-          {IUApplicable && (
+          {ERPFlatRateApplicable && (
             <>
               {showErp2026 && (
                 <Grid size={{ xs: 12, sm: 6 }}>
