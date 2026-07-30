@@ -173,6 +173,7 @@ export const selectPlaceholderStyle = {
   "& .MuiSelect-select em": {
     color: "#8991A1",
     fontStyle: "normal",
+    opacity: 1,
   },
 } as const;
 
