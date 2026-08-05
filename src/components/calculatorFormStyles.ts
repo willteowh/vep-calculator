@@ -105,6 +105,8 @@ export const inputStyle = {
     },
   "& .MuiPickersInputBase-sectionsContainer": {
     color: "#8991A1",
+    opacity: 1,
+    fontStyle: "normal",
   },
   "& .MuiOutlinedInput-notchedOutline": {
     borderColor: "#C4C8D0",
@@ -171,14 +173,6 @@ export const selectPlaceholderStyle = {
     color: "#8991A1",
   },
   "& .MuiSelect-select em": {
-    color: "#8991A1",
-    fontStyle: "normal",
-    opacity: 1,
-  },
-} as const;
-
-export const textFieldPlaceholderStyle = {
-  "& input::placeholder": {
     color: "#8991A1",
     fontStyle: "normal",
     opacity: 1,

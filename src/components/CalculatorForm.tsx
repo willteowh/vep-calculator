@@ -33,7 +33,6 @@ import {
   inputStyle,
   datepickerStyle,
   selectPlaceholderStyle,
-  textFieldPlaceholderStyle,
 } from "./calculatorFormStyles";
 
 dayjs.extend(utc);
@@ -226,7 +225,6 @@ export function CalculatorForm({
                   sx: {
                     width: "100%",
                     ...inputStyle,
-                    ...textFieldPlaceholderStyle,
                     ...(form.entryDatetime && {
                       "& .MuiPickersInputBase-sectionsContainer": {
                         color: "#23272E",
@@ -269,7 +267,6 @@ export function CalculatorForm({
                   sx: {
                     width: "100%",
                     ...inputStyle,
-                    ...textFieldPlaceholderStyle,
                     ...(form.departDatetime && {
                       "& .MuiPickersInputBase-sectionsContainer": {
                         color: "#23272E",
@@ -360,7 +357,7 @@ export function CalculatorForm({
                       errors.erpDays2026 ||
                       "Only include travel during ERP operating hours"
                     }
-                    sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
+                    sx={{ ...inputStyle }}
                     slotProps={{
                       formHelperText: {
                         sx: {
@@ -395,7 +392,7 @@ export function CalculatorForm({
                       errors.erpDays2027 ||
                       "Only include travel during ERP operating hours"
                     }
-                    sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
+                    sx={{ ...inputStyle }}
                     slotProps={{
                       formHelperText: {
                         sx: {
