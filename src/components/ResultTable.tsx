@@ -49,20 +49,14 @@ export function ResultTable({ result }: ResultTableProps) {
 
   const straddlesBoundary = entryDt < CUTOFF_2027 && departureDt >= CUTOFF_2027;
 
-  const separateERPChargesApply = [
-    "vans",
-    "heavyGoods",
-    "taxis",
-    "buses",
-  ].includes(result.vehicleCategory);
+  const separateERPChargesApply = [].includes(result.vehicleCategory);
   const normalERPChargesApply =
     (result.vehicleCategory === "cars" && result.hasIU === "yes") ||
     (result.vehicleCategory === "motorcycles" &&
       result.hasIU === "yes" &&
       departureDt >= CUTOFF_2027);
   const erpFlatRateApplies =
-    (result.vehicleCategory === "cars" && result.hasIU === "no") ||
-    (result.vehicleCategory === "motorcycles" && result.hasIU === "no") ||
+    result.hasIU === "no" ||
     (result.vehicleCategory === "motorcycles" &&
       result.hasIU === "yes" &&
       departureDt < CUTOFF_2027);
@@ -113,7 +107,8 @@ export function ResultTable({ result }: ResultTableProps) {
 
       {result.vehicleCategory === "cars" &&
         result.hasIU === "no" &&
-        (!result.erpDays2026 || String(result.erpDays2026).trim() === "") && (
+        (!result.erpDays2026 || String(result.erpDays2026).trim() === "") &&
+        (!result.erpDays2027 || String(result.erpDays2027).trim() === "") && (
           <Card sx={resultStyles.infoCard}>
             <CardContent sx={resultStyles.noticeContent}>
               <InfoOutlinedIcon sx={resultStyles.InfoIcon} />

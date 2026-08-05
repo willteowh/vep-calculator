@@ -19,6 +19,8 @@ export interface FormErrors {
   departDatetime?: string;
   entryCheckpoint?: string;
   departCheckpoint?: string;
+  erpDays2026?: string;
+  erpDays2027?: string;
   _g?: string;
 }
 
@@ -49,6 +51,33 @@ export function useCalculatorForm() {
     if (!form.departDatetime) e.departDatetime = "Required";
     if (!form.entryCheckpoint) e.entryCheckpoint = "Required";
     if (!form.departCheckpoint) e.departCheckpoint = "Required";
+
+    if (form.entryDatetime && form.departDatetime && form.hasIU === "no") {
+      const entryDt = new Date(form.entryDatetime);
+      const departDt = new Date(form.departDatetime);
+
+      if (
+        !Number.isNaN(entryDt.getTime()) &&
+        !Number.isNaN(departDt.getTime()) &&
+        departDt >= entryDt
+      ) {
+        const totalSelectedDays = Math.ceil(
+          (departDt.getTime() - entryDt.getTime() + 1) / 86400000,
+        );
+        console.log("totalSelectedDays", totalSelectedDays);
+        const erpDays2026 = parseInt(form.erpDays2026, 10) || 0;
+        const erpDays2027 = parseInt(form.erpDays2027, 10) || 0;
+        const totalErpDays = erpDays2026 + erpDays2027;
+
+        if (totalErpDays > totalSelectedDays) {
+          const msg =
+            "Total ERP operational days must be less or equal than total days stayed in Singapore.";
+          e.erpDays2026 = msg;
+          e.erpDays2027 = msg;
+        }
+      }
+    }
+
     return e;
   };
 

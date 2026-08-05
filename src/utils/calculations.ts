@@ -181,6 +181,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
   const isCar = vehicleCategory === VEHICLE_TYPES.CARS;
   const isMoto = vehicleCategory === VEHICLE_TYPES.MOTORCYCLES;
   const hasVEPRate = isCar || isMoto;
+  const hasERPFlatRate = true;
 
   const entryCP = (entryCheckpoint || "").toLowerCase();
   const deptCP = (departCheckpoint || "").toLowerCase();
@@ -197,12 +198,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
   );
   const totalChargeable = preDays + postDays;
 
-  const rPre = hasVEPRate
-    ? RATES_PRE[vehicleCategory as keyof typeof RATES_PRE]
-    : null;
-  const rPost = hasVEPRate
-    ? RATES_POST[vehicleCategory as keyof typeof RATES_POST]
-    : null;
+  const rPre = RATES_PRE[vehicleCategory as keyof typeof RATES_PRE];
+  const rPost = RATES_POST[vehicleCategory as keyof typeof RATES_POST];
 
   const vepFeePre = hasVEPRate ? preDays * rPre!.vepPerDay : 0;
   const vepFeePost = hasVEPRate ? postDays * rPost!.vepPerDay : 0;
@@ -214,20 +211,12 @@ export function calculate(params: CalculateParams): CalculationOutput {
   const noIU = hasIU === "no";
   const erpNum2026 = parseInt(erpDays2026, 10) || 0;
   const erpNum2027 = parseInt(erpDays2027, 10) || 0;
-  const totalCalDays = durationDays(entryDt, departureDt) || 1;
-  const preCalDays = Math.min(
-    totalCalDays,
-    Math.max(
-      0,
-      Math.round((CUTOFF_2027.getTime() - entryDt.getTime()) / 86400000),
-    ),
-  );
   const erpDaysPre = erpNum2026;
   const erpDaysPost = erpNum2027;
 
   let erpCharge = 0;
   let erpNote = "";
-  if (hasVEPRate && noIU) {
+  if (hasERPFlatRate && noIU) {
     const chargePre = erpDaysPre * rPre!.erpNoIU;
     const chargePost = erpDaysPost * rPost!.erpNoIU;
     erpCharge = chargePre + chargePost;

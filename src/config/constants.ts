@@ -28,15 +28,16 @@ export const SG_PUBLIC_HOLIDAYS = new Set([
   "2026-12-25",
   // 2027 (approximate – confirmed where known)
   "2027-01-01",
-  "2027-01-27",
-  "2027-01-28",
-  "2027-03-20",
+  "2027-02-06",
+  "2027-02-07",
+  "2027-02-08",
+  "2027-03-10",
   "2027-03-26",
   "2027-05-01",
+  "2027-05-17",
   "2027-05-20",
-  "2027-05-16",
   "2027-08-09",
-  "2027-10-09",
+  "2027-10-28",
   "2027-12-25",
 ]);
 
@@ -83,12 +84,20 @@ export const CALCULATOR_MAX_EXIT_DATE = "2027-12-31T23:59:59";
 export const RATES_PRE = {
   cars: { vepPerDay: 35, erpNoIU: 5 },
   motorcycles: { vepPerDay: 4, erpNoIU: 0 },
+  vans: { erpNoIU: 0 },
+  heavyGoods: { erpNoIU: 0 },
+  taxis: { erpNoIU: 0 },
+  buses: { erpNoIU: 0 },
 } as const;
 
 // POST-2027 rates (from 1 Jan 2027)
 export const RATES_POST = {
   cars: { vepPerDay: 50, erpNoIU: 10 },
   motorcycles: { vepPerDay: 7, erpNoIU: 3 },
+  vans: { erpNoIU: 10 },
+  heavyGoods: { erpNoIU: 10 },
+  taxis: { erpNoIU: 10 },
+  buses: { erpNoIU: 10 },
 } as const;
 
 // Toll charges — unchanged across periods

@@ -81,8 +81,12 @@ export function CalculatorForm({
   const maxExitDayjs = maxExitDate;
 
   const IUApplicable =
-    form.vehicleCategory == "cars" || form.vehicleCategory == "motorcycles";
-
+    form.vehicleCategory == "cars" ||
+    form.vehicleCategory == "motorcycles" ||
+    form.vehicleCategory == "vans" ||
+    form.vehicleCategory == "heavyGoods" ||
+    form.vehicleCategory == "taxis" ||
+    form.vehicleCategory == "buses";
   const ERPFlatRateApplicable = IUApplicable && form.hasIU === "no";
 
   const showErp2026 =
@@ -129,7 +133,7 @@ export function CalculatorForm({
     <>
       <Box>
         <Grid container spacing={2.5}>
-          <Grid container size={{ sm: 12 }}>
+          <Grid container size={{ xs: 12 }}>
             <Grid size={{ xs: 12, sm: 6 }}>
               <Typography component="label" sx={labelStyle}>
                 {UI_LABELS.VEHICLE_CATEGORY}
@@ -176,10 +180,6 @@ export function CalculatorForm({
                 <FormControl fullWidth error={!!errors.hasIU}>
                   <Select
                     displayEmpty
-                    disabled={
-                      form.vehicleCategory !== "cars" &&
-                      form.vehicleCategory !== "motorcycles"
-                    }
                     value={form.hasIU}
                     onChange={(e) => onFieldChange("hasIU", e.target.value)}
                     sx={{ ...inputStyle, ...selectPlaceholderStyle }}
@@ -217,13 +217,14 @@ export function CalculatorForm({
               maxDateTime={maxExitDayjs}
               ampm={false}
               reduceAnimations
-              disableOpenPicker
               localeText={dateTimePlaceholderLocaleText}
               slotProps={{
+                openPickerButton: {
+                  disableRipple: true,
+                  disableTouchRipple: true,
+                },
                 textField: {
                   fullWidth: true,
-                  size: "small",
-                  onClick: openEntryDateTimePicker,
                   error: !!errors.entryDatetime,
                   helperText: errors.entryDatetime || "",
                   sx: {
@@ -258,14 +259,15 @@ export function CalculatorForm({
               maxDateTime={maxExitDayjs}
               ampm={false}
               reduceAnimations
-              disableOpenPicker
               sx={datepickerStyle}
               localeText={dateTimePlaceholderLocaleText}
               slotProps={{
+                openPickerButton: {
+                  disableRipple: true,
+                  disableTouchRipple: true,
+                },
                 textField: {
                   fullWidth: true,
-                  size: "small",
-                  onClick: openDepartDateTimePicker,
                   error: !!errors.departDatetime,
                   helperText: errors.departDatetime || "",
                   sx: {
@@ -352,20 +354,24 @@ export function CalculatorForm({
                   </Typography>
                   <TextField
                     fullWidth
-                    disabled={
-                      form.vehicleCategory !== "cars" &&
-                      form.vehicleCategory !== "motorcycles"
-                    }
                     type="number"
                     value={form.erpDays2026}
                     onChange={(e) =>
                       onFieldChange("erpDays2026", e.target.value)
                     }
-                    helperText="Only include travel during ERP operating hours"
+                    error={!!errors.erpDays2026}
+                    helperText={
+                      errors.erpDays2026 ||
+                      "Only include travel during ERP operating hours"
+                    }
                     sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
                     slotProps={{
                       formHelperText: {
-                        sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
+                        sx: {
+                          fontSize: "16px",
+                          ml: 0,
+                          color: errors.erpDays2026 ? "error.main" : "#6B768A",
+                        },
                       },
                     }}
                   />
@@ -383,20 +389,24 @@ export function CalculatorForm({
                   </Typography>
                   <TextField
                     fullWidth
-                    disabled={
-                      form.vehicleCategory !== "cars" &&
-                      form.vehicleCategory !== "motorcycles"
-                    }
                     type="number"
                     value={form.erpDays2027}
                     onChange={(e) =>
                       onFieldChange("erpDays2027", e.target.value)
                     }
-                    helperText="Only include travel during ERP operating hours"
+                    error={!!errors.erpDays2027}
+                    helperText={
+                      errors.erpDays2027 ||
+                      "Only include travel during ERP operating hours"
+                    }
                     sx={{ ...inputStyle, ...textFieldPlaceholderStyle }}
                     slotProps={{
                       formHelperText: {
-                        sx: { fontSize: "16px", ml: 0, color: "#6B768A" },
+                        sx: {
+                          fontSize: "16px",
+                          ml: 0,
+                          color: errors.erpDays2027 ? "error.main" : "#6B768A",
+                        },
                       },
                     }}
                   />
@@ -404,13 +414,14 @@ export function CalculatorForm({
               )}
             </>
           )}
-          <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+          <Grid size={{ xs: 12 }}>
             <Box
               sx={{
                 position: "relative",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
+                pt: 2,
               }}
             >
               {/* Centered Clear + Calculate */}
