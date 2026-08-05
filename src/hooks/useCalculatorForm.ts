@@ -56,6 +56,9 @@ export function useCalculatorForm() {
       const entryDt = new Date(form.entryDatetime);
       const departDt = new Date(form.departDatetime);
 
+      entryDt.setHours(0, 0, 0, 0);
+      departDt.setHours(0, 0, 0, 0);
+
       if (
         !Number.isNaN(entryDt.getTime()) &&
         !Number.isNaN(departDt.getTime()) &&
@@ -64,7 +67,7 @@ export function useCalculatorForm() {
         const totalSelectedDays = Math.ceil(
           (departDt.getTime() - entryDt.getTime() + 1) / 86400000,
         );
-        console.log("totalSelectedDays", totalSelectedDays);
+
         const erpDays2026 = parseInt(form.erpDays2026, 10) || 0;
         const erpDays2027 = parseInt(form.erpDays2027, 10) || 0;
         const totalErpDays = erpDays2026 + erpDays2027;

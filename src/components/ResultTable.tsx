@@ -1,4 +1,4 @@
-import { fmt } from "@/utils/formatters";
+import { fmt, fmtDt, fmtDuration } from "@/utils/formatters";
 import { CalculationResult } from "@/utils/calculations";
 import { CUTOFF_2027 } from "@/config/constants";
 import {
@@ -34,6 +34,16 @@ export function ResultTable({ result }: ResultTableProps) {
   const entryDate = getCalendarDate(entryDt);
   const deptDate = getCalendarDate(departureDt);
   const totalDays = getDateDifferenceDays(entryDate, deptDate) + 1;
+  const vehicleTypeLabels: Record<string, string> = {
+    cars: "Car",
+    motorcycles: "Motorcycle",
+    vans: "Van / Light Goods Vehicle",
+    heavyGoods: "Heavy Goods Vehicle",
+    taxis: "Taxi",
+    buses: "Bus",
+  };
+  const vehicleTypeLabel =
+    vehicleTypeLabels[result.vehicleCategory] || result.vehicleCategory;
   let hasPublicHoliday = false;
   for (let i = 0; i < totalDays; i++) {
     const d = new Date(entryDate);
@@ -49,9 +59,14 @@ export function ResultTable({ result }: ResultTableProps) {
 
   const straddlesBoundary = entryDt < CUTOFF_2027 && departureDt >= CUTOFF_2027;
 
-  const separateERPChargesApply = [].includes(result.vehicleCategory);
+  const separateERPChargesApply = false;
+  // departureDt < CUTOFF_2027 &&
+  // ["taxis", "vans", "heavyGoods", "buses"].includes(result.vehicleCategory);
   const normalERPChargesApply =
-    (result.vehicleCategory === "cars" && result.hasIU === "yes") ||
+    (["cars", "taxis", "vans", "heavyGoods", "buses"].includes(
+      result.vehicleCategory,
+    ) &&
+      result.hasIU === "yes") ||
     (result.vehicleCategory === "motorcycles" &&
       result.hasIU === "yes" &&
       departureDt >= CUTOFF_2027);
@@ -131,6 +146,75 @@ export function ResultTable({ result }: ResultTableProps) {
         Result: For Foreign-registered vehicles only
       </Typography>
 
+      {/* Form key info display */}
+      <TableContainer sx={resultStyles.tableContainer}>
+        <Table sx={resultStyles.tableStyle}>
+          <TableHead>
+            <TableRow sx={resultStyles.tableHead}>
+              <TableCell sx={resultStyles.tableHeaderCell}>
+                Information
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableHeaderCell, textAlign: "right" }}
+              ></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <TableRow sx={resultStyles.itemRow}>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+              >
+                Vehicle Type
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+              >
+                {vehicleTypeLabel}
+              </TableCell>
+            </TableRow>
+            <TableRow sx={resultStyles.itemRow}>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+              >
+                Entry
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+              >
+                {fmtDt(entryDt, result.entryCheckpoint)}
+              </TableCell>
+            </TableRow>
+            <TableRow sx={resultStyles.itemRow}>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+              >
+                Departure
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+              >
+                {fmtDt(departureDt, result.departCheckpoint)}
+              </TableCell>
+            </TableRow>
+            <TableRow sx={resultStyles.itemRow}>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+              >
+                Duration of Stay
+              </TableCell>
+              <TableCell
+                sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+              >
+                {fmtDuration(totalDays)}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <Typography variant="h6" sx={{ fontWeight: 700, mt: 2 }}>
+        Charges:
+      </Typography>
       <TableContainer sx={resultStyles.tableContainer}>
         <Table sx={resultStyles.tableStyle}>
           <TableHead>
@@ -169,7 +253,7 @@ export function ResultTable({ result }: ResultTableProps) {
                   </Typography>
                   {result.vepFees !== 0 && (
                     <>
-                      {result.preDays > 0 && (
+                      {result.preDays > 0 && "vepPerDay" in result.rPre && (
                         <Typography
                           component="span"
                           sx={resultStyles.subTextCell}
@@ -177,7 +261,7 @@ export function ResultTable({ result }: ResultTableProps) {
                           {result.preDays} day(s) × ${result.rPre.vepPerDay}/day
                         </Typography>
                       )}
-                      {result.postDays > 0 && (
+                      {result.postDays > 0 && "vepPerDay" in result.rPost && (
                         <Typography
                           component="span"
                           sx={resultStyles.subTextCell}
@@ -209,8 +293,9 @@ export function ResultTable({ result }: ResultTableProps) {
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>Total</Typography>
-                (excluding {appliesRRC ? "Reciprocal Road Charge and " : ""}
-                ERP charges)
+                (excluding other charges)
+                {/* (excluding {appliesRRC ? "Reciprocal Road Charge and " : ""}
+                ERP charges) */}
               </TableCell>
               <TableCell
                 sx={{
@@ -235,6 +320,21 @@ export function ResultTable({ result }: ResultTableProps) {
                   sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
                 >
                   {result.rrc > 0 ? `${fmt(result.rrc)}` : "—"}
+                </TableCell>
+              </TableRow>
+            )}
+
+            {result.psvpFee > 0 && (
+              <TableRow sx={resultStyles.itemRow}>
+                <TableCell
+                  sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
+                >
+                  PSVP Fee (per entry)
+                </TableCell>
+                <TableCell
+                  sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
+                >
+                  {fmt(result.psvpFee)}
                 </TableCell>
               </TableRow>
             )}
@@ -312,8 +412,8 @@ export function ResultTable({ result }: ResultTableProps) {
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>Total</Typography>
-                (including {appliesRRC ? "Reciprocal Road Charge and " : ""}
-                ERP charges)
+                {/* (including {appliesRRC ? "Reciprocal Road Charge and " : ""}
+                ERP charges) */}
               </TableCell>
               <TableCell
                 sx={{

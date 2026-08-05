@@ -142,6 +142,9 @@ export default function VEPCalculator() {
         return;
       }
 
+      // if Taxi, hasIU is always yes
+      if (form.vehicleCategory === "taxis") form.hasIU = "yes";
+
       const res = calculate({
         ...form,
         entryDt,

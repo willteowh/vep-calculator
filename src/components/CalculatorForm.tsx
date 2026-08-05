@@ -1,17 +1,14 @@
 import { UI_LABELS } from "@/config/messages";
-import { CUTOFF_2027 } from "@/config/constants";
 import { FormState, FormErrors } from "@/hooks/useCalculatorForm";
 import {
   Alert,
   Box,
   Button,
-  CircularProgress,
   Card,
   CardContent,
   FormControl,
   FormHelperText,
   Grid,
-  Link,
   MenuItem,
   Select,
   Stack,
@@ -85,7 +82,6 @@ export function CalculatorForm({
     form.vehicleCategory == "motorcycles" ||
     form.vehicleCategory == "vans" ||
     form.vehicleCategory == "heavyGoods" ||
-    form.vehicleCategory == "taxis" ||
     form.vehicleCategory == "buses";
   const ERPFlatRateApplicable = IUApplicable && form.hasIU === "no";
 
@@ -210,7 +206,7 @@ export function CalculatorForm({
               value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
               onChange={handleEntryChange}
               open={entryPickerOpen}
-              onOpen={() => setEntryPickerOpen(true)}
+              onOpen={openEntryDateTimePicker}
               onClose={() => setEntryPickerOpen(false)}
               format="DD/MM/YYYY HH:mm"
               minDateTime={minEntryDayjs}
@@ -252,7 +248,7 @@ export function CalculatorForm({
               value={form.departDatetime ? dayjs(form.departDatetime) : null}
               onChange={handleDepartChange}
               open={departPickerOpen}
-              onOpen={() => setDepartPickerOpen(true)}
+              onOpen={openDepartDateTimePicker}
               onClose={() => setDepartPickerOpen(false)}
               format="DD/MM/YYYY HH:mm"
               minDateTime={minEntryDayjs}

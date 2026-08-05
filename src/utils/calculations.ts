@@ -7,6 +7,7 @@ import {
   SCHOOL_HOLIDAY_ENTRY_HOUR,
   TOLLS,
   RRC,
+  PSVP_TAXI_POST_2027_ENTRY_FEE,
   MAX_STAY_DAYS,
   VEHICLE_TYPES,
 } from "@/config/constants";
@@ -45,6 +46,7 @@ export interface CalculationResult {
   exitToll: number;
   tollTotal: number;
   rrc: number;
+  psvpFee: number;
   erpCharge: number;
   erpNote: string;
   erpDaysPre: number;
@@ -200,12 +202,18 @@ export function calculate(params: CalculateParams): CalculationOutput {
 
   const rPre = RATES_PRE[vehicleCategory as keyof typeof RATES_PRE];
   const rPost = RATES_POST[vehicleCategory as keyof typeof RATES_POST];
+  const vepPerDayPre = rPre && "vepPerDay" in rPre ? rPre.vepPerDay : 0;
+  const vepPerDayPost = rPost && "vepPerDay" in rPost ? rPost.vepPerDay : 0;
 
-  const vepFeePre = hasVEPRate ? preDays * rPre!.vepPerDay : 0;
-  const vepFeePost = hasVEPRate ? postDays * rPost!.vepPerDay : 0;
+  const vepFeePre = hasVEPRate ? preDays * vepPerDayPre : 0;
+  const vepFeePost = hasVEPRate ? postDays * vepPerDayPost : 0;
   const vepFees = vepFeePre + vepFeePost;
 
   const rrcCharge = RRC[vehicleCategory as keyof typeof RRC];
+  const psvpFee =
+    vehicleCategory === VEHICLE_TYPES.TAXIS && entryDt >= CUTOFF_2027
+      ? PSVP_TAXI_POST_2027_ENTRY_FEE
+      : 0;
 
   // ERP calculation (only for vehicles with VEP rates)
   const noIU = hasIU === "no";
@@ -233,7 +241,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
   }
 
   const subtotal = tollTotal + vepFees;
-  const grandTotal = subtotal + rrcCharge + erpCharge;
+  const grandTotal = subtotal + rrcCharge + psvpFee + erpCharge;
   const dur = durationDays(entryDt, departureDt);
 
   const getVehicleTypeName = () => {
@@ -281,6 +289,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
     exitToll,
     tollTotal,
     rrc: rrcCharge,
+    psvpFee,
     erpCharge,
     erpNote,
     erpDaysPre,

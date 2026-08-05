@@ -1,17 +1,5 @@
 // Singapore Public Holidays (2025–2027)
 export const SG_PUBLIC_HOLIDAYS = new Set([
-  // 2025
-  "2025-01-01",
-  "2025-01-29",
-  "2025-01-30",
-  "2025-03-31",
-  "2025-04-18",
-  "2025-05-01",
-  "2025-05-12",
-  "2025-06-07",
-  "2025-08-09",
-  "2025-10-20",
-  "2025-12-25",
   // 2026
   "2026-01-01",
   "2026-02-17",
@@ -43,10 +31,10 @@ export const SG_PUBLIC_HOLIDAYS = new Set([
 
 // June & December school holidays (approximate annual ranges)
 export const SCHOOL_HOLIDAYS = [
-  { start: new Date("2025-05-31"), end: new Date("2025-06-29") },
-  { start: new Date("2025-11-22"), end: new Date("2025-12-31") },
+  // 2026
   { start: new Date("2026-05-30"), end: new Date("2026-06-28") },
   { start: new Date("2026-11-21"), end: new Date("2026-12-31") },
+  // 2027
   { start: new Date("2027-05-29"), end: new Date("2027-06-27") },
   { start: new Date("2027-11-20"), end: new Date("2027-12-31") },
 ];
@@ -84,9 +72,9 @@ export const CALCULATOR_MAX_EXIT_DATE = "2027-12-31T23:59:59";
 export const RATES_PRE = {
   cars: { vepPerDay: 35, erpNoIU: 5 },
   motorcycles: { vepPerDay: 4, erpNoIU: 0 },
+  taxis: { erpNoIU: 0 },
   vans: { erpNoIU: 0 },
   heavyGoods: { erpNoIU: 0 },
-  taxis: { erpNoIU: 0 },
   buses: { erpNoIU: 0 },
 } as const;
 
@@ -94,9 +82,9 @@ export const RATES_PRE = {
 export const RATES_POST = {
   cars: { vepPerDay: 50, erpNoIU: 10 },
   motorcycles: { vepPerDay: 7, erpNoIU: 3 },
+  taxis: { erpNoIU: 0 },
   vans: { erpNoIU: 10 },
   heavyGoods: { erpNoIU: 10 },
-  taxis: { erpNoIU: 10 },
   buses: { erpNoIU: 10 },
 } as const;
 
@@ -139,3 +127,6 @@ export const RRC = {
   taxis: 0,
   buses: 0,
 } as const;
+
+// PSVP fee for taxis (per entry) from 1 Jan 2027
+export const PSVP_TAXI_POST_2027_ENTRY_FEE = 15;
