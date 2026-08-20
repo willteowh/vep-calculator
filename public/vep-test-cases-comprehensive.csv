@@ -1,0 +1,29 @@
+id,label,desc,vehicleCategory,hasIU,erpDays2026,erpDays2027,entryDt,departureDt,entryCheckpoint,departCheckpoint,expectedTotal,note
+1,Car Pre-2027 55-day stay Woodlands both ways with IU,Entry 07 Mar 2026 22:16 depart 30 Apr 2026 22:15,cars,yes,2,,2026-03-07T22:16,2026-04-30T22:15,woodlands,woodlands,1337.2,Baseline existing case
+2,Car Pre-2027 evening entry waiver Woodlands,Enter Fri 10 Apr 2026 17:00 exit Sat 11 Apr 2026 01:30,cars,yes,0,,2026-04-10T17:00,2026-04-11T01:30,woodlands,woodlands,7.2,Baseline existing case
+3,Car Post-2027 evening entry no waiver,Enter Mon 05 Jan 2027 17:00 exit Tue 06 Jan 2027 01:30,cars,yes,0,0,2027-01-05T17:00,2027-01-06T01:30,woodlands,woodlands,107.2,Baseline existing case
+4,Car Post-2027 weekend free Tuas both ways,Enter Sat 02 Jan 2027 10:00 exit Sun 03 Jan 2027 20:00,cars,yes,0,0,2027-01-02T10:00,2027-01-03T20:00,tuas,tuas,10.6,Baseline existing case
+5,Car Straddles 2027 boundary Woodlands no IU,Enter 28 Dec 2026 depart 05 Jan 2027,cars,no,2,2,2026-12-28T09:00,2027-01-05T18:00,woodlands,woodlands,277.2,Baseline existing case
+6,Motorcycle Post-2027 3 weekdays no OBU,Enter Mon 04 Jan 2027 exit Wed 06 Jan 2027,motorcycles,no,0,3,2027-01-04T08:00,2027-01-06T18:00,woodlands,woodlands,30,Baseline existing case
+7,Car Pre-2027 school holiday noon waiver,Enter Mon 15 Jun 2026 12:00 exit Tue 16 Jun 2026 01:00,cars,yes,0,0,2026-06-15T12:00,2026-06-16T01:00,woodlands,woodlands,7.2,Baseline existing case
+8,Car Post-2027 June weekday no school holiday waiver,Enter Mon 14 Jun 2027 12:00 exit Tue 15 Jun 2027 01:00,cars,yes,0,0,2027-06-14T12:00,2027-06-15T01:00,woodlands,woodlands,107.2,Baseline existing case
+9,Car Pre-2027 long stay early exit waiver,Entry 30 Apr 2026 21:20 depart 09 May 2026 01:20,cars,yes,0,0,2026-04-30T21:20,2026-05-09T01:20,woodlands,woodlands,182.2,Baseline existing case
+10,Taxi Post-2027 PSVP on Woodlands,Single weekday entry after cutoff,taxis,yes,0,0,2027-01-04T10:00,2027-01-04T18:00,woodlands,woodlands,15.4,PSVP 15 plus exit toll 0.4
+11,Taxi Pre-2027 PSVP off Woodlands,Single weekday entry before cutoff,taxis,yes,0,0,2026-12-30T10:00,2026-12-30T18:00,woodlands,woodlands,0.4,No PSVP before 2027
+12,Taxi Post-2027 PSVP on Tuas both ways,Single weekday entry after cutoff,taxis,yes,0,0,2027-01-04T10:00,2027-01-04T18:00,tuas,tuas,18.2,PSVP 15 plus Tuas toll 3.2
+13,Van Post-2027 no IU ERP charge applies,Single weekday with ERP day 1,vans,no,0,1,2027-01-04T08:00,2027-01-04T17:00,tuas,tuas,21.2,Toll 11.2 plus ERP 10
+14,Heavy Goods Post-2027 no IU ERP charge applies,Single weekday with ERP day 1,heavyGoods,no,0,1,2027-01-04T08:00,2027-01-04T17:00,tuas,woodlands,23.3,Toll 13.3 plus ERP 10
+15,Bus Pre-2027 no IU ERP pre rate zero,Two day span with ERP days set,buses,no,2,0,2026-11-03T09:00,2026-11-04T18:00,woodlands,tuas,2.5,ERP pre for buses is zero
+16,Motorcycle Pre-2027 no IU ERP pre rate zero,Single weekday with ERP day 1,motorcycles,no,1,0,2026-04-13T10:00,2026-04-13T18:00,woodlands,woodlands,4,VEP 4 and ERP 0
+17,Motorcycle Post-2027 no IU single weekday,Single weekday with ERP day 1,motorcycles,no,0,1,2027-01-04T10:00,2027-01-04T18:00,woodlands,woodlands,10,VEP 7 and ERP 3
+18,Car Pre-2027 no IU single weekday,Single weekday with ERP day 1,cars,no,1,0,2026-04-13T10:00,2026-04-13T18:00,woodlands,woodlands,47.2,VEP 35 toll 0.8 RRC 6.4 ERP 5
+19,Car Post-2027 no IU single weekday,Single weekday with ERP day 1,cars,no,0,1,2027-01-04T10:00,2027-01-04T18:00,woodlands,woodlands,67.2,VEP 50 toll 0.8 RRC 6.4 ERP 10
+20,Car Post-2027 IU yes weekday single day,Single weekday no ERP flat rate,cars,yes,0,0,2027-01-04T10:00,2027-01-04T18:00,woodlands,woodlands,57.2,VEP 50 toll 0.8 RRC 6.4
+21,Car Post-2027 IU yes weekend single day,Weekend day free VEP,cars,yes,0,0,2027-01-02T10:00,2027-01-02T18:00,tuas,tuas,10.6,Toll 4.2 and RRC 6.4
+22,Car Cutoff exact holiday date,Entry exactly at cutoff public holiday,cars,yes,0,0,2027-01-01T00:00,2027-01-01T23:00,woodlands,woodlands,7.2,Holiday free VEP with toll and RRC only
+23,Taxi Cutoff exact PSVP trigger,Entry exactly at cutoff should trigger PSVP,taxis,yes,0,0,2027-01-01T00:00,2027-01-01T01:00,woodlands,woodlands,15.4,Boundary check for PSVP
+24,Car Straddle minute-level boundary,Entry 1 minute before cutoff and depart 1 minute after,cars,yes,0,0,2026-12-31T23:59,2027-01-01T00:01,woodlands,woodlands,7.2,Entry day waived by evening rule and Jan 1 holiday
+25,Car Invalid date range should error,Departure before entry,cars,yes,0,0,2027-01-05T10:00,2027-01-04T18:00,woodlands,woodlands,0,Expect INVALID_DATE_RANGE error
+26,Car Exceed max stay should error,Stay above 250 days,cars,yes,0,0,2026-01-01T00:00,2026-09-09T00:01,woodlands,woodlands,0,Expect EXCEED_DURATION error
+27,Car Unknown checkpoint fallback no crash,Unknown checkpoint should zero toll,cars,yes,0,0,2027-01-06T10:00,2027-01-06T18:00,unknown,unknown,56.4,Toll fallback 0 with VEP 50 and RRC 6.4
+28,Van Unknown checkpoint fallback no crash,Unknown checkpoint with ERP day one,vans,no,0,1,2027-01-06T10:00,2027-01-06T18:00,unknown,unknown,10,Toll fallback 0 ERP 10

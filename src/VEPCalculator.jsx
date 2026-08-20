@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import { useCalculatorForm } from "@/hooks/useCalculatorForm";
 import { calculate } from "@/utils/calculations";
@@ -8,6 +8,7 @@ import {
   QUICK_FILL_STAY_DAYS_MAX,
 } from "@/config/constants";
 import { TEST_CASES } from "@/config/testCases";
+import { buildTestCasesCsv, parseTestCasesCsv } from "@/utils/testCaseCsv";
 import { Box, Typography, Link } from "@mui/material";
 import { CalculatorForm } from "@/components/CalculatorForm";
 import { ResultTable } from "@/components/ResultTable";
@@ -85,6 +86,7 @@ export default function VEPCalculator() {
   const [result, setResult] = useState(null);
   const [resetVersion, setResetVersion] = useState(0);
   const [tab, setTab] = useState("calc");
+  const [testCases, setTestCases] = useState(TEST_CASES);
   const [testResults, setTestResults] = useState({});
   const includeTests = import.meta.env.VITE_INCLUDE_TESTS !== "false";
   const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
@@ -93,6 +95,8 @@ export default function VEPCalculator() {
   const [calculateLoading, setCalculateLoading] = useState(false);
   const [testLoading, setTestLoading] = useState(false);
   const [runningTests, setRunningTests] = useState([]);
+  const [csvStatus, setCsvStatus] = useState("");
+  const csvInputRef = useRef(null);
 
   const formatDateTimeLocal = (date) => {
     const pad = (value) => String(value).padStart(2, "0");
@@ -101,8 +105,8 @@ export default function VEPCalculator() {
 
   useEffect(() => {
     let passed = 0;
-    let total = TEST_CASES.length;
-    TEST_CASES.forEach((tc) => {
+    let total = testCases.length;
+    testCases.forEach((tc) => {
       const result = testResults[tc.id];
       if (result && !("error" in result)) {
         const totalMatches =
@@ -111,7 +115,45 @@ export default function VEPCalculator() {
       }
     });
     setTestSummary({ passed, total });
-  }, [testResults]);
+  }, [testResults, testCases]);
+
+  function handleDownloadSampleCsv() {
+    const csv = buildTestCasesCsv(TEST_CASES);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "vep-test-cases-sample.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  async function handleUploadCsv(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const importedCases = parseTestCasesCsv(text);
+
+      setTestCases(importedCases);
+      setTestResults({});
+      setRunningTests([]);
+      setTestLoading(false);
+      setTestSummary(null);
+      setCsvStatus(
+        `Loaded ${importedCases.length} test case(s) from ${file.name}.`,
+      );
+    } catch (err) {
+      setCsvStatus(
+        `Failed to import CSV: ${err instanceof Error ? err.message : "Invalid CSV file."}`,
+      );
+    } finally {
+      event.target.value = "";
+    }
+  }
 
   function handleCalculate() {
     const e = validate();
@@ -150,7 +192,7 @@ export default function VEPCalculator() {
         entryDt,
         departureDt,
       });
-
+      console.log(res);
       setResult(res);
       setCalculateLoading(false);
     }, 500); // Small delay to show loading animation
@@ -199,6 +241,7 @@ export default function VEPCalculator() {
 
     setTimeout(() => {
       const res = calculate(testCase.params);
+      console.log(res);
       setTestResults((prev) => ({ ...prev, [testCase.id]: res }));
       setRunningTests((prev) => prev.filter((id) => id !== testCase.id));
     }, 500);
@@ -207,13 +250,13 @@ export default function VEPCalculator() {
   function handleRunAllTests() {
     setTestLoading(true);
     setTestSummary(null);
-    setRunningTests(TEST_CASES.map((tc) => tc.id));
+    setRunningTests(testCases.map((tc) => tc.id));
     setTestResults({});
 
     // Simulate async test running
     setTimeout(() => {
       const newResults = {};
-      TEST_CASES.forEach((tc) => {
+      testCases.forEach((tc) => {
         newResults[tc.id] = calculate(tc.params);
       });
       setTestResults(newResults);
@@ -331,10 +374,11 @@ export default function VEPCalculator() {
         {includeTests && tab === "tests" && (
           <div>
             <div style={infoStyles.info}>
-              9 test cases covering pre-2027, post-2027, and boundary-straddling
-              scenarios. Click <strong>▶ Run</strong> to execute each one
-              against the calculation engine, or <strong>Run All Tests</strong>{" "}
-              to execute all at once.
+              {testCases.length} test cases loaded. Download the sample CSV, add
+              custom rows, upload it, then click <strong>Run All Tests</strong>
+              to execute the full set. Click <strong>▶ Run</strong> to execute
+              each one against the calculation engine, or{" "}
+              <strong>Run All Tests</strong> to execute all at once.
             </div>
             <div style={{ marginBottom: 16 }}>
               <button
@@ -366,6 +410,35 @@ export default function VEPCalculator() {
                   "Run All Tests"
                 )}
               </button>
+              <button
+                style={{
+                  ...buttonStyles.btn,
+                  background: "#4caf50",
+                  marginRight: 8,
+                }}
+                onClick={handleDownloadSampleCsv}
+                disabled={testLoading}
+              >
+                Download Sample CSV
+              </button>
+              <button
+                style={{
+                  ...buttonStyles.btn,
+                  background: "#7e57c2",
+                  marginRight: 8,
+                }}
+                onClick={() => csvInputRef.current?.click()}
+                disabled={testLoading}
+              >
+                Upload CSV
+              </button>
+              <input
+                ref={csvInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                onChange={handleUploadCsv}
+                style={{ display: "none" }}
+              />
               {!testLoading && testSummary && (
                 <div
                   style={{
@@ -387,8 +460,21 @@ export default function VEPCalculator() {
                   {testSummary.passed}/{testSummary.total} test cases passed
                 </div>
               )}
+              {csvStatus && (
+                <div
+                  style={{
+                    marginTop: 10,
+                    color: csvStatus.startsWith("Failed")
+                      ? "#c62828"
+                      : "#2e7d32",
+                    fontWeight: 600,
+                  }}
+                >
+                  {csvStatus}
+                </div>
+              )}
             </div>
-            {TEST_CASES.map((tc) => (
+            {testCases.map((tc) => (
               <TestCaseCard
                 key={tc.id}
                 testCase={tc}

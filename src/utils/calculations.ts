@@ -216,7 +216,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
       : 0;
 
   // ERP calculation (only for vehicles with VEP rates)
-  const noIU = hasIU === "no";
+  const noIU = hasIU.toLowerCase() === "no";
   const erpNum2026 = parseInt(erpDays2026, 10) || 0;
   const erpNum2027 = parseInt(erpDays2027, 10) || 0;
   const erpDaysPre = erpNum2026;

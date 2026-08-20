@@ -210,6 +210,7 @@ export function CalculatorForm({
               format="DD/MM/YYYY HH:mm"
               minDateTime={minEntryDayjs}
               maxDateTime={maxExitDayjs}
+              timeSteps={{ minutes: 1 }}
               ampm={false}
               reduceAnimations
               localeText={dateTimePlaceholderLocaleText}
@@ -249,8 +250,11 @@ export function CalculatorForm({
               onOpen={openDepartDateTimePicker}
               onClose={() => setDepartPickerOpen(false)}
               format="DD/MM/YYYY HH:mm"
-              minDateTime={minEntryDayjs}
+              minDateTime={
+                form.entryDatetime ? dayjs(form.entryDatetime) : minEntryDayjs
+              }
               maxDateTime={maxExitDayjs}
+              timeSteps={{ minutes: 1 }}
               ampm={false}
               reduceAnimations
               sx={datepickerStyle}
@@ -341,9 +345,6 @@ export function CalculatorForm({
                   <Typography component="label" sx={labelStyle}>
                     No. of days using ERP-priced roads{" "}
                     {straddleYear && "in year 2026"}
-                    <Typography component="span" sx={asteriskStyle}>
-                      *
-                    </Typography>
                   </Typography>
                   <TextField
                     fullWidth
@@ -376,9 +377,6 @@ export function CalculatorForm({
                   <Typography component="label" sx={labelStyle}>
                     No. of days using ERP-priced roads{" "}
                     {straddleYear && "in year 2027"}
-                    <Typography component="span" sx={asteriskStyle}>
-                      *
-                    </Typography>
                   </Typography>
                   <TextField
                     fullWidth
