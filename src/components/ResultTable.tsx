@@ -349,7 +349,7 @@ export function ResultTable({ result }: ResultTableProps) {
                   <Typography component="span" sx={resultStyles.subTextCell}>
                     ERP Charges
                   </Typography>
-                  {erpFlatRateApplies && (
+                  {erpFlatRateApplies && result.erpCharge > 0 && (
                     <>
                       {result.erpDaysPre > 0 && (
                         <Typography

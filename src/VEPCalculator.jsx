@@ -209,6 +209,17 @@ export default function VEPCalculator() {
       entryDate.getTime() + stayDays * 24 * 60 * 60 * 1000,
     );
 
+    const entryYear = entryDate.getFullYear();
+    const randomErpDays = Math.floor(Math.random() * (stayDays + 1)).toString();
+
+    let erpDays2026 = "";
+    let erpDays2027 = "";
+    if (entryYear === 2026) {
+      erpDays2026 = randomErpDays;
+    } else if (entryYear === 2027) {
+      erpDays2027 = randomErpDays;
+    }
+
     const randomForm = {
       vehicleCategory: Math.random() > 0.5 ? "cars" : "motorcycles",
       hasIU: Math.random() > 0.5 ? "yes" : "no",
@@ -216,8 +227,8 @@ export default function VEPCalculator() {
       departDatetime: formatDateTimeLocal(departDate),
       entryCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
       departCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
-      erpDays2026: Math.floor(Math.random() * stayDays).toString(),
-      erpDays2027: Math.floor(Math.random() * stayDays).toString(),
+      erpDays2026,
+      erpDays2027,
     };
 
     Object.entries(randomForm).forEach(([k, v]) => {

@@ -124,6 +124,24 @@ export function CalculatorForm({
     setDepartPickerOpen(true);
   };
 
+  const handleErpDaysChange = (
+    field: "erpDays2026" | "erpDays2027",
+    rawValue: string,
+  ) => {
+    if (rawValue === "") {
+      onFieldChange(field, "");
+      return;
+    }
+
+    const parsed = Number(rawValue);
+    if (!Number.isNaN(parsed) && parsed < 0) {
+      onFieldChange(field, "0");
+      return;
+    }
+
+    onFieldChange(field, rawValue);
+  };
+
   return (
     <>
       <Box>
@@ -351,7 +369,7 @@ export function CalculatorForm({
                     type="number"
                     value={form.erpDays2026}
                     onChange={(e) =>
-                      onFieldChange("erpDays2026", e.target.value)
+                      handleErpDaysChange("erpDays2026", e.target.value)
                     }
                     error={!!errors.erpDays2026}
                     helperText={
@@ -383,7 +401,7 @@ export function CalculatorForm({
                     type="number"
                     value={form.erpDays2027}
                     onChange={(e) =>
-                      onFieldChange("erpDays2027", e.target.value)
+                      handleErpDaysChange("erpDays2027", e.target.value)
                     }
                     error={!!errors.erpDays2027}
                     helperText={
