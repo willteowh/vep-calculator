@@ -21,7 +21,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { useState } from "react";
+import { useState, type KeyboardEvent } from "react";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import { resultStyles } from "@/utils/resultStyles";
 import {
@@ -133,13 +133,38 @@ export function CalculatorForm({
       return;
     }
 
-    const parsed = Number(rawValue);
-    if (!Number.isNaN(parsed) && parsed < 0) {
+    if (rawValue.includes("-")) {
       onFieldChange(field, "0");
       return;
     }
 
-    onFieldChange(field, rawValue);
+    // Keep only digits and cap to 2 characters.
+    const digitsOnly = rawValue.replace(/\D/g, "").slice(0, 2);
+    if (digitsOnly === "") {
+      return;
+    }
+
+    onFieldChange(field, digitsOnly);
+  };
+
+  const handleDigitsOnlyKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    const allowedControlKeys = [
+      "Backspace",
+      "Delete",
+      "ArrowLeft",
+      "ArrowRight",
+      "Tab",
+      "Home",
+      "End",
+    ];
+
+    if (allowedControlKeys.includes(event.key)) {
+      return;
+    }
+
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
   };
 
   return (
@@ -366,11 +391,12 @@ export function CalculatorForm({
                   </Typography>
                   <TextField
                     fullWidth
-                    type="number"
+                    type="text"
                     value={form.erpDays2026}
                     onChange={(e) =>
                       handleErpDaysChange("erpDays2026", e.target.value)
                     }
+                    onKeyDown={handleDigitsOnlyKeyDown}
                     error={!!errors.erpDays2026}
                     helperText={
                       errors.erpDays2026 ||
@@ -378,6 +404,11 @@ export function CalculatorForm({
                     }
                     sx={{ ...inputStyle }}
                     slotProps={{
+                      htmlInput: {
+                        maxLength: 2,
+                        pattern: "[0-9]*",
+                        inputMode: "numeric",
+                      },
                       formHelperText: {
                         sx: {
                           fontSize: "16px",
@@ -398,11 +429,12 @@ export function CalculatorForm({
                   </Typography>
                   <TextField
                     fullWidth
-                    type="number"
+                    type="text"
                     value={form.erpDays2027}
                     onChange={(e) =>
                       handleErpDaysChange("erpDays2027", e.target.value)
                     }
+                    onKeyDown={handleDigitsOnlyKeyDown}
                     error={!!errors.erpDays2027}
                     helperText={
                       errors.erpDays2027 ||
@@ -410,6 +442,11 @@ export function CalculatorForm({
                     }
                     sx={{ ...inputStyle }}
                     slotProps={{
+                      htmlInput: {
+                        maxLength: 2,
+                        pattern: "[0-9]*",
+                        inputMode: "numeric",
+                      },
                       formHelperText: {
                         sx: {
                           fontSize: "16px",

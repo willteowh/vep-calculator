@@ -3,6 +3,7 @@ import { CalculationResult } from "@/utils/calculations";
 import { CUTOFF_2027 } from "@/config/constants";
 import {
   isPublicHoliday,
+  getPublicHolidayTitle,
   getCalendarDate,
   getDateDifferenceDays,
 } from "@/utils/dateUtils";
@@ -45,14 +46,19 @@ export function ResultTable({ result }: ResultTableProps) {
   const vehicleTypeLabel =
     vehicleTypeLabels[result.vehicleCategory] || result.vehicleCategory;
   let hasPublicHoliday = false;
+  const holidayTitles = new Set<string>();
   for (let i = 0; i < totalDays; i++) {
     const d = new Date(entryDate);
     d.setDate(entryDate.getDate() + i);
     if (isPublicHoliday(d)) {
       hasPublicHoliday = true;
-      break;
+      const title = getPublicHolidayTitle(d);
+      if (title) {
+        holidayTitles.add(title);
+      }
     }
   }
+  const holidayTitlesText = Array.from(holidayTitles).join(", ");
   const [appliesRRC, setAppliesRRC] = useState<boolean>(
     result.vehicleCategory !== "motorcycles" && result.rrc > 0,
   );
@@ -137,7 +143,8 @@ export function ResultTable({ result }: ResultTableProps) {
         <Card sx={resultStyles.infoCard}>
           <CardContent sx={resultStyles.noticeContent}>
             <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
-            The Date Range you chose contains Public Holiday
+            The Date Range you chose contains{" "}
+            {holidayTitlesText || "Public Holiday"}.
           </CardContent>
         </Card>
       )}

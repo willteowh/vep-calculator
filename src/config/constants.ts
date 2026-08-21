@@ -1,33 +1,30 @@
-// Singapore Public Holidays (2025–2027)
-export const SG_PUBLIC_HOLIDAYS = new Set([
-  // 2026
-  "2026-01-01",
-  "2026-02-17",
-  "2026-02-18",
-  "2026-03-21",
-  "2026-04-03",
-  "2026-05-01",
-  "2026-05-27",
-  "2026-06-01",
-  "2026-08-09",
-  "2026-08-10",
-  "2026-11-08",
-  "2026-11-09",
-  "2026-12-25",
-  // 2027 (approximate – confirmed where known)
-  "2027-01-01",
-  "2027-02-06",
-  "2027-02-07",
-  "2027-02-08",
-  "2027-03-10",
-  "2027-03-26",
-  "2027-05-01",
-  "2027-05-17",
-  "2027-05-20",
-  "2027-08-09",
-  "2027-10-28",
-  "2027-12-25",
-]);
+// Singapore Public Holidays (2026–2027)
+// Array format allows each holiday to carry structured metadata.
+export const SG_PUBLIC_HOLIDAYS = [
+  // 2026 Public Holidays
+  { date: "2026-01-01", title: "New Year's Day" },
+  { date: "2026-02-17", title: "Chinese New Year" },
+  { date: "2026-02-18", title: "Chinese New Year" },
+  { date: "2026-03-21", title: "Hari Raya Puasa" },
+  { date: "2026-04-03", title: "Good Friday" },
+  { date: "2026-05-01", title: "Labour Day" },
+  { date: "2026-05-27", title: "Vesak Day" },
+  { date: "2026-06-01", title: "Hari Raya Haji" },
+  { date: "2026-08-10", title: "Monday following National Day" },
+  { date: "2026-11-09", title: "Monday following Deepavali" },
+  { date: "2026-12-25", title: "Christmas Day" },
+  // 2027 Public Holidays
+  { date: "2027-01-01", title: "New Year's Day" },
+  { date: "2027-02-08", title: "Monday following Chinese New Year" },
+  { date: "2027-03-10", title: "Hari Raya Puasa" },
+  { date: "2027-03-26", title: "Good Friday" },
+  { date: "2027-05-01", title: "Labour Day" },
+  { date: "2027-05-17", title: "Hari Raya Haji" },
+  { date: "2027-05-20", title: "Vesak Day" },
+  { date: "2027-08-09", title: "National Day" },
+  { date: "2027-10-28", title: "Deepavali" },
+  { date: "2027-12-25", title: "Christmas Day" },
+] as const;
 
 // June & December school holidays (approximate annual ranges)
 export const SCHOOL_HOLIDAYS = [

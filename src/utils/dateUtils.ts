@@ -4,15 +4,23 @@ import {
   CUTOFF_2027,
 } from "@/config/constants";
 
+const PUBLIC_HOLIDAY_BY_DATE: Map<string, string> = new Map(
+  SG_PUBLIC_HOLIDAYS.map((holiday) => [holiday.date, holiday.title]),
+);
+
 export function dateKey(d: Date): string {
   const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 
 export function isPublicHoliday(d: Date): boolean {
-  return SG_PUBLIC_HOLIDAYS.has(dateKey(d));
+  return PUBLIC_HOLIDAY_BY_DATE.has(dateKey(d));
+}
+
+export function getPublicHolidayTitle(d: Date): string | null {
+  return PUBLIC_HOLIDAY_BY_DATE.get(dateKey(d)) ?? null;
 }
 
 export function isWeekend(d: Date): boolean {
