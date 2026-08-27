@@ -76,12 +76,7 @@ export function CalculatorForm({
   const minEntryDayjs = minEntryDate;
   const maxExitDayjs = maxExitDate;
 
-  const IUApplicable =
-    form.vehicleCategory == "cars" ||
-    form.vehicleCategory == "motorcycles" ||
-    form.vehicleCategory == "vans" ||
-    form.vehicleCategory == "heavyGoods" ||
-    form.vehicleCategory == "buses";
+  const IUApplicable = !!form.vehicleCategory && form.vehicleCategory !== "taxis";
   const ERPFlatRateApplicable = IUApplicable && form.hasIU === "no";
 
   const showErp2026 =

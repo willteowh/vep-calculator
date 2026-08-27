@@ -38,7 +38,7 @@ export const primaryButtonStyle = {
   ...baseButtonStyle,
   backgroundColor: "#3B3A99",
   "&:hover": {
-    backgroundColor: "#3d3f97",
+    backgroundColor: "#7F7ECD",
   },
   boxShadow: "none",
   px: "20px;",
