@@ -91,19 +91,19 @@ export function isDayVEPFree(
     return true;
   }
 
-  // Exit short-stay waiver: if departure day and exit <= 02:00 (pre-2027), non-weekend/non-PH
+  // Exit short-stay waiver: if departure day and exit < 02:00 (pre-2027), non-weekend/non-PH
   if (
     calDayDate.getTime() === deptDate.getTime() &&
-    deptHour <= EXIT_CUTOFF_HOUR
+    deptHour < EXIT_CUTOFF_HOUR
   ) {
     return true;
   }
 
-  // School-holiday noon waiver: if entry >= 12:00 and exit <= 02:00, exit day is free if school holiday
+  // School-holiday noon waiver: if entry >= 12:00 and exit < 02:00, exit day is free if school holiday
   if (
     calDayDate.getTime() === deptDate.getTime() &&
     isSchoolHoliday(calDay) &&
-    deptHour <= EXIT_CUTOFF_HOUR
+    deptHour < EXIT_CUTOFF_HOUR
   ) {
     return true;
   }

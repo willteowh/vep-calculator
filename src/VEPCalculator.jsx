@@ -9,6 +9,7 @@ import {
 } from "@/config/constants";
 import { TEST_CASES } from "@/config/testCases";
 import { buildTestCasesCsv, parseTestCasesCsv } from "@/utils/testCaseCsv";
+import { evaluateTestCase } from "@/utils/testCaseEvaluation";
 import { Box, Typography, Link } from "@mui/material";
 import { CalculatorForm } from "@/components/CalculatorForm";
 import { ResultTable } from "@/components/ResultTable";
@@ -96,6 +97,8 @@ export default function VEPCalculator() {
   const [testLoading, setTestLoading] = useState(false);
   const [runningTests, setRunningTests] = useState([]);
   const [csvStatus, setCsvStatus] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("id");
   const csvInputRef = useRef(null);
 
   const formatDateTimeLocal = (date) => {
@@ -105,17 +108,75 @@ export default function VEPCalculator() {
 
   useEffect(() => {
     let passed = 0;
+    let failed = 0;
+    let running = 0;
+    let notRun = 0;
     let total = testCases.length;
+
     testCases.forEach((tc) => {
-      const result = testResults[tc.id];
-      if (result && !("error" in result)) {
-        const totalMatches =
-          Math.abs(result.grandTotal - tc.expectedTotal) < 0.01;
-        if (totalMatches) passed++;
+      if (runningTests.includes(tc.id)) {
+        running++;
+        return;
       }
+
+      const result = testResults[tc.id];
+      if (!result) {
+        notRun++;
+        return;
+      }
+
+      const evaluation = evaluateTestCase(tc, result);
+      if (evaluation.passed) passed++;
+      else failed++;
     });
-    setTestSummary({ passed, total });
-  }, [testResults, testCases]);
+    setTestSummary({ passed, failed, running, notRun, total });
+  }, [testResults, testCases, runningTests]);
+
+  function getTestStatus(testCase) {
+    if (runningTests.includes(testCase.id)) return "running";
+    const result = testResults[testCase.id];
+    if (!result) return "not-run";
+    return evaluateTestCase(testCase, result).status;
+  }
+
+  function getTestDelta(testCase) {
+    const result = testResults[testCase.id];
+    if (!result) return Number.NEGATIVE_INFINITY;
+
+    const evaluation = evaluateTestCase(testCase, result);
+    if (Number.isFinite(evaluation.delta)) return evaluation.delta;
+
+    // Bring failed error cases to the top when sorting by delta.
+    return evaluation.status === "failed"
+      ? Number.POSITIVE_INFINITY
+      : Number.NEGATIVE_INFINITY;
+  }
+
+  const displayedTestCases = [...testCases]
+    .filter((tc) => {
+      if (statusFilter === "all") return true;
+      return getTestStatus(tc) === statusFilter;
+    })
+    .sort((a, b) => {
+      if (sortBy === "id") return a.id - b.id;
+
+      if (sortBy === "status") {
+        const rank = {
+          failed: 0,
+          running: 1,
+          "not-run": 2,
+          passed: 3,
+        };
+        const rankDiff = rank[getTestStatus(a)] - rank[getTestStatus(b)];
+        if (rankDiff !== 0) return rankDiff;
+        return a.id - b.id;
+      }
+
+      // sortBy === "delta"
+      const deltaDiff = getTestDelta(b) - getTestDelta(a);
+      if (deltaDiff !== 0) return deltaDiff;
+      return a.id - b.id;
+    });
 
   function handleDownloadSampleCsv() {
     const csv = buildTestCasesCsv(TEST_CASES);
@@ -387,9 +448,8 @@ export default function VEPCalculator() {
             <div style={infoStyles.info}>
               {testCases.length} test cases loaded. Download the sample CSV, add
               custom rows, upload it, then click <strong>Run All Tests</strong>
-              to execute the full set. Click <strong>▶ Run</strong> to execute
-              each one against the calculation engine, or{" "}
-              <strong>Run All Tests</strong> to execute all at once.
+              to execute the full set. Use filters and sorting below to triage
+              failed cases quickly.
             </div>
             <div style={{ marginBottom: 16 }}>
               <button
@@ -485,7 +545,164 @@ export default function VEPCalculator() {
                 </div>
               )}
             </div>
-            {testCases.map((tc) => (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+                alignItems: "center",
+                marginBottom: 12,
+              }}
+            >
+              <button
+                style={{
+                  ...buttonStyles.btn,
+                  padding: "8px 14px",
+                  background: statusFilter === "all" ? "#455a64" : "#90a4ae",
+                }}
+                onClick={() => setStatusFilter("all")}
+              >
+                All
+              </button>
+              <button
+                style={{
+                  ...buttonStyles.btn,
+                  padding: "8px 14px",
+                  background: statusFilter === "failed" ? "#d32f2f" : "#ef9a9a",
+                }}
+                onClick={() => setStatusFilter("failed")}
+              >
+                Failed
+              </button>
+              <button
+                style={{
+                  ...buttonStyles.btn,
+                  padding: "8px 14px",
+                  background:
+                    statusFilter === "running" ? "#1976d2" : "#90caf9",
+                }}
+                onClick={() => setStatusFilter("running")}
+              >
+                Running
+              </button>
+              <button
+                style={{
+                  ...buttonStyles.btn,
+                  padding: "8px 14px",
+                  background:
+                    statusFilter === "not-run" ? "#6d4c41" : "#bcaaa4",
+                }}
+                onClick={() => setStatusFilter("not-run")}
+              >
+                Not Run
+              </button>
+              <button
+                style={{
+                  ...buttonStyles.btn,
+                  padding: "8px 14px",
+                  background: statusFilter === "passed" ? "#2e7d32" : "#a5d6a7",
+                }}
+                onClick={() => setStatusFilter("passed")}
+              >
+                Passed
+              </button>
+
+              <label
+                style={{ marginLeft: "auto", fontSize: 13, fontWeight: 600 }}
+              >
+                Sort by:
+              </label>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                style={{
+                  padding: "8px 10px",
+                  borderRadius: 6,
+                  border: "1px solid #c8d0de",
+                  minWidth: 150,
+                }}
+              >
+                <option value="id">Test ID</option>
+                <option value="status">Status</option>
+                <option value="delta">Largest Delta</option>
+              </select>
+            </div>
+
+            {!testLoading && testSummary && (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  flexWrap: "wrap",
+                  marginBottom: 12,
+                }}
+              >
+                <div
+                  style={{
+                    padding: "8px 10px",
+                    background: "#e8f5e8",
+                    border: "1px solid #4caf50",
+                    borderRadius: 6,
+                    fontWeight: 600,
+                    color: "#2e7d32",
+                  }}
+                >
+                  Passed: {testSummary.passed}
+                </div>
+                <div
+                  style={{
+                    padding: "8px 10px",
+                    background: "#ffeaea",
+                    border: "1px solid #f44336",
+                    borderRadius: 6,
+                    fontWeight: 600,
+                    color: "#c62828",
+                  }}
+                >
+                  Failed: {testSummary.failed}
+                </div>
+                <div
+                  style={{
+                    padding: "8px 10px",
+                    background: "#e3f2fd",
+                    border: "1px solid #42a5f5",
+                    borderRadius: 6,
+                    fontWeight: 600,
+                    color: "#1565c0",
+                  }}
+                >
+                  Running: {testSummary.running}
+                </div>
+                <div
+                  style={{
+                    padding: "8px 10px",
+                    background: "#f3e5f5",
+                    border: "1px solid #ab47bc",
+                    borderRadius: 6,
+                    fontWeight: 600,
+                    color: "#6a1b9a",
+                  }}
+                >
+                  Not Run: {testSummary.notRun}
+                </div>
+              </div>
+            )}
+
+            {displayedTestCases.length === 0 && (
+              <div
+                style={{
+                  border: "1px dashed #c8d0de",
+                  borderRadius: 8,
+                  padding: "12px 14px",
+                  color: "#546174",
+                  marginBottom: 12,
+                }}
+              >
+                No test cases match this filter.
+              </div>
+            )}
+
+            {displayedTestCases.map((tc) => (
               <TestCaseCard
                 key={tc.id}
                 testCase={tc}

@@ -1,5 +1,6 @@
 import { fmt } from "@/utils/formatters";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
+import { evaluateTestCase } from "@/utils/testCaseEvaluation";
 
 interface TestCase {
   id: number;
@@ -18,9 +19,9 @@ interface TestResultProps {
 export function TestResult({ result, testCase }: TestResultProps) {
   if (!result) return null;
 
-  const ok = !("error" in result);
-  const totalMatches =
-    ok && Math.abs(result.grandTotal - testCase.expectedTotal) < 0.01;
+  const evaluation = evaluateTestCase(testCase, result);
+  const ok = evaluation.status === "passed";
+  const totalMatches = evaluation.totalMatches;
   const themeColor = "#606fbb";
 
   return (
@@ -35,7 +36,19 @@ export function TestResult({ result, testCase }: TestResultProps) {
       }}
     >
       {"error" in result ? (
-        <strong>{result.error}</strong>
+        <>
+          <strong>{result.error}</strong>
+          {ok && (
+            <span style={{ marginLeft: 8, color: "#2e7d32", fontSize: 16 }}>
+              ✅
+            </span>
+          )}
+          {!ok && evaluation.expectedError && (
+            <div style={{ marginTop: 6, color: themeColor, fontWeight: 700 }}>
+              ❌ Expected: {evaluation.expectedError}
+            </div>
+          )}
+        </>
       ) : (
         <>
           <div>
@@ -88,17 +101,17 @@ export function TestResult({ result, testCase }: TestResultProps) {
           <div
             style={{
               fontWeight: 700,
-              color: totalMatches ? "#2e7d32" : themeColor,
+              color: ok ? "#2e7d32" : themeColor,
               fontSize: 13,
             }}
           >
             Grand Total: {fmt(result.grandTotal)}
-            {totalMatches && (
+            {ok && (
               <span style={{ marginLeft: 8, color: "#2e7d32", fontSize: 16 }}>
                 ✅
               </span>
             )}
-            {!totalMatches && (
+            {!ok && (
               <span style={{ marginLeft: 8, color: themeColor, fontSize: 16 }}>
                 ❌ Expected: {fmt(testCase.expectedTotal)}
               </span>

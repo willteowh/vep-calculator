@@ -40,9 +40,9 @@ The VEP Calculator helps owners of Malaysian-registered cars and motorcycles cal
 **Pre-2027 Only Waivers:**
 
 - **Evening Entry**: Entry day free if entry ≥ 5:00 PM
-- **Evening Exit**: Next day free if entry ≥ 5:00 PM and exit ≤ 2:00 AM
+- **Evening Exit**: Next day free if entry ≥ 5:00 PM and exit < 2:00 AM
 - **School Holiday Noon**: Entry day free if entry ≥ 12:00 PM during school holidays (June, December)
-- **School Holiday Exit**: Exit day free if entry ≥ 12:00 PM, exit ≤ 2:00 AM, and during school holidays
+- **School Holiday Exit**: Exit day free if entry ≥ 12:00 PM, exit < 2:00 AM, and during school holidays
 
 #### Additional Charges
 
