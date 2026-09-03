@@ -71,10 +71,28 @@ export function CalculatorForm({
   const [entryPickerOpen, setEntryPickerOpen] = useState(false);
   const [departPickerOpen, setDepartPickerOpen] = useState(false);
 
-  const minEntryDate = dayjs().subtract(14, "days");
-  const maxExitDate = dayjs(CALCULATOR_MAX_EXIT_DATE);
-  const minEntryDayjs = minEntryDate;
-  const maxExitDayjs = maxExitDate;
+  const minEntryDayjs = dayjs().subtract(14, "days");
+  const maxExitDayjs = dayjs(CALCULATOR_MAX_EXIT_DATE);
+
+  const clampToAllowedRange = (value: Dayjs): Dayjs => {
+    if (value.isBefore(minEntryDayjs)) return minEntryDayjs;
+    if (value.isAfter(maxExitDayjs)) return maxExitDayjs;
+    return value;
+  };
+
+  const normaliseAndApplyDateTime = (
+    field: "entryDatetime" | "departDatetime",
+    rawValue: Dayjs | null,
+  ): string | null => {
+    if (!rawValue || !rawValue.isValid()) {
+      return null;
+    }
+
+    const clamped = clampToAllowedRange(rawValue);
+    const isoString = clamped.format("YYYY-MM-DDTHH:mm");
+    onFieldChange(field, isoString);
+    return isoString;
+  };
 
   const IUApplicable =
     !!form.vehicleCategory && form.vehicleCategory !== "taxis";
@@ -87,22 +105,16 @@ export function CalculatorForm({
   const straddleYear = showErp2026 && showErp2027;
 
   const handleEntryChange = (value: Dayjs | null) => {
-    if (value) {
-      const isoString = value.format("YYYY-MM-DDTHH:mm");
-      onFieldChange("entryDatetime", isoString);
-      if (form.departDatetime && isoString && form.departDatetime < isoString) {
-        onFieldChange("departDatetime", isoString);
-      }
+    const isoString = normaliseAndApplyDateTime("entryDatetime", value);
+    if (isoString && form.departDatetime && form.departDatetime < isoString) {
+      onFieldChange("departDatetime", isoString);
     }
   };
 
   const handleDepartChange = (value: Dayjs | null) => {
-    if (value) {
-      const isoString = value.format("YYYY-MM-DDTHH:mm");
-      onFieldChange("departDatetime", isoString);
-      if (form.entryDatetime && isoString && form.entryDatetime > isoString) {
-        onFieldChange("entryDatetime", isoString);
-      }
+    const isoString = normaliseAndApplyDateTime("departDatetime", value);
+    if (isoString && form.entryDatetime && form.entryDatetime > isoString) {
+      onFieldChange("departDatetime", form.entryDatetime);
     }
   };
 
@@ -115,7 +127,10 @@ export function CalculatorForm({
 
   const openDepartDateTimePicker = () => {
     if (!form.departDatetime) {
-      handleDepartChange(dayjs());
+      const seedDepartValue = form.entryDatetime
+        ? dayjs(form.entryDatetime)
+        : dayjs();
+      normaliseAndApplyDateTime("departDatetime", seedDepartValue);
     }
     setDepartPickerOpen(true);
   };
@@ -290,7 +305,11 @@ export function CalculatorForm({
               onClose={() => setDepartPickerOpen(false)}
               format="DD/MM/YYYY HH:mm"
               minDateTime={
-                form.entryDatetime ? dayjs(form.entryDatetime) : minEntryDayjs
+                form.entryDatetime
+                  ? dayjs(form.entryDatetime).isAfter(minEntryDayjs)
+                    ? dayjs(form.entryDatetime)
+                    : minEntryDayjs
+                  : minEntryDayjs
               }
               maxDateTime={maxExitDayjs}
               timeSteps={{ minutes: 1 }}
