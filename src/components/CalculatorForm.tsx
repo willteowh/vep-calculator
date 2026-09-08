@@ -178,6 +178,20 @@ export function CalculatorForm({
     }
   };
 
+  const erpFieldSx = {
+    ...inputStyle,
+    height: "auto",
+    "& .MuiInputBase-root": {
+      height: "48px",
+      fontSize: "18px",
+      color: "#23272E",
+    },
+    "& .MuiFormHelperText-root": {
+      mt: 1,
+      lineHeight: 1.4,
+    },
+  } as const;
+
   return (
     <>
       <Box>
@@ -399,7 +413,7 @@ export function CalculatorForm({
           {ERPFlatRateApplicable && (
             <>
               {showErp2026 && (
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }} sx={{ pb: 1 }}>
                   <Typography component="label" sx={labelStyle}>
                     No. of days using ERP-priced roads{" "}
                     {straddleYear && "in year 2026"}
@@ -417,7 +431,7 @@ export function CalculatorForm({
                       errors.erpDays2026 ||
                       "Only include travel during ERP operating hours"
                     }
-                    sx={{ ...inputStyle }}
+                    sx={erpFieldSx}
                     slotProps={{
                       htmlInput: {
                         maxLength: 2,
@@ -437,7 +451,7 @@ export function CalculatorForm({
               )}
 
               {showErp2027 && (
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }} sx={{ pb: 1 }}>
                   <Typography component="label" sx={labelStyle}>
                     No. of days using ERP-priced roads{" "}
                     {straddleYear && "in year 2027"}
@@ -455,7 +469,7 @@ export function CalculatorForm({
                       errors.erpDays2027 ||
                       "Only include travel during ERP operating hours"
                     }
-                    sx={{ ...inputStyle }}
+                    sx={erpFieldSx}
                     slotProps={{
                       htmlInput: {
                         maxLength: 2,

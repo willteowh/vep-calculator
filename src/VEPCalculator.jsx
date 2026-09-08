@@ -217,7 +217,29 @@ export default function VEPCalculator() {
   }
 
   function handleCalculate() {
-    const e = validate();
+    const entryYear = form.entryDatetime.slice(0, 4);
+    const departYear = form.departDatetime.slice(0, 4);
+    const has2026Period = entryYear === "2026" || departYear === "2026";
+    const has2027Period = entryYear === "2027" || departYear === "2027";
+
+    const sanitisedForm = {
+      ...form,
+      erpDays2026: has2026Period ? form.erpDays2026 : "0",
+      erpDays2027: has2027Period ? form.erpDays2027 : "0",
+      hasIU: form.vehicleCategory === "taxis" ? "yes" : form.hasIU,
+    };
+
+    if (!has2026Period && form.erpDays2026 !== "0") {
+      set("erpDays2026", "0");
+    }
+    if (!has2027Period && form.erpDays2027 !== "0") {
+      set("erpDays2027", "0");
+    }
+    if (form.vehicleCategory === "taxis" && form.hasIU !== "yes") {
+      set("hasIU", "yes");
+    }
+
+    const e = validate(sanitisedForm);
     if (Object.keys(e).length) {
       setErrors(e);
       return;
@@ -228,16 +250,8 @@ export default function VEPCalculator() {
 
     // Simulate async calculation (in a real app, this might be an actual async operation)
     setTimeout(() => {
-      const entryDt = new Date(form.entryDatetime);
-      const departureDt = new Date(form.departDatetime);
-
-      // sanitise ERP day rate across year
-      const showErp2026 =
-        form.entryDatetime >= "2026-01-01T00:00" &&
-        form.entryDatetime < "2027-01-01T00:00";
-      const showErp2027 = form.departDatetime >= "2027-01-01T00:00";
-      if (!showErp2026) form.erpDays2026 = "";
-      if (!showErp2027) form.erpDays202 = "";
+      const entryDt = new Date(sanitisedForm.entryDatetime);
+      const departureDt = new Date(sanitisedForm.departDatetime);
 
       if (departureDt < entryDt) {
         setErrors({ _g: "Departure must be after entry date/time." });
@@ -245,11 +259,8 @@ export default function VEPCalculator() {
         return;
       }
 
-      // if Taxi, hasIU is always yes
-      if (form.vehicleCategory === "taxis") form.hasIU = "yes";
-
       const res = calculate({
-        ...form,
+        ...sanitisedForm,
         entryDt,
         departureDt,
       });
