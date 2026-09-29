@@ -21,7 +21,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { useState, type KeyboardEvent } from "react";
+import { useEffect, useState, type KeyboardEvent } from "react";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import { resultStyles } from "@/utils/resultStyles";
 import {
@@ -70,6 +70,11 @@ export function CalculatorForm({
   const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
   const [entryPickerOpen, setEntryPickerOpen] = useState(false);
   const [departPickerOpen, setDepartPickerOpen] = useState(false);
+
+  useEffect(() => {
+    setEntryPickerOpen(false);
+    setDepartPickerOpen(false);
+  }, [resetVersion]);
 
   const minEntryDayjs = dayjs().subtract(14, "days");
   const maxExitDayjs = dayjs(CALCULATOR_MAX_EXIT_DATE);
@@ -270,6 +275,7 @@ export function CalculatorForm({
               </Typography>
             </Typography>
             <DateTimePicker
+              key={`entry-datetime-${resetVersion}`}
               value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
               onChange={handleEntryChange}
               open={entryPickerOpen}
@@ -312,6 +318,7 @@ export function CalculatorForm({
               </Typography>
             </Typography>
             <DateTimePicker
+              key={`depart-datetime-${resetVersion}`}
               value={form.departDatetime ? dayjs(form.departDatetime) : null}
               onChange={handleDepartChange}
               open={departPickerOpen}
