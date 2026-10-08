@@ -1,15 +1,7 @@
+import type { TestCase } from "@/config/testCases";
 import { fmt } from "@/utils/formatters";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
 import { evaluateTestCase } from "@/utils/testCaseEvaluation";
-
-interface TestCase {
-  id: number;
-  label: string;
-  desc: string;
-  params: object;
-  expectedTotal: number;
-  note: string;
-}
 
 interface TestResultProps {
   result?: CalculationResult | CalculationError;

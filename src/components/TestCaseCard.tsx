@@ -1,4 +1,5 @@
 import { CUTOFF_2027 } from "@/config/constants";
+import type { TestCase } from "@/config/testCases";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
 import { fmt } from "@/utils/formatters";
 import {
@@ -6,18 +7,6 @@ import {
   deriveExpectedError,
 } from "@/utils/testCaseEvaluation";
 import { TestResult } from "./TestResult";
-
-interface TestCase {
-  id: number;
-  label: string;
-  desc: string;
-  params: {
-    entryDt: Date;
-    departureDt: Date;
-  } & Record<string, any>;
-  expectedTotal: number;
-  note: string;
-}
 
 interface TestCaseCardProps {
   testCase: TestCase;

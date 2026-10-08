@@ -12,6 +12,7 @@ import {
   VEHICLE_TYPES,
 } from "@/config/constants";
 import { ERROR_MESSAGES } from "@/config/messages";
+import { isCheckpoint, type HasIU, type VehicleCategory } from "@/types/vep";
 import {
   isWeekend,
   isPublicHoliday,
@@ -25,8 +26,8 @@ import {
 
 export interface CalculationResult {
   vehicleType: string;
-  vehicleCategory: string;
-  hasIU: string;
+  vehicleCategory: VehicleCategory;
+  hasIU: HasIU;
   entryDatetime: string;
   departDatetime: string;
   entryCheckpoint: string;
@@ -53,7 +54,6 @@ export interface CalculationResult {
   grandTotal: number;
   rPre: (typeof RATES_PRE)[keyof typeof RATES_PRE];
   rPost: (typeof RATES_POST)[keyof typeof RATES_POST];
-  error?: never;
 }
 
 export interface CalculationError {
@@ -134,9 +134,9 @@ export function splitChargeableDays(
   return { pre, post };
 }
 
-interface CalculateParams {
-  vehicleCategory: string;
-  hasIU: string;
+export interface CalculateParams {
+  vehicleCategory: VehicleCategory;
+  hasIU: HasIU;
   entryDt: Date;
   departureDt: Date;
   entryCheckpoint: string;
@@ -170,12 +170,15 @@ export function calculate(params: CalculateParams): CalculationOutput {
   const hasVEPRate = isCar || isMoto;
   const hasERPFlatRate = true;
 
-  const entryCP = (entryCheckpoint || "").toLowerCase();
-  const deptCP = (departCheckpoint || "").toLowerCase();
-  const tolls = TOLLS[vehicleCategory as keyof typeof TOLLS];
+  const tolls = TOLLS[vehicleCategory];
 
-  const entryToll = tolls?.entry[entryCP as keyof typeof tolls.entry] ?? 0;
-  const exitToll = tolls?.exit[deptCP as keyof typeof tolls.exit] ?? 0;
+  // Unrecognised checkpoints are charged no toll.
+  const entryToll = isCheckpoint(entryCheckpoint)
+    ? tolls.entry[entryCheckpoint]
+    : 0;
+  const exitToll = isCheckpoint(departCheckpoint)
+    ? tolls.exit[departCheckpoint]
+    : 0;
   const tollTotal = entryToll + exitToll;
 
   // Split chargeable days across rate boundary
@@ -185,23 +188,23 @@ export function calculate(params: CalculateParams): CalculationOutput {
   );
   const totalChargeable = preDays + postDays;
 
-  const rPre = RATES_PRE[vehicleCategory as keyof typeof RATES_PRE];
-  const rPost = RATES_POST[vehicleCategory as keyof typeof RATES_POST];
-  const vepPerDayPre = rPre && "vepPerDay" in rPre ? rPre.vepPerDay : 0;
-  const vepPerDayPost = rPost && "vepPerDay" in rPost ? rPost.vepPerDay : 0;
+  const rPre = RATES_PRE[vehicleCategory];
+  const rPost = RATES_POST[vehicleCategory];
+  const vepPerDayPre = "vepPerDay" in rPre ? rPre.vepPerDay : 0;
+  const vepPerDayPost = "vepPerDay" in rPost ? rPost.vepPerDay : 0;
 
   const vepFeePre = hasVEPRate ? preDays * vepPerDayPre : 0;
   const vepFeePost = hasVEPRate ? postDays * vepPerDayPost : 0;
   const vepFees = vepFeePre + vepFeePost;
 
-  const rrcCharge = RRC[vehicleCategory as keyof typeof RRC];
+  const rrcCharge = RRC[vehicleCategory];
   const psvpFee =
     vehicleCategory === VEHICLE_TYPES.TAXIS && entryDt >= CUTOFF_2027
       ? PSVP_TAXI_POST_2027_ENTRY_FEE
       : 0;
 
   // ERP calculation (only for vehicles with VEP rates)
-  const noIU = hasIU.toLowerCase() === "no";
+  const noIU = hasIU === "no";
   const erpNum2026 = parseInt(erpDays2026, 10) || 0;
   const erpNum2027 = parseInt(erpDays2027, 10) || 0;
   const erpDaysPre = erpNum2026;
@@ -210,10 +213,10 @@ export function calculate(params: CalculateParams): CalculationOutput {
   let erpCharge = 0;
   let erpNote = "";
   if (hasERPFlatRate && noIU) {
-    const chargePre = erpDaysPre * rPre!.erpNoIU;
-    const chargePost = erpDaysPost * rPost!.erpNoIU;
+    const chargePre = erpDaysPre * rPre.erpNoIU;
+    const chargePost = erpDaysPost * rPost.erpNoIU;
     erpCharge = chargePre + chargePost;
-    const parts = [];
+    const parts: string[] = [];
     if (erpDaysPre > 0)
       parts.push(`$${rPre.erpNoIU.toFixed(2)}/day × ${erpDaysPre} day(s)`);
     if (erpDaysPost > 0)
@@ -281,7 +284,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
     erpDaysPost,
     subtotal,
     grandTotal,
-    rPre: rPre || RATES_PRE[VEHICLE_TYPES.CARS],
-    rPost: rPost || RATES_POST[VEHICLE_TYPES.CARS],
+    rPre,
+    rPost,
   };
 }

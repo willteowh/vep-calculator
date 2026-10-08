@@ -1,14 +1,22 @@
 import { ERROR_MESSAGES } from "@/config/messages";
 import { MAX_STAY_DAYS } from "@/config/constants";
+import type { TestCase } from "@/config/testCases";
+import type { CalculationOutput } from "./calculations";
 
-function toDate(value) {
-  if (value instanceof Date) return value;
-  return new Date(value);
+export type TestStatus = "not-run" | "passed" | "failed";
+
+export interface TestEvaluation {
+  status: TestStatus;
+  passed: boolean;
+  expectedError: string | null;
+  actualError: string | null;
+  delta: number;
+  totalMatches: boolean;
+  unexpectedSuccess: boolean;
 }
 
-export function deriveExpectedError(testCase) {
-  const entryDt = toDate(testCase?.params?.entryDt);
-  const departureDt = toDate(testCase?.params?.departureDt);
+export function deriveExpectedError(testCase: TestCase): string | null {
+  const { entryDt, departureDt } = testCase.params;
 
   if (Number.isNaN(entryDt.getTime()) || Number.isNaN(departureDt.getTime())) {
     return null;
@@ -23,7 +31,10 @@ export function deriveExpectedError(testCase) {
   return null;
 }
 
-export function evaluateTestCase(testCase, result) {
+export function evaluateTestCase(
+  testCase: TestCase,
+  result?: CalculationOutput,
+): TestEvaluation {
   const expectedError = deriveExpectedError(testCase);
 
   if (!result) {

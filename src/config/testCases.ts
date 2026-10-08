@@ -1,17 +1,10 @@
+import type { CalculateParams } from "@/utils/calculations";
+
 export interface TestCase {
   id: number;
   label: string;
   desc: string;
-  params: {
-    vehicleCategory: string;
-    hasIU: string;
-    erpDays2026: string;
-    erpDays2027: string;
-    entryDt: Date;
-    departureDt: Date;
-    entryCheckpoint: string;
-    departCheckpoint: string;
-  };
+  params: CalculateParams;
   expectedTotal: number;
   note: string;
 }

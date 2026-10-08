@@ -1,14 +1,21 @@
-import { useState, useEffect, useRef } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  type ChangeEvent,
+  type CSSProperties,
+} from "react";
 
-import { useCalculatorForm } from "@/hooks/useCalculatorForm";
-import { calculate } from "@/utils/calculations";
+import { useCalculatorForm, type FormState } from "@/hooks/useCalculatorForm";
+import { calculate, type CalculationOutput } from "@/utils/calculations";
+import { isHasIU, isVehicleCategory } from "@/types/vep";
 import {
   QUICK_FILL_MAX_DAYS,
   QUICK_FILL_STAY_DAYS_MAX,
 } from "@/config/constants";
-import { TEST_CASES } from "@/config/testCases";
+import { TEST_CASES, type TestCase } from "@/config/testCases";
 import { buildTestCasesCsv, parseTestCasesCsv } from "@/utils/testCaseCsv";
-import { evaluateTestCase } from "@/utils/testCaseEvaluation";
+import { evaluateTestCase, type TestStatus } from "@/utils/testCaseEvaluation";
 import { Box, Typography, Link } from "@mui/material";
 import { CalculatorForm } from "@/components/CalculatorForm";
 import { ResultTable } from "@/components/ResultTable";
@@ -19,6 +26,18 @@ import {
   linkStyle,
   formCardStyle,
 } from "@/components/calculatorFormStyles";
+
+type TestRunStatus = "running" | TestStatus;
+type StatusFilter = "all" | TestRunStatus;
+type SortBy = "id" | "status" | "delta";
+
+interface TestSummary {
+  passed: number;
+  failed: number;
+  running: number;
+  notRun: number;
+  total: number;
+}
 
 export default function VEPCalculator() {
   const themeColor = "#606fbb";
@@ -35,7 +54,7 @@ export default function VEPCalculator() {
       borderBottom: `2px solid ${themeColor}`,
       marginBottom: 24,
     },
-    tab: (active) => ({
+    tab: (active: boolean): CSSProperties => ({
       padding: "9px 22px",
       cursor: "pointer",
       fontWeight: 700,
@@ -83,23 +102,25 @@ export default function VEPCalculator() {
   };
 
   const { form, errors, set, setErrors, validate, reset } = useCalculatorForm();
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<CalculationOutput | null>(null);
   const [resetVersion, setResetVersion] = useState(0);
-  const [tab, setTab] = useState("calc");
-  const [testCases, setTestCases] = useState(TEST_CASES);
-  const [testResults, setTestResults] = useState({});
+  const [tab, setTab] = useState<"calc" | "tests">("calc");
+  const [testCases, setTestCases] = useState<TestCase[]>(TEST_CASES);
+  const [testResults, setTestResults] = useState<
+    Record<number, CalculationOutput | undefined>
+  >({});
   const includeTests = import.meta.env.VITE_INCLUDE_TESTS !== "false";
 
-  const [testSummary, setTestSummary] = useState(null);
+  const [testSummary, setTestSummary] = useState<TestSummary | null>(null);
   const [testLoading, setTestLoading] = useState(false);
-  const [runningTests, setRunningTests] = useState([]);
+  const [runningTests, setRunningTests] = useState<number[]>([]);
   const [csvStatus, setCsvStatus] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("id");
-  const csvInputRef = useRef(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [sortBy, setSortBy] = useState<SortBy>("id");
+  const csvInputRef = useRef<HTMLInputElement>(null);
 
-  const formatDateTimeLocal = (date) => {
-    const pad = (value) => String(value).padStart(2, "0");
+  const formatDateTimeLocal = (date: Date) => {
+    const pad = (value: number) => String(value).padStart(2, "0");
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   };
 
@@ -108,7 +129,7 @@ export default function VEPCalculator() {
     let failed = 0;
     let running = 0;
     let notRun = 0;
-    let total = testCases.length;
+    const total = testCases.length;
 
     testCases.forEach((tc) => {
       if (runningTests.includes(tc.id)) {
@@ -129,14 +150,14 @@ export default function VEPCalculator() {
     setTestSummary({ passed, failed, running, notRun, total });
   }, [testResults, testCases, runningTests]);
 
-  function getTestStatus(testCase) {
+  function getTestStatus(testCase: TestCase): TestRunStatus {
     if (runningTests.includes(testCase.id)) return "running";
     const result = testResults[testCase.id];
     if (!result) return "not-run";
     return evaluateTestCase(testCase, result).status;
   }
 
-  function getTestDelta(testCase) {
+  function getTestDelta(testCase: TestCase) {
     const result = testResults[testCase.id];
     if (!result) return Number.NEGATIVE_INFINITY;
 
@@ -158,7 +179,7 @@ export default function VEPCalculator() {
       if (sortBy === "id") return a.id - b.id;
 
       if (sortBy === "status") {
-        const rank = {
+        const rank: Record<TestRunStatus, number> = {
           failed: 0,
           running: 1,
           "not-run": 2,
@@ -188,7 +209,7 @@ export default function VEPCalculator() {
     URL.revokeObjectURL(url);
   }
 
-  async function handleUploadCsv(event) {
+  async function handleUploadCsv(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
 
@@ -244,6 +265,13 @@ export default function VEPCalculator() {
     setErrors({});
     setResult(null);
 
+    const { vehicleCategory, hasIU, entryCheckpoint, departCheckpoint } =
+      sanitisedForm;
+    if (!isVehicleCategory(vehicleCategory) || !isHasIU(hasIU)) {
+      setErrors({ _g: "Invalid vehicle category or IU selection." });
+      return;
+    }
+
     // Simulate async calculation (in a real app, this might be an actual async operation)
     setTimeout(() => {
       const entryDt = new Date(sanitisedForm.entryDatetime);
@@ -255,7 +283,12 @@ export default function VEPCalculator() {
       }
 
       const res = calculate({
-        ...sanitisedForm,
+        vehicleCategory,
+        hasIU,
+        entryCheckpoint,
+        departCheckpoint,
+        erpDays2026: sanitisedForm.erpDays2026,
+        erpDays2027: sanitisedForm.erpDays2027,
         entryDt,
         departureDt,
       });
@@ -285,7 +318,7 @@ export default function VEPCalculator() {
       erpDays2027 = randomErpDays;
     }
 
-    const randomForm = {
+    const randomForm: FormState = {
       vehicleCategory: Math.random() > 0.5 ? "cars" : "motorcycles",
       hasIU: Math.random() > 0.5 ? "yes" : "no",
       entryDatetime: formatDateTimeLocal(entryDate),
@@ -296,8 +329,8 @@ export default function VEPCalculator() {
       erpDays2027,
     };
 
-    Object.entries(randomForm).forEach(([k, v]) => {
-      set(k, v);
+    (Object.keys(randomForm) as (keyof FormState)[]).forEach((k) => {
+      set(k, randomForm[k]);
     });
     setErrors({});
     setResult(null);
@@ -309,7 +342,7 @@ export default function VEPCalculator() {
     setResult(null);
   }
 
-  function handleTestRun(testCase) {
+  function handleTestRun(testCase: TestCase) {
     setTestSummary(null);
     setTestResults((prev) => ({ ...prev, [testCase.id]: undefined }));
     setRunningTests((prev) => [...prev, testCase.id]);
@@ -329,7 +362,7 @@ export default function VEPCalculator() {
 
     // Simulate async test running
     setTimeout(() => {
-      const newResults = {};
+      const newResults: Record<number, CalculationOutput> = {};
       testCases.forEach((tc) => {
         newResults[tc.id] = calculate(tc.params);
       });
@@ -621,7 +654,7 @@ export default function VEPCalculator() {
               </label>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={(e) => setSortBy(e.target.value as SortBy)}
                 style={{
                   padding: "8px 10px",
                   borderRadius: 6,

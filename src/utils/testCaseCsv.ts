@@ -1,4 +1,5 @@
 import { TestCase } from "@/config/testCases";
+import { isHasIU, isVehicleCategory } from "@/types/vep";
 
 const CSV_HEADERS = [
   "id",
@@ -117,9 +118,9 @@ export function parseTestCasesCsv(csvText: string): TestCase[] {
 
     const label = get("label");
     const vehicleCategory = get("vehicleCategory");
-    const hasIU = get("hasIU");
-    const entryCheckpoint = get("entryCheckpoint");
-    const departCheckpoint = get("departCheckpoint");
+    const hasIU = get("hasIU").toLowerCase();
+    const entryCheckpoint = get("entryCheckpoint").toLowerCase();
+    const departCheckpoint = get("departCheckpoint").toLowerCase();
     const entryDt = new Date(get("entryDt"));
     const departureDt = new Date(get("departureDt"));
     const expectedTotal = Number(get("expectedTotal"));
@@ -134,6 +135,12 @@ export function parseTestCasesCsv(csvText: string): TestCase[] {
     }
     if (!departCheckpoint) {
       throw new Error(`Row ${lineIndex + 1}: departCheckpoint is required.`);
+    }
+    if (!isVehicleCategory(vehicleCategory)) {
+      throw new Error(`Row ${lineIndex + 1}: invalid vehicleCategory.`);
+    }
+    if (!isHasIU(hasIU)) {
+      throw new Error(`Row ${lineIndex + 1}: hasIU must be "yes" or "no".`);
     }
     if (Number.isNaN(entryDt.getTime())) {
       throw new Error(`Row ${lineIndex + 1}: invalid entryDt.`);
