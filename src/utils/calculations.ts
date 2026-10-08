@@ -20,8 +20,6 @@ import {
   getCalendarDate,
   getHourFromDate,
   getDateDifferenceDays,
-  isSameDay,
-  isNextDay,
   durationDays,
 } from "./dateUtils";
 
@@ -109,19 +107,6 @@ export function isDayVEPFree(
   }
 
   return false;
-}
-
-export function countChargeableDays(entryDt: Date, departureDt: Date): number {
-  const entryDate = getCalendarDate(entryDt);
-  const deptDate = getCalendarDate(departureDt);
-  const totalCal = getDateDifferenceDays(entryDate, deptDate) + 1;
-  let charged = 0;
-  for (let i = 0; i < totalCal; i++) {
-    const d = new Date(entryDate);
-    d.setDate(entryDate.getDate() + i);
-    if (!isDayVEPFree(d, entryDt, departureDt)) charged++;
-  }
-  return charged;
 }
 
 export interface ChargeableDaysSplit {

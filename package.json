@@ -12,7 +12,9 @@
     "test:watch": "vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "cy:open": "cypress open",
+    "e2e": "start-server-and-test 'vite --port 5174 --strictPort' http://localhost:5174 'cypress run --config baseUrl=http://localhost:5174'"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -21,9 +23,7 @@
     "@mui/material": "^9.2.0",
     "@mui/x-date-pickers": "^9.9.0",
     "dayjs": "^1.11.21",
-    "moment": "^2.29.4",
     "react": "19.2.4",
-    "react-datetime": "^3.1.1",
     "react-dom": "19.2.4"
   },
   "devDependencies": {
@@ -33,11 +33,13 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^4",
+    "cypress": "^16.1.1",
     "eslint": "^9",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
     "prettier": "^3.9.9",
+    "start-server-and-test": "^3.0.13",
     "tailwindcss": "^4",
     "typescript": "^5",
     "typescript-eslint": "^8.71.1",

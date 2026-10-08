@@ -301,8 +301,6 @@ export function ResultTable({ result }: ResultTableProps) {
               >
                 <Typography sx={{ fontWeight: 600 }}>Total</Typography>
                 (excluding other charges)
-                {/* (excluding {appliesRRC ? "Reciprocal Road Charge and " : ""}
-                ERP charges) */}
               </TableCell>
               <TableCell
                 sx={{
@@ -419,8 +417,6 @@ export function ResultTable({ result }: ResultTableProps) {
                 }}
               >
                 <Typography sx={{ fontWeight: 600 }}>Total</Typography>
-                {/* (including {appliesRRC ? "Reciprocal Road Charge and " : ""}
-                ERP charges) */}
               </TableCell>
               <TableCell
                 sx={{
@@ -429,7 +425,10 @@ export function ResultTable({ result }: ResultTableProps) {
                   ...resultStyles.tableFooterCell,
                 }}
               >
-                <Typography sx={{ fontWeight: 600 }}>
+                <Typography
+                  data-testid="grand-total"
+                  sx={{ fontWeight: 600 }}
+                >
                   {fmt(result.grandTotal)}
                 </Typography>
               </TableCell>

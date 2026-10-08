@@ -1,5 +1,3 @@
-import { BorderRight } from "@mui/icons-material";
-
 export const resultStyles = {
   wrapper: {
     paddingTop: "24px",

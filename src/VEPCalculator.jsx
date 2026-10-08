@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect, useRef } from "react";
 
 import { useCalculatorForm } from "@/hooks/useCalculatorForm";
@@ -18,8 +17,8 @@ import {
   pageHeaderStyle,
   introParagraphStyle,
   linkStyle,
+  formCardStyle,
 } from "@/components/calculatorFormStyles";
-import { formCardStyle } from "@/components/calculatorFormStyles";
 
 export default function VEPCalculator() {
   const themeColor = "#606fbb";
@@ -90,10 +89,8 @@ export default function VEPCalculator() {
   const [testCases, setTestCases] = useState(TEST_CASES);
   const [testResults, setTestResults] = useState({});
   const includeTests = import.meta.env.VITE_INCLUDE_TESTS !== "false";
-  const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
 
   const [testSummary, setTestSummary] = useState(null);
-  const [calculateLoading, setCalculateLoading] = useState(false);
   const [testLoading, setTestLoading] = useState(false);
   const [runningTests, setRunningTests] = useState([]);
   const [csvStatus, setCsvStatus] = useState("");
@@ -246,7 +243,6 @@ export default function VEPCalculator() {
     }
     setErrors({});
     setResult(null);
-    setCalculateLoading(true);
 
     // Simulate async calculation (in a real app, this might be an actual async operation)
     setTimeout(() => {
@@ -255,7 +251,6 @@ export default function VEPCalculator() {
 
       if (departureDt < entryDt) {
         setErrors({ _g: "Departure must be after entry date/time." });
-        setCalculateLoading(false);
         return;
       }
 
@@ -264,10 +259,8 @@ export default function VEPCalculator() {
         entryDt,
         departureDt,
       });
-      console.log(res);
       setResult(res);
-      setCalculateLoading(false);
-    }, 500); // Small delay to show loading animation
+    }, 500);
   }
 
   function handleQuickFill() {
@@ -314,7 +307,6 @@ export default function VEPCalculator() {
     reset();
     setResetVersion((prev) => prev + 1);
     setResult(null);
-    setCalculateLoading(false);
   }
 
   function handleTestRun(testCase) {
@@ -324,7 +316,6 @@ export default function VEPCalculator() {
 
     setTimeout(() => {
       const res = calculate(testCase.params);
-      console.log(res);
       setTestResults((prev) => ({ ...prev, [testCase.id]: res }));
       setRunningTests((prev) => prev.filter((id) => id !== testCase.id));
     }, 500);
@@ -373,9 +364,10 @@ export default function VEPCalculator() {
         }
       `}</style>
       <div style={baseStyles.wrap}>
-        {hideIfProd && (
+        {includeTests && (
           <div style={baseStyles.tabs}>
             <button
+              data-testid="tab-calc"
               style={baseStyles.tab(tab === "calc")}
               onClick={() => setTab("calc")}
             >
@@ -383,6 +375,7 @@ export default function VEPCalculator() {
             </button>
             {includeTests && (
               <button
+                data-testid="tab-tests"
                 style={baseStyles.tab(tab === "tests")}
                 onClick={() => {
                   setTab("tests");
@@ -432,7 +425,6 @@ export default function VEPCalculator() {
               <CalculatorForm
                 form={form}
                 errors={errors}
-                loading={calculateLoading}
                 resetVersion={resetVersion}
                 onFieldChange={set}
                 onCalculate={handleCalculate}
@@ -469,6 +461,7 @@ export default function VEPCalculator() {
                   background: "#2196f3",
                   marginRight: 8,
                 }}
+                data-testid="run-all-tests"
                 onClick={handleRunAllTests}
                 disabled={testLoading}
               >
@@ -498,6 +491,7 @@ export default function VEPCalculator() {
                   background: "#4caf50",
                   marginRight: 8,
                 }}
+                data-testid="download-sample-csv"
                 onClick={handleDownloadSampleCsv}
                 disabled={testLoading}
               >
@@ -515,6 +509,7 @@ export default function VEPCalculator() {
                 Upload CSV
               </button>
               <input
+                data-testid="csv-input"
                 ref={csvInputRef}
                 type="file"
                 accept=".csv,text/csv"
@@ -523,6 +518,7 @@ export default function VEPCalculator() {
               />
               {!testLoading && testSummary && (
                 <div
+                  data-testid="test-summary"
                   style={{
                     display: "inline-block",
                     padding: "8px 12px",

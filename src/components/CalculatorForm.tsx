@@ -1,7 +1,6 @@
 import { UI_LABELS } from "@/config/messages";
 import { FormState, FormErrors } from "@/hooks/useCalculatorForm";
 import {
-  Alert,
   Box,
   Button,
   Card,
@@ -49,7 +48,6 @@ const dateTimePlaceholderLocaleText = {
 interface CalculatorFormProps {
   form: FormState;
   errors: FormErrors;
-  loading?: boolean;
   resetVersion: number;
   onFieldChange: (field: keyof FormState, value: string) => void;
   onCalculate: () => void;
@@ -60,7 +58,6 @@ interface CalculatorFormProps {
 export function CalculatorForm({
   form,
   errors,
-  loading = false,
   resetVersion,
   onFieldChange,
   onCalculate,
@@ -211,6 +208,7 @@ export function CalculatorForm({
               </Typography>
               <FormControl fullWidth error={!!errors.vehicleCategory}>
                 <Select
+                  data-testid="vehicle-category"
                   displayEmpty
                   value={form.vehicleCategory}
                   onChange={(e) =>
@@ -247,6 +245,7 @@ export function CalculatorForm({
                 </Typography>
                 <FormControl fullWidth error={!!errors.hasIU}>
                   <Select
+                    data-testid="has-iu"
                     displayEmpty
                     value={form.hasIU}
                     onChange={(e) => onFieldChange("hasIU", e.target.value)}
@@ -294,6 +293,7 @@ export function CalculatorForm({
                   disableTouchRipple: true,
                 },
                 textField: {
+                  ...{ "data-testid": "entry-datetime" },
                   fullWidth: true,
                   error: !!errors.entryDatetime,
                   helperText: errors.entryDatetime || "",
@@ -344,6 +344,7 @@ export function CalculatorForm({
                   disableTouchRipple: true,
                 },
                 textField: {
+                  ...{ "data-testid": "depart-datetime" },
                   fullWidth: true,
                   error: !!errors.departDatetime,
                   helperText: errors.departDatetime || "",
@@ -369,6 +370,7 @@ export function CalculatorForm({
             </Typography>
             <FormControl fullWidth error={!!errors.entryCheckpoint}>
               <Select
+                data-testid="entry-checkpoint"
                 displayEmpty
                 value={form.entryCheckpoint}
                 onChange={(e) =>
@@ -397,6 +399,7 @@ export function CalculatorForm({
             </Typography>
             <FormControl fullWidth error={!!errors.departCheckpoint}>
               <Select
+                data-testid="depart-checkpoint"
                 displayEmpty
                 value={form.departCheckpoint}
                 onChange={(e) =>
@@ -426,6 +429,7 @@ export function CalculatorForm({
                     {straddleYear && "in year 2026"}
                   </Typography>
                   <TextField
+                    data-testid="erp-days-2026"
                     fullWidth
                     type="text"
                     value={form.erpDays2026}
@@ -464,6 +468,7 @@ export function CalculatorForm({
                     {straddleYear && "in year 2027"}
                   </Typography>
                   <TextField
+                    data-testid="erp-days-2027"
                     fullWidth
                     type="text"
                     value={form.erpDays2027}
@@ -513,6 +518,7 @@ export function CalculatorForm({
                 sx={{ alignItems: "center" }}
               >
                 <Button
+                  data-testid="clear-button"
                   variant="text"
                   onClick={onReset}
                   sx={tertiaryButtonStyle}
@@ -521,6 +527,7 @@ export function CalculatorForm({
                   Clear
                 </Button>
                 <Button
+                  data-testid="calculate-button"
                   variant="contained"
                   onClick={onCalculate}
                   sx={primaryButtonStyle}
@@ -534,6 +541,7 @@ export function CalculatorForm({
               {hideIfProd && (
                 <Box sx={{ position: "absolute", right: 0 }}>
                   <Button
+                    data-testid="quick-fill-button"
                     variant="outlined"
                     color="info"
                     onClick={onQuickFill}

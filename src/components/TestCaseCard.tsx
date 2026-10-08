@@ -94,12 +94,7 @@ export function TestCaseCard({
     cursor: "pointer",
   } as const;
 
-  const isPeriod =
-    testCase.params.entryDt >= CUTOFF_2027
-      ? "post"
-      : testCase.params.departureDt >= CUTOFF_2027
-        ? "pre"
-        : "pre";
+  const isPeriod = testCase.params.entryDt >= CUTOFF_2027 ? "post" : "pre";
 
   const periodLabel =
     testCase.params.entryDt >= CUTOFF_2027
