@@ -59,6 +59,9 @@ export const EVENING_ENTRY_HOUR = 17; // 5 PM
 export const EXIT_CUTOFF_HOUR = 2; // 2 AM
 export const SCHOOL_HOLIDAY_ENTRY_HOUR = 12; // Noon
 
+// Time
+export const MS_PER_DAY = 86_400_000;
+
 // Calculation Limits
 export const MAX_STAY_DAYS = 250;
 export const QUICK_FILL_MAX_DAYS = 30;

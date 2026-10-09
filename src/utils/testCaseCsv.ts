@@ -1,4 +1,5 @@
 import { TestCase } from "@/config/testCases";
+import { toLocalDateTimeString } from "./dateUtils";
 import { isHasIU, isVehicleCategory } from "@/types/vep";
 
 const CSV_HEADERS = [
@@ -22,11 +23,6 @@ function escapeCsvValue(value: string): string {
     return `"${value.replace(/"/g, '""')}"`;
   }
   return value;
-}
-
-function toLocalIso(dt: Date): string {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
 }
 
 function parseCsvLine(line: string): string[] {
@@ -72,8 +68,8 @@ export function buildTestCasesCsv(testCases: TestCase[]): string {
       tc.params.hasIU,
       tc.params.erpDays2026,
       tc.params.erpDays2027,
-      toLocalIso(tc.params.entryDt),
-      toLocalIso(tc.params.departureDt),
+      toLocalDateTimeString(tc.params.entryDt),
+      toLocalDateTimeString(tc.params.departureDt),
       tc.params.entryCheckpoint,
       tc.params.departCheckpoint,
       String(tc.expectedTotal),

@@ -1,5 +1,5 @@
 import { UI_LABELS } from "@/config/messages";
-import { FormState, FormErrors } from "@/hooks/useCalculatorForm";
+import type { FormState, FormErrors } from "@/types/form";
 import {
   Box,
   Button,

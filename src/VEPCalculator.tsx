@@ -6,13 +6,12 @@ import {
   type CSSProperties,
 } from "react";
 
-import { useCalculatorForm, type FormState } from "@/hooks/useCalculatorForm";
+import { useCalculatorForm } from "@/hooks/useCalculatorForm";
+import type { FormState } from "@/types/form";
+import { sanitiseForm } from "@/utils/formRules";
+import { generateQuickFillForm } from "@/utils/quickFill";
 import { calculate, type CalculationOutput } from "@/utils/calculations";
 import { isHasIU, isVehicleCategory } from "@/types/vep";
-import {
-  QUICK_FILL_MAX_DAYS,
-  QUICK_FILL_STAY_DAYS_MAX,
-} from "@/config/constants";
 import { TEST_CASES, type TestCase } from "@/config/testCases";
 import { buildTestCasesCsv, parseTestCasesCsv } from "@/utils/testCaseCsv";
 import { evaluateTestCase, type TestStatus } from "@/utils/testCaseEvaluation";
@@ -118,11 +117,6 @@ export default function VEPCalculator() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortBy, setSortBy] = useState<SortBy>("id");
   const csvInputRef = useRef<HTMLInputElement>(null);
-
-  const formatDateTimeLocal = (date: Date) => {
-    const pad = (value: number) => String(value).padStart(2, "0");
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  };
 
   useEffect(() => {
     let passed = 0;
@@ -235,27 +229,11 @@ export default function VEPCalculator() {
   }
 
   function handleCalculate() {
-    const entryYear = form.entryDatetime.slice(0, 4);
-    const departYear = form.departDatetime.slice(0, 4);
-    const has2026Period = entryYear === "2026" || departYear === "2026";
-    const has2027Period = entryYear === "2027" || departYear === "2027";
+    const sanitisedForm = sanitiseForm(form);
 
-    const sanitisedForm = {
-      ...form,
-      erpDays2026: has2026Period ? form.erpDays2026 : "0",
-      erpDays2027: has2027Period ? form.erpDays2027 : "0",
-      hasIU: form.vehicleCategory === "taxis" ? "yes" : form.hasIU,
-    };
-
-    if (!has2026Period && form.erpDays2026 !== "0") {
-      set("erpDays2026", "0");
-    }
-    if (!has2027Period && form.erpDays2027 !== "0") {
-      set("erpDays2027", "0");
-    }
-    if (form.vehicleCategory === "taxis" && form.hasIU !== "yes") {
-      set("hasIU", "yes");
-    }
+    (["erpDays2026", "erpDays2027", "hasIU"] as const).forEach((key) => {
+      if (sanitisedForm[key] !== form[key]) set(key, sanitisedForm[key]);
+    });
 
     const e = validate(sanitisedForm);
     if (Object.keys(e).length) {
@@ -297,37 +275,7 @@ export default function VEPCalculator() {
   }
 
   function handleQuickFill() {
-    const now = new Date();
-    const entryDate = new Date(
-      now.getTime() + Math.random() * QUICK_FILL_MAX_DAYS * 24 * 60 * 60 * 1000,
-    );
-
-    const stayDays = Math.floor(Math.random() * QUICK_FILL_STAY_DAYS_MAX) + 1;
-    const departDate = new Date(
-      entryDate.getTime() + stayDays * 24 * 60 * 60 * 1000,
-    );
-
-    const entryYear = entryDate.getFullYear();
-    const randomErpDays = Math.floor(Math.random() * (stayDays + 1)).toString();
-
-    let erpDays2026 = "";
-    let erpDays2027 = "";
-    if (entryYear === 2026) {
-      erpDays2026 = randomErpDays;
-    } else if (entryYear === 2027) {
-      erpDays2027 = randomErpDays;
-    }
-
-    const randomForm: FormState = {
-      vehicleCategory: Math.random() > 0.5 ? "cars" : "motorcycles",
-      hasIU: Math.random() > 0.5 ? "yes" : "no",
-      entryDatetime: formatDateTimeLocal(entryDate),
-      departDatetime: formatDateTimeLocal(departDate),
-      entryCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
-      departCheckpoint: Math.random() > 0.5 ? "woodlands" : "tuas",
-      erpDays2026,
-      erpDays2027,
-    };
+    const randomForm = generateQuickFillForm();
 
     (Object.keys(randomForm) as (keyof FormState)[]).forEach((k) => {
       set(k, randomForm[k]);

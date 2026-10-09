@@ -425,10 +425,7 @@ export function ResultTable({ result }: ResultTableProps) {
                   ...resultStyles.tableFooterCell,
                 }}
               >
-                <Typography
-                  data-testid="grand-total"
-                  sx={{ fontWeight: 600 }}
-                >
+                <Typography data-testid="grand-total" sx={{ fontWeight: 600 }}>
                   {fmt(result.grandTotal)}
                 </Typography>
               </TableCell>

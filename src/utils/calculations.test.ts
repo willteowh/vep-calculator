@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { TEST_CASES } from "@/config/testCases";
-import { calculate } from "./calculations";
+import { calculate, getStayError } from "./calculations";
 import { evaluateTestCase } from "./testCaseEvaluation";
 
 describe("calculate() against TEST_CASES", () => {
@@ -33,5 +33,22 @@ describe("calculate() input validation", () => {
       departureDt: new Date("2027-01-01T10:00"),
     });
     expect(result).toHaveProperty("error");
+  });
+});
+
+describe("getStayError", () => {
+  it("returns null for a valid stay", () => {
+    expect(
+      getStayError(new Date("2026-04-10T10:00"), new Date("2026-04-12T10:00")),
+    ).toBeNull();
+  });
+
+  it("flags reversed and over-long stays", () => {
+    expect(
+      getStayError(new Date("2026-04-12T10:00"), new Date("2026-04-10T10:00")),
+    ).not.toBeNull();
+    expect(
+      getStayError(new Date("2026-01-01T10:00"), new Date("2027-01-01T10:00")),
+    ).not.toBeNull();
   });
 });

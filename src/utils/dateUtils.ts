@@ -2,6 +2,7 @@ import {
   SG_PUBLIC_HOLIDAYS,
   SCHOOL_HOLIDAYS,
   CUTOFF_2027,
+  MS_PER_DAY,
 } from "@/config/constants";
 
 const PUBLIC_HOLIDAY_BY_DATE: Map<string, string> = new Map(
@@ -13,6 +14,11 @@ export function dateKey(d: Date): string {
   const month = String(d.getMonth() + 1).padStart(2, "0");
   const day = String(d.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+export function toLocalDateTimeString(d: Date): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${dateKey(d)}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 export function isPublicHoliday(d: Date): boolean {
@@ -45,7 +51,7 @@ export function getHourFromDate(dt: Date): number {
 }
 
 export function getDateDifferenceDays(date1: Date, date2: Date): number {
-  return Math.round((date2.getTime() - date1.getTime()) / 86400000);
+  return Math.round((date2.getTime() - date1.getTime()) / MS_PER_DAY);
 }
 
 export function isSameDay(dt1: Date, dt2: Date): boolean {
@@ -58,5 +64,5 @@ export function isNextDay(dt1: Date, dt2: Date): boolean {
 
 export function durationDays(entryDt: Date, departureDt: Date): number {
   const ms = departureDt.getTime() - entryDt.getTime();
-  return ms > 0 ? Math.ceil(ms / 86400000) : 0;
+  return ms > 0 ? Math.ceil(ms / MS_PER_DAY) : 0;
 }

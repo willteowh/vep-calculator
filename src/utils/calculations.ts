@@ -9,6 +9,7 @@ import {
   RRC,
   PSVP_TAXI_POST_2027_ENTRY_FEE,
   MAX_STAY_DAYS,
+  MS_PER_DAY,
   VEHICLE_TYPES,
 } from "@/config/constants";
 import { ERROR_MESSAGES } from "@/config/messages";
@@ -22,6 +23,7 @@ import {
   getHourFromDate,
   getDateDifferenceDays,
   durationDays,
+  toLocalDateTimeString,
 } from "./dateUtils";
 
 export interface CalculationResult {
@@ -145,6 +147,14 @@ export interface CalculateParams {
   erpDays2027: string;
 }
 
+export function getStayError(entryDt: Date, departureDt: Date): string | null {
+  const msDiff = departureDt.getTime() - entryDt.getTime();
+  if (msDiff < 0) return ERROR_MESSAGES.INVALID_DATE_RANGE;
+  if (msDiff / MS_PER_DAY > MAX_STAY_DAYS)
+    return ERROR_MESSAGES.EXCEED_DURATION;
+  return null;
+}
+
 export function calculate(params: CalculateParams): CalculationOutput {
   const {
     vehicleCategory,
@@ -157,13 +167,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
     erpDays2027,
   } = params;
 
-  // 1. Stay Duration Check
-  const msDiff = departureDt.getTime() - entryDt.getTime();
-  const daysDiff = msDiff / (1000 * 60 * 60 * 24);
-
-  if (msDiff < 0) return { error: ERROR_MESSAGES.INVALID_DATE_RANGE };
-  if (daysDiff > MAX_STAY_DAYS)
-    return { error: ERROR_MESSAGES.EXCEED_DURATION };
+  const stayError = getStayError(entryDt, departureDt);
+  if (stayError) return { error: stayError };
 
   const isCar = vehicleCategory === VEHICLE_TYPES.CARS;
   const isMoto = vehicleCategory === VEHICLE_TYPES.MOTORCYCLES;
@@ -251,17 +256,12 @@ export function calculate(params: CalculateParams): CalculationOutput {
     }
   };
 
-  const toLocalISO = (dt: Date) => {
-    const pad = (n: number) => String(n).padStart(2, "0");
-    return `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}T${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
-  };
-
   return {
     vehicleType: getVehicleTypeName(),
     vehicleCategory,
     hasIU,
-    entryDatetime: toLocalISO(entryDt),
-    departDatetime: toLocalISO(departureDt),
+    entryDatetime: toLocalDateTimeString(entryDt),
+    departDatetime: toLocalDateTimeString(departureDt),
     entryCheckpoint,
     departCheckpoint,
     erpDays2026,

@@ -1,7 +1,5 @@
-import { ERROR_MESSAGES } from "@/config/messages";
-import { MAX_STAY_DAYS } from "@/config/constants";
 import type { TestCase } from "@/config/testCases";
-import type { CalculationOutput } from "./calculations";
+import { getStayError, type CalculationOutput } from "./calculations";
 
 export type TestStatus = "not-run" | "passed" | "failed";
 
@@ -22,13 +20,7 @@ export function deriveExpectedError(testCase: TestCase): string | null {
     return null;
   }
 
-  const msDiff = departureDt.getTime() - entryDt.getTime();
-  const daysDiff = msDiff / (1000 * 60 * 60 * 24);
-
-  if (msDiff < 0) return ERROR_MESSAGES.INVALID_DATE_RANGE;
-  if (daysDiff > MAX_STAY_DAYS) return ERROR_MESSAGES.EXCEED_DURATION;
-
-  return null;
+  return getStayError(entryDt, departureDt);
 }
 
 export function evaluateTestCase(
