@@ -1,3 +1,4 @@
+import { INCLUDE_TESTS } from "@/config/features";
 import { UI_LABELS } from "@/config/messages";
 import type { FormState, FormErrors } from "@/types/form";
 import {
@@ -64,7 +65,6 @@ export function CalculatorForm({
   onQuickFill,
   onReset,
 }: CalculatorFormProps) {
-  const hideIfProd = import.meta.env.VITE_INCLUDE_TESTS !== "false";
   const [entryPickerOpen, setEntryPickerOpen] = useState(false);
   const [departPickerOpen, setDepartPickerOpen] = useState(false);
 
@@ -538,7 +538,7 @@ export function CalculatorForm({
               </Stack>
 
               {/* Quick Fill floated to the right */}
-              {hideIfProd && (
+              {INCLUDE_TESTS && (
                 <Box sx={{ position: "absolute", right: 0 }}>
                   <Button
                     data-testid="quick-fill-button"
