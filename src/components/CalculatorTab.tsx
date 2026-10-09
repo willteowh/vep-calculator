@@ -8,7 +8,7 @@ import {
   linkStyle,
   pageHeaderStyle,
 } from "@/components/calculatorFormStyles";
-import { errorBannerStyle } from "@/components/appStyles";
+import { errorBannerSx } from "@/components/appStyles";
 import type { FeeCalculator } from "@/hooks/useFeeCalculator";
 
 const NEWS_RELEASE_URL =
@@ -60,9 +60,7 @@ export function CalculatorTab({ calculator }: { calculator: FeeCalculator }) {
         {result && !("error" in result) && <ResultTable result={result} />}
 
         {result && "error" in result && (
-          <div style={{ ...errorBannerStyle, marginTop: 16 }}>
-            {result.error}
-          </div>
+          <Box sx={{ ...errorBannerSx, marginTop: 16 }}>{result.error}</Box>
         )}
       </Box>
     </Box>

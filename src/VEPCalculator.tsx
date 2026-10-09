@@ -1,8 +1,9 @@
 import { useState } from "react";
+import { Box, Button, GlobalStyles } from "@mui/material";
 
 import { CalculatorTab } from "@/components/CalculatorTab";
 import { TestCasesTab } from "@/components/TestCasesTab";
-import { tabStyle, tabsStyle, wrapStyle } from "@/components/appStyles";
+import { tabSx, tabsSx, wrapSx } from "@/components/appStyles";
 import { INCLUDE_TESTS } from "@/config/features";
 import { useFeeCalculator } from "@/hooks/useFeeCalculator";
 import { useTestRunner } from "@/hooks/useTestRunner";
@@ -17,40 +18,42 @@ export default function VEPCalculator() {
 
   return (
     <>
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        .infoBox > * {
-          margin-bottom: 20px;
-        }
-      `}</style>
-      <div style={wrapStyle}>
+      <GlobalStyles
+        styles={{
+          "@keyframes spin": {
+            "0%": { transform: "rotate(0deg)" },
+            "100%": { transform: "rotate(360deg)" },
+          },
+          ".infoBox > *": { marginBottom: 20 },
+        }}
+      />
+      <Box sx={wrapSx}>
         {INCLUDE_TESTS && (
-          <div style={tabsStyle}>
-            <button
+          <Box sx={tabsSx}>
+            <Button
+              disableRipple
               data-testid="tab-calc"
-              style={tabStyle(tab === "calc")}
+              sx={tabSx(tab === "calc")}
               onClick={() => setTab("calc")}
             >
               Fee Calculator
-            </button>
-            <button
+            </Button>
+            <Button
+              disableRipple
               data-testid="tab-tests"
-              style={tabStyle(tab === "tests")}
+              sx={tabSx(tab === "tests")}
               onClick={() => setTab("tests")}
             >
               Test Cases
-            </button>
-          </div>
+            </Button>
+          </Box>
         )}
 
         {tab === "calc" && <CalculatorTab calculator={calculator} />}
         {INCLUDE_TESTS && tab === "tests" && (
           <TestCasesTab runner={testRunner} />
         )}
-      </div>
+      </Box>
     </>
   );
 }

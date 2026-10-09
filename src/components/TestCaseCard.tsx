@@ -1,4 +1,5 @@
 import { CUTOFF_2027 } from "@/config/constants";
+import { theme } from "@/theme";
 import type { TestCase } from "@/config/testCases";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
 import { fmt } from "@/utils/formatters";
@@ -123,11 +124,11 @@ export function TestCaseCard({
                   ? "#e3f2fd"
                   : "#eeeeee",
             color: isPassed
-              ? "#2e7d32"
+              ? theme.palette.success.dark
               : isFailed
-                ? "#c62828"
+                ? theme.palette.error.dark
                 : isRunning
-                  ? "#1565c0"
+                  ? theme.palette.info.dark
                   : "#555",
           }}
         >
@@ -148,9 +149,9 @@ export function TestCaseCard({
                   : "#eee",
             color:
               isPeriod === "pre"
-                ? "#2e7d32"
+                ? theme.palette.success.dark
                 : isPeriod === "post"
-                  ? "#1565c0"
+                  ? theme.palette.info.dark
                   : "#555",
             marginLeft: 6,
           }}

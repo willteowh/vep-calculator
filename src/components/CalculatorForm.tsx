@@ -186,7 +186,7 @@ export function CalculatorForm({
     "& .MuiInputBase-root": {
       height: "48px",
       fontSize: "18px",
-      color: "#23272E",
+      color: "text.primary",
     },
     "& .MuiFormHelperText-root": {
       mt: 1,
@@ -302,7 +302,7 @@ export function CalculatorForm({
                     ...inputStyle,
                     ...(form.entryDatetime && {
                       "& .MuiPickersInputBase-sectionsContainer": {
-                        color: "#23272E",
+                        color: "text.primary",
                       },
                     }),
                   },
@@ -353,7 +353,7 @@ export function CalculatorForm({
                     ...inputStyle,
                     ...(form.departDatetime && {
                       "& .MuiPickersInputBase-sectionsContainer": {
-                        color: "#23272E",
+                        color: "text.primary",
                       },
                     }),
                   },
@@ -453,7 +453,9 @@ export function CalculatorForm({
                         sx: {
                           fontSize: "16px",
                           ml: 0,
-                          color: errors.erpDays2026 ? "error.main" : "#6B768A",
+                          color: errors.erpDays2026
+                            ? "error.main"
+                            : "text.secondary",
                         },
                       },
                     }}
@@ -492,7 +494,9 @@ export function CalculatorForm({
                         sx: {
                           fontSize: "16px",
                           ml: 0,
-                          color: errors.erpDays2027 ? "error.main" : "#6B768A",
+                          color: errors.erpDays2027
+                            ? "error.main"
+                            : "text.secondary",
                         },
                       },
                     }}

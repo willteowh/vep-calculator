@@ -1,6 +1,7 @@
 import { useRef, type ChangeEvent } from "react";
+import { Box, Button, Typography } from "@mui/material";
 
-import { buttonStyle } from "@/components/appStyles";
+import { buttonSx } from "@/components/appStyles";
 import type { TestRunner } from "@/hooks/useTestRunner";
 
 const spinnerStyle = {
@@ -28,9 +29,11 @@ export function TestToolbar({ runner }: { runner: TestRunner }) {
   }
 
   return (
-    <div style={{ marginBottom: 16 }}>
-      <button
-        style={{ ...buttonStyle, background: "#2196f3", marginRight: 8 }}
+    <Box sx={{ mb: 2 }}>
+      <Button
+        variant="contained"
+        color="info"
+        sx={{ ...buttonSx, px: 3, mr: 1 }}
         data-testid="run-all-tests"
         onClick={runner.runAll}
         disabled={isRunningAll}
@@ -43,22 +46,26 @@ export function TestToolbar({ runner }: { runner: TestRunner }) {
         ) : (
           "Run All Tests"
         )}
-      </button>
-      <button
-        style={{ ...buttonStyle, background: "#4caf50", marginRight: 8 }}
+      </Button>
+      <Button
+        variant="contained"
+        color="success"
+        sx={{ ...buttonSx, px: 3, mr: 1 }}
         data-testid="download-sample-csv"
         onClick={runner.downloadSampleCsv}
         disabled={isRunningAll}
       >
         Download Sample CSV
-      </button>
-      <button
-        style={{ ...buttonStyle, background: "#7e57c2", marginRight: 8 }}
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ ...buttonSx, px: 3, mr: 1 }}
         onClick={() => csvInputRef.current?.click()}
         disabled={isRunningAll}
       >
         Upload CSV
-      </button>
+      </Button>
       <input
         data-testid="csv-input"
         ref={csvInputRef}
@@ -68,32 +75,36 @@ export function TestToolbar({ runner }: { runner: TestRunner }) {
         style={{ display: "none" }}
       />
       {!isRunningAll && (
-        <div
+        <Box
           data-testid="test-summary"
-          style={{
+          sx={{
             display: "inline-block",
-            padding: "8px 12px",
-            backgroundColor: allPassed ? "#e8f5e8" : "#ffeaea",
-            border: `1px solid ${allPassed ? "#4caf50" : "#f44336"}`,
-            borderRadius: 4,
+            px: 1.5,
+            py: 1,
+            backgroundColor: allPassed ? "success.light" : "error.light",
+            border: "1px solid",
+            borderColor: allPassed ? "success.main" : "error.main",
+            borderRadius: 1,
             fontWeight: 600,
-            color: allPassed ? "#2e7d32" : "#c62828",
+            color: allPassed ? "success.dark" : "error.dark",
           }}
         >
           {summary.passed}/{summary.total} test cases passed
-        </div>
+        </Box>
       )}
       {csvStatus && (
-        <div
-          style={{
+        <Typography
+          sx={{
             marginTop: 10,
-            color: csvStatus.startsWith("Failed") ? "#c62828" : "#2e7d32",
+            color: csvStatus.startsWith("Failed")
+              ? "error.dark"
+              : "success.dark",
             fontWeight: 600,
           }}
         >
           {csvStatus}
-        </div>
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 }

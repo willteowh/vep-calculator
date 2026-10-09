@@ -1,4 +1,6 @@
-import { infoBannerStyle } from "@/components/appStyles";
+import { Box } from "@mui/material";
+
+import { infoBannerSx } from "@/components/appStyles";
 import { TestCaseCard } from "@/components/TestCaseCard";
 import { TestFilters } from "@/components/TestFilters";
 import { TestSummaryBadges } from "@/components/TestSummaryBadges";
@@ -18,29 +20,29 @@ export function TestCasesTab({ runner }: { runner: TestRunner }) {
 
   return (
     <div>
-      <div style={infoBannerStyle}>
+      <Box sx={infoBannerSx}>
         {testCases.length} test cases loaded. Download the sample CSV, add
         custom rows, upload it, then click <strong>Run All Tests</strong>
         to execute the full set. Use filters and sorting below to triage failed
         cases quickly.
-      </div>
+      </Box>
       <TestToolbar runner={runner} />
       <TestFilters runner={runner} />
 
       {!isRunningAll && <TestSummaryBadges summary={summary} />}
 
       {displayedTestCases.length === 0 && (
-        <div
-          style={{
+        <Box
+          sx={{
             border: "1px dashed #c8d0de",
-            borderRadius: 8,
+            borderRadius: 1,
             padding: "12px 14px",
-            color: "#546174",
+            color: "text.secondary",
             marginBottom: 12,
           }}
         >
           No test cases match this filter.
-        </div>
+        </Box>
       )}
 
       {displayedTestCases.map((tc) => {

@@ -137,7 +137,7 @@ Run predefined test scenarios to validate calculations and understand different 
 - **Framework**: React 19.2.4
 - **Language**: TypeScript
 - **Build Tool**: Vite
-- **Styling**: Tailwind CSS / plain CSS
+- **Styling**: Material UI theme and `sx` props, with global CSS for base typography
 
 ### Architecture
 

@@ -2,6 +2,7 @@ import type { TestCase } from "@/config/testCases";
 import { fmt } from "@/utils/formatters";
 import { CalculationResult, CalculationError } from "@/utils/calculations";
 import { evaluateTestCase } from "@/utils/testCaseEvaluation";
+import { theme } from "@/theme";
 
 interface TestResultProps {
   result?: CalculationResult | CalculationError;
@@ -14,7 +15,7 @@ export function TestResult({ result, testCase }: TestResultProps) {
   const evaluation = evaluateTestCase(testCase, result);
   const ok = evaluation.status === "passed";
   const totalMatches = evaluation.totalMatches;
-  const themeColor = "#606fbb";
+  const themeColor = theme.palette.secondary.main;
 
   return (
     <div
@@ -31,7 +32,13 @@ export function TestResult({ result, testCase }: TestResultProps) {
         <>
           <strong>{result.error}</strong>
           {ok && (
-            <span style={{ marginLeft: 8, color: "#2e7d32", fontSize: 16 }}>
+            <span
+              style={{
+                marginLeft: 8,
+                color: theme.palette.success.dark,
+                fontSize: 16,
+              }}
+            >
               ✅
             </span>
           )}
@@ -93,13 +100,19 @@ export function TestResult({ result, testCase }: TestResultProps) {
           <div
             style={{
               fontWeight: 700,
-              color: ok ? "#2e7d32" : themeColor,
+              color: ok ? theme.palette.success.dark : themeColor,
               fontSize: 13,
             }}
           >
             Grand Total: {fmt(result.grandTotal)}
             {ok && (
-              <span style={{ marginLeft: 8, color: "#2e7d32", fontSize: 16 }}>
+              <span
+                style={{
+                  marginLeft: 8,
+                  color: theme.palette.success.dark,
+                  fontSize: 16,
+                }}
+              >
                 ✅
               </span>
             )}

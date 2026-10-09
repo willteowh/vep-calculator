@@ -25,7 +25,7 @@ export const baseButtonStyle = {
 
 export const tertiaryButtonStyle = {
   ...baseButtonStyle,
-  color: "#2c2f36",
+  color: "text.primary",
   borderColor: "transparent",
   backgroundColor: "transparent",
   "&:hover": {
@@ -36,9 +36,9 @@ export const tertiaryButtonStyle = {
 
 export const primaryButtonStyle = {
   ...baseButtonStyle,
-  backgroundColor: "#3B3A99",
+  backgroundColor: "primary.main",
   "&:hover": {
-    backgroundColor: "#7F7ECD",
+    backgroundColor: "primary.light",
   },
   boxShadow: "none",
   px: "20px;",
@@ -58,12 +58,12 @@ export const quickFillButtonStyle = {
 export const labelStyle = {
   display: "block",
   mb: 0.75,
-  color: "#4b5563",
+  color: "text.secondary",
   fontSize: 16,
   fontWeight: 600,
 } as const;
 
-export const asteriskStyle = { color: "#CA222D", fontWeight: 600 } as const;
+export const asteriskStyle = { color: "error.main", fontWeight: 600 } as const;
 
 export const introParagraphStyle = {
   fontWeight: 400,
@@ -71,7 +71,7 @@ export const introParagraphStyle = {
 } as const;
 
 export const linkStyle = {
-  color: "#3B3A99",
+  color: "primary.main",
   textDecoration: "underline",
 } as const;
 
@@ -81,7 +81,7 @@ export const inputStyle = {
   height: "48px",
   fontSize: "18px",
   backgroundColor: "#fff !important",
-  color: "#23272E",
+  color: "text.primary",
 
   "& input": {
     backgroundColor: "#fff !important",
@@ -90,12 +90,12 @@ export const inputStyle = {
   "& .MuiInputBase-root": {
     height: "48px",
     fontSize: "18px",
-    color: "#23272E",
+    color: "text.primary",
   },
   "& .MuiPickersOutlinedInput-root": {
     height: "48px",
     fontSize: "18px",
-    color: "#23272E",
+    color: "text.primary",
   },
   "& .MuiPickersInputBase-sectionsContainer, & .MuiPickersOutlinedInput-input":
     {
@@ -104,40 +104,40 @@ export const inputStyle = {
       padding: 0,
     },
   "& .MuiPickersInputBase-sectionsContainer": {
-    color: "#8991A1",
+    color: "text.disabled",
     opacity: 1,
     fontStyle: "normal",
   },
   "& .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#C4C8D0",
+    borderColor: "divider",
   },
   "& .MuiPickersOutlinedInput-notchedOutline": {
-    borderColor: "#C4C8D0",
+    borderColor: "divider",
   },
   "&:not(.Mui-disabled):not(.Mui-error):hover .MuiOutlinedInput-notchedOutline":
     {
-      borderColor: "#7F7ECD",
+      borderColor: "primary.light",
     },
   "& .MuiPickersOutlinedInput-root:not(.MuiPickersInputBase-disabled):not(.MuiPickersInputBase-error):hover .MuiPickersOutlinedInput-notchedOutline":
     {
-      borderColor: "#7F7ECD",
+      borderColor: "primary.light",
     },
   "&.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#5957BF",
+    borderColor: "primary.dark",
     borderWidth: 2,
   },
   "& .MuiPickersOutlinedInput-root.MuiPickersInputBase-focused:not(.MuiPickersInputBase-error) .MuiPickersOutlinedInput-notchedOutline":
     {
-      borderColor: "#5957BF",
+      borderColor: "primary.dark",
       borderWidth: 2,
     },
   "& .MuiOutlinedInput-root:not(.Mui-disabled):not(.Mui-error):hover .MuiOutlinedInput-notchedOutline":
     {
-      borderColor: "#7F7ECD",
+      borderColor: "primary.light",
     },
   "& .MuiOutlinedInput-root.Mui-focused:not(.Mui-error) .MuiOutlinedInput-notchedOutline":
     {
-      borderColor: "#5957BF",
+      borderColor: "primary.dark",
       borderWidth: 2,
     },
 } as const;
@@ -145,14 +145,14 @@ export const inputStyle = {
 export const datepickerStyle = {
   height: "48px",
   fontSize: "18px",
-  color: "#23272E",
+  color: "text.primary",
   "& .MuiInputBase-root": {
     height: "48px",
     fontSize: "18px",
-    color: "#23272E",
+    color: "text.primary",
   },
   "& .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#D1D5DB",
+    borderColor: "divider",
   },
 };
 

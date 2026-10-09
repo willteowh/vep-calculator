@@ -1,62 +1,53 @@
+import { Box } from "@mui/material";
+
 import type { TestSummary } from "@/utils/testRunner";
 
 const BADGES: {
   key: Exclude<keyof TestSummary, "total">;
   label: string;
-  background: string;
-  border: string;
-  color: string;
+  palette: "success" | "error" | "info" | "secondary";
 }[] = [
   {
     key: "passed",
     label: "Passed",
-    background: "#e8f5e8",
-    border: "#4caf50",
-    color: "#2e7d32",
+    palette: "success",
   },
   {
     key: "failed",
     label: "Failed",
-    background: "#ffeaea",
-    border: "#f44336",
-    color: "#c62828",
+    palette: "error",
   },
   {
     key: "running",
     label: "Running",
-    background: "#e3f2fd",
-    border: "#42a5f5",
-    color: "#1565c0",
+    palette: "info",
   },
   {
     key: "notRun",
     label: "Not Run",
-    background: "#f3e5f5",
-    border: "#ab47bc",
-    color: "#6a1b9a",
+    palette: "secondary",
   },
 ];
 
 export function TestSummaryBadges({ summary }: { summary: TestSummary }) {
   return (
-    <div
-      style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}
-    >
-      {BADGES.map(({ key, label, background, border, color }) => (
-        <div
+    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 1.5 }}>
+      {BADGES.map(({ key, label, palette }) => (
+        <Box
           key={key}
-          style={{
+          sx={{
             padding: "8px 10px",
-            background,
-            border: `1px solid ${border}`,
-            borderRadius: 6,
+            backgroundColor: `${palette}.light`,
+            border: "1px solid",
+            borderColor: `${palette}.main`,
+            borderRadius: 1,
             fontWeight: 600,
-            color,
+            color: `${palette}.dark`,
           }}
         >
           {label}: {summary[key]}
-        </div>
+        </Box>
       ))}
-    </div>
+    </Box>
   );
 }
