@@ -6,45 +6,27 @@ import {
   Button,
   Card,
   CardContent,
-  FormControl,
-  FormHelperText,
   Grid,
-  MenuItem,
-  Select,
   Stack,
-  TextField,
-  Typography,
 } from "@mui/material";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { useEffect, useState, type KeyboardEvent } from "react";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import { resultStyles } from "@/utils/resultStyles";
+import { CalculatorDateTimeField } from "./CalculatorDateTimeField";
+import { CalculatorSelectField } from "./CalculatorSelectField";
+import { ErpDaysField } from "./ErpDaysField";
 import {
   tertiaryButtonStyle,
   primaryButtonStyle,
   quickFillButtonStyle,
-  labelStyle,
-  asteriskStyle,
-  inputStyle,
-  datepickerStyle,
-  selectPlaceholderStyle,
 } from "./calculatorFormStyles";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-const dateTimePlaceholderLocaleText = {
-  fieldDayPlaceholder: () => "DD",
-  fieldMonthPlaceholder: () => "MM",
-  fieldYearPlaceholder: () => "YYYY",
-  fieldHoursPlaceholder: () => "HH",
-  fieldMinutesPlaceholder: () => "MM",
-} as const;
 
 interface CalculatorFormProps {
   form: FormState;
@@ -105,7 +87,6 @@ export function CalculatorForm({
     form.entryDatetime < "2027-01-01T00:00";
   const showErp2027 = form.departDatetime >= "2027-01-01T00:00";
   const straddleYear = showErp2026 && showErp2027;
-
   const handleEntryChange = (value: Dayjs | null) => {
     const isoString = normaliseAndApplyDateTime("entryDatetime", value);
     if (isoString && form.departDatetime && form.departDatetime < isoString) {
@@ -180,151 +161,69 @@ export function CalculatorForm({
     }
   };
 
-  const erpFieldSx = {
-    ...inputStyle,
-    height: "auto",
-    "& .MuiInputBase-root": {
-      height: "48px",
-      fontSize: "18px",
-      color: "text.primary",
-    },
-    "& .MuiFormHelperText-root": {
-      mt: 1,
-      lineHeight: 1.4,
-    },
-  } as const;
-
   return (
     <>
       <Box>
         <Grid container spacing={2.5}>
           <Grid container size={{ xs: 12 }}>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography component="label" sx={labelStyle}>
-                {UI_LABELS.VEHICLE_CATEGORY}
-                <Typography component="span" sx={asteriskStyle}>
-                  *
-                </Typography>
-              </Typography>
-              <FormControl fullWidth error={!!errors.vehicleCategory}>
-                <Select
-                  data-testid="vehicle-category"
-                  displayEmpty
-                  value={form.vehicleCategory}
-                  onChange={(e) =>
-                    onFieldChange("vehicleCategory", e.target.value)
-                  }
-                  sx={{
-                    ...inputStyle,
-                    ...selectPlaceholderStyle,
-                  }}
-                  IconComponent={ExpandMoreIcon}
-                >
-                  <MenuItem value="" disabled>
-                    <em>Please select</em>
-                  </MenuItem>
-                  <MenuItem value="cars">Cars</MenuItem>
-                  <MenuItem value="motorcycles">Motorcycles</MenuItem>
-                  <MenuItem value="vans">Vans/Light Goods Vehicles</MenuItem>
-                  <MenuItem value="heavyGoods">Heavy Goods Vehicles</MenuItem>
-                  <MenuItem value="taxis">Taxis</MenuItem>
-                  <MenuItem value="buses">Buses</MenuItem>
-                </Select>
-                {errors.vehicleCategory && (
-                  <FormHelperText>{errors.vehicleCategory}</FormHelperText>
-                )}
-              </FormControl>
+              <CalculatorSelectField
+                label={UI_LABELS.VEHICLE_CATEGORY}
+                testId="vehicle-category"
+                value={form.vehicleCategory}
+                error={errors.vehicleCategory}
+                onChange={(value) => onFieldChange("vehicleCategory", value)}
+                options={[
+                  { value: "cars", label: "Cars" },
+                  { value: "motorcycles", label: "Motorcycles" },
+                  { value: "vans", label: "Vans/Light Goods Vehicles" },
+                  { value: "heavyGoods", label: "Heavy Goods Vehicles" },
+                  { value: "taxis", label: "Taxis" },
+                  { value: "buses", label: "Buses" },
+                ]}
+              />
             </Grid>
             {IUApplicable && (
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Typography component="label" sx={labelStyle}>
-                  {UI_LABELS.HAS_IU}
-                  <Typography component="span" sx={asteriskStyle}>
-                    *
-                  </Typography>
-                </Typography>
-                <FormControl fullWidth error={!!errors.hasIU}>
-                  <Select
-                    data-testid="has-iu"
-                    displayEmpty
-                    value={form.hasIU}
-                    onChange={(e) => onFieldChange("hasIU", e.target.value)}
-                    sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                    IconComponent={ExpandMoreIcon}
-                  >
-                    <MenuItem value="">
-                      <em>Please select</em>
-                    </MenuItem>
-                    <MenuItem value="yes">Yes (IU / OBU installed)</MenuItem>
-                    <MenuItem value="no">No (no IU / OBU)</MenuItem>
-                  </Select>
-                  {errors.hasIU && (
-                    <FormHelperText>{errors.hasIU}</FormHelperText>
-                  )}
-                </FormControl>
+                <CalculatorSelectField
+                  label={UI_LABELS.HAS_IU}
+                  testId="has-iu"
+                  value={form.hasIU}
+                  error={errors.hasIU}
+                  placeholderDisabled={false}
+                  onChange={(value) => onFieldChange("hasIU", value)}
+                  options={[
+                    { value: "yes", label: "Yes (IU / OBU installed)" },
+                    { value: "no", label: "No (no IU / OBU)" },
+                  ]}
+                />
               </Grid>
             )}
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.ENTRY_DATETIME}
-              <Typography component="span" sx={asteriskStyle}>
-                *
-              </Typography>
-            </Typography>
-            <DateTimePicker
-              key={`entry-datetime-${resetVersion}`}
+            <CalculatorDateTimeField
+              label={UI_LABELS.ENTRY_DATETIME}
+              testId="entry-datetime"
               value={form.entryDatetime ? dayjs(form.entryDatetime) : null}
-              onChange={handleEntryChange}
+              error={errors.entryDatetime}
+              resetVersion={resetVersion}
               open={entryPickerOpen}
-              onOpen={openEntryDateTimePicker}
-              onClose={() => setEntryPickerOpen(false)}
-              format="DD/MM/YYYY HH:mm"
               minDateTime={minEntryDayjs}
               maxDateTime={maxExitDayjs}
-              timeSteps={{ minutes: 1 }}
-              ampm={false}
-              reduceAnimations
-              localeText={dateTimePlaceholderLocaleText}
-              slotProps={{
-                openPickerButton: {
-                  disableRipple: true,
-                  disableTouchRipple: true,
-                },
-                textField: {
-                  ...{ "data-testid": "entry-datetime" },
-                  fullWidth: true,
-                  error: !!errors.entryDatetime,
-                  helperText: errors.entryDatetime || "",
-                  sx: {
-                    width: "100%",
-                    ...inputStyle,
-                    ...(form.entryDatetime && {
-                      "& .MuiPickersInputBase-sectionsContainer": {
-                        color: "text.primary",
-                      },
-                    }),
-                  },
-                },
-              }}
+              onChange={handleEntryChange}
+              onOpen={openEntryDateTimePicker}
+              onClose={() => setEntryPickerOpen(false)}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.DEPART_DATETIME}
-              <Typography component="span" sx={asteriskStyle}>
-                *
-              </Typography>
-            </Typography>
-            <DateTimePicker
-              key={`depart-datetime-${resetVersion}`}
+            <CalculatorDateTimeField
+              label={UI_LABELS.DEPART_DATETIME}
+              testId="depart-datetime"
               value={form.departDatetime ? dayjs(form.departDatetime) : null}
-              onChange={handleDepartChange}
+              error={errors.departDatetime}
+              resetVersion={resetVersion}
               open={departPickerOpen}
-              onOpen={openDepartDateTimePicker}
-              onClose={() => setDepartPickerOpen(false)}
-              format="DD/MM/YYYY HH:mm"
               minDateTime={
                 form.entryDatetime
                   ? dayjs(form.entryDatetime).isAfter(minEntryDayjs)
@@ -333,175 +232,64 @@ export function CalculatorForm({
                   : minEntryDayjs
               }
               maxDateTime={maxExitDayjs}
-              timeSteps={{ minutes: 1 }}
-              ampm={false}
-              reduceAnimations
-              sx={datepickerStyle}
-              localeText={dateTimePlaceholderLocaleText}
-              slotProps={{
-                openPickerButton: {
-                  disableRipple: true,
-                  disableTouchRipple: true,
-                },
-                textField: {
-                  ...{ "data-testid": "depart-datetime" },
-                  fullWidth: true,
-                  error: !!errors.departDatetime,
-                  helperText: errors.departDatetime || "",
-                  sx: {
-                    width: "100%",
-                    ...inputStyle,
-                    ...(form.departDatetime && {
-                      "& .MuiPickersInputBase-sectionsContainer": {
-                        color: "text.primary",
-                      },
-                    }),
-                  },
-                },
-              }}
+              onChange={handleDepartChange}
+              onOpen={openDepartDateTimePicker}
+              onClose={() => setDepartPickerOpen(false)}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.ENTRY_CHECKPOINT}
-              <Typography component="span" sx={asteriskStyle}>
-                *
-              </Typography>
-            </Typography>
-            <FormControl fullWidth error={!!errors.entryCheckpoint}>
-              <Select
-                data-testid="entry-checkpoint"
-                displayEmpty
-                value={form.entryCheckpoint}
-                onChange={(e) =>
-                  onFieldChange("entryCheckpoint", e.target.value)
-                }
-                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                IconComponent={ExpandMoreIcon}
-              >
-                <MenuItem value="" disabled>
-                  <em>Please select</em>
-                </MenuItem>
-                <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
-                <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
-              </Select>
-              {errors.entryCheckpoint && (
-                <FormHelperText>{errors.entryCheckpoint}</FormHelperText>
-              )}
-            </FormControl>
+            <CalculatorSelectField
+              label={UI_LABELS.ENTRY_CHECKPOINT}
+              testId="entry-checkpoint"
+              value={form.entryCheckpoint}
+              error={errors.entryCheckpoint}
+              onChange={(value) => onFieldChange("entryCheckpoint", value)}
+              options={[
+                { value: "woodlands", label: "Woodlands Checkpoint" },
+                { value: "tuas", label: "Tuas Checkpoint" },
+              ]}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography component="label" sx={labelStyle}>
-              {UI_LABELS.DEPART_CHECKPOINT}
-              <Typography component="span" sx={asteriskStyle}>
-                *
-              </Typography>
-            </Typography>
-            <FormControl fullWidth error={!!errors.departCheckpoint}>
-              <Select
-                data-testid="depart-checkpoint"
-                displayEmpty
-                value={form.departCheckpoint}
-                onChange={(e) =>
-                  onFieldChange("departCheckpoint", e.target.value)
-                }
-                sx={{ ...inputStyle, ...selectPlaceholderStyle }}
-                IconComponent={ExpandMoreIcon}
-              >
-                <MenuItem value="" disabled>
-                  <em>Please select</em>
-                </MenuItem>
-                <MenuItem value="woodlands">Woodlands Checkpoint</MenuItem>
-                <MenuItem value="tuas">Tuas Checkpoint</MenuItem>
-              </Select>
-              {errors.departCheckpoint && (
-                <FormHelperText>{errors.departCheckpoint}</FormHelperText>
-              )}
-            </FormControl>
+            <CalculatorSelectField
+              label={UI_LABELS.DEPART_CHECKPOINT}
+              testId="depart-checkpoint"
+              value={form.departCheckpoint}
+              error={errors.departCheckpoint}
+              onChange={(value) => onFieldChange("departCheckpoint", value)}
+              options={[
+                { value: "woodlands", label: "Woodlands Checkpoint" },
+                { value: "tuas", label: "Tuas Checkpoint" },
+              ]}
+            />
           </Grid>
 
           {ERPFlatRateApplicable && (
             <>
               {showErp2026 && (
-                <Grid size={{ xs: 12, sm: 6 }} sx={{ pb: 1 }}>
-                  <Typography component="label" sx={labelStyle}>
-                    No. of days using ERP-priced roads{" "}
-                    {straddleYear && "in year 2026"}
-                  </Typography>
-                  <TextField
-                    data-testid="erp-days-2026"
-                    fullWidth
-                    type="text"
-                    value={form.erpDays2026}
-                    onChange={(e) =>
-                      handleErpDaysChange("erpDays2026", e.target.value)
-                    }
-                    onKeyDown={handleDigitsOnlyKeyDown}
-                    error={!!errors.erpDays2026}
-                    helperText={
-                      errors.erpDays2026 ||
-                      "Only include travel during ERP operating hours"
-                    }
-                    sx={erpFieldSx}
-                    slotProps={{
-                      htmlInput: {
-                        maxLength: 2,
-                        pattern: "[0-9]*",
-                        inputMode: "numeric",
-                      },
-                      formHelperText: {
-                        sx: {
-                          fontSize: "16px",
-                          ml: 0,
-                          color: errors.erpDays2026
-                            ? "error.main"
-                            : "text.secondary",
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
+                <ErpDaysField
+                  year={2026}
+                  value={form.erpDays2026}
+                  error={errors.erpDays2026}
+                  straddlesYear={straddleYear}
+                  onChange={(value) =>
+                    handleErpDaysChange("erpDays2026", value)
+                  }
+                  onKeyDown={handleDigitsOnlyKeyDown}
+                />
               )}
 
               {showErp2027 && (
-                <Grid size={{ xs: 12, sm: 6 }} sx={{ pb: 1 }}>
-                  <Typography component="label" sx={labelStyle}>
-                    No. of days using ERP-priced roads{" "}
-                    {straddleYear && "in year 2027"}
-                  </Typography>
-                  <TextField
-                    data-testid="erp-days-2027"
-                    fullWidth
-                    type="text"
-                    value={form.erpDays2027}
-                    onChange={(e) =>
-                      handleErpDaysChange("erpDays2027", e.target.value)
-                    }
-                    onKeyDown={handleDigitsOnlyKeyDown}
-                    error={!!errors.erpDays2027}
-                    helperText={
-                      errors.erpDays2027 ||
-                      "Only include travel during ERP operating hours"
-                    }
-                    sx={erpFieldSx}
-                    slotProps={{
-                      htmlInput: {
-                        maxLength: 2,
-                        pattern: "[0-9]*",
-                        inputMode: "numeric",
-                      },
-                      formHelperText: {
-                        sx: {
-                          fontSize: "16px",
-                          ml: 0,
-                          color: errors.erpDays2027
-                            ? "error.main"
-                            : "text.secondary",
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
+                <ErpDaysField
+                  year={2027}
+                  value={form.erpDays2027}
+                  error={errors.erpDays2027}
+                  straddlesYear={straddleYear}
+                  onChange={(value) =>
+                    handleErpDaysChange("erpDays2027", value)
+                  }
+                  onKeyDown={handleDigitsOnlyKeyDown}
+                />
               )}
             </>
           )}
