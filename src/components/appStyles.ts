@@ -3,7 +3,7 @@ export const wrapSx = {
   color: "text.primary",
   maxWidth: 960,
   margin: "0 auto",
-  padding: "16px",
+  padding: 2,
 };
 
 export const tabsSx = {
@@ -25,7 +25,7 @@ export const tabSx = (active: boolean) => ({
   borderColor: active ? "secondary.main" : "divider",
   borderBottom: "none",
   borderRadius: "4px 4px 0 0",
-  marginRight: 4,
+  marginRight: "4px",
 });
 
 export const infoBannerSx = {
@@ -35,8 +35,8 @@ export const infoBannerSx = {
   borderLeft: "4px solid",
   borderLeftColor: "warning.main",
   padding: "11px 14px",
-  borderRadius: 2,
-  marginBottom: 16,
+  borderRadius: "2px",
+  marginBottom: 2,
   lineHeight: 1.7,
 };
 
@@ -47,19 +47,19 @@ export const errorBannerSx = {
   borderLeft: "4px solid",
   borderLeftColor: "error.main",
   padding: "10px 14px",
-  borderRadius: 2,
-  marginBottom: 16,
+  borderRadius: "2px",
+  marginBottom: 2,
   color: "error.dark",
 };
 
 export const buttonSx = {
   backgroundColor: "primary.main",
   color: "primary.contrastText",
-  borderRadius: 1,
+  borderRadius: "8px",
   padding: "10px 48px",
   fontWeight: 700,
   cursor: "pointer",
-  marginRight: 10,
+  marginRight: "10px",
   textTransform: "none",
   "&:hover": { backgroundColor: "primary.dark" },
   "&.Mui-disabled": { opacity: 0.55 },

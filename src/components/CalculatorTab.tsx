@@ -60,7 +60,7 @@ export function CalculatorTab({ calculator }: { calculator: FeeCalculator }) {
         {result && !("error" in result) && <ResultTable result={result} />}
 
         {result && "error" in result && (
-          <Box sx={{ ...errorBannerSx, marginTop: 16 }}>{result.error}</Box>
+          <Box sx={{ ...errorBannerSx, marginTop: 2 }}>{result.error}</Box>
         )}
       </Box>
     </Box>

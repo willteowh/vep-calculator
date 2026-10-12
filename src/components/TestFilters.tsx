@@ -35,9 +35,9 @@ export function TestFilters({ runner }: { runner: TestRunner }) {
       sx={{
         display: "flex",
         flexWrap: "wrap",
-        gap: 8,
+        gap: 1,
         alignItems: "center",
-        marginBottom: 12,
+        marginBottom: 1.5,
       }}
     >
       {FILTERS.map(({ value, label, on, off }) => (

@@ -35,10 +35,10 @@ export function TestCasesTab({ runner }: { runner: TestRunner }) {
         <Box
           sx={{
             border: "1px dashed #c8d0de",
-            borderRadius: 1,
+            borderRadius: "8px",
             padding: "12px 14px",
             color: "text.secondary",
-            marginBottom: 12,
+            marginBottom: 1.5,
           }}
         >
           No test cases match this filter.

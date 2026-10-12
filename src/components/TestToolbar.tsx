@@ -95,7 +95,7 @@ export function TestToolbar({ runner }: { runner: TestRunner }) {
       {csvStatus && (
         <Typography
           sx={{
-            marginTop: 10,
+            marginTop: 1.25,
             color: csvStatus.startsWith("Failed")
               ? "error.dark"
               : "success.dark",

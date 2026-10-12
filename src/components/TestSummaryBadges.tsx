@@ -5,44 +5,54 @@ import type { TestSummary } from "@/utils/testRunner";
 const BADGES: {
   key: Exclude<keyof TestSummary, "total">;
   label: string;
-  palette: "success" | "error" | "info" | "secondary";
+  background: string;
+  border: string;
+  color: string;
 }[] = [
   {
     key: "passed",
     label: "Passed",
-    palette: "success",
+    background: "success.light",
+    border: "success.main",
+    color: "success.dark",
   },
   {
     key: "failed",
     label: "Failed",
-    palette: "error",
+    background: "error.light",
+    border: "error.main",
+    color: "error.dark",
   },
   {
     key: "running",
     label: "Running",
-    palette: "info",
+    background: "info.light",
+    border: "info.main",
+    color: "info.dark",
   },
   {
     key: "notRun",
     label: "Not Run",
-    palette: "secondary",
+    background: "#f3e5f5",
+    border: "#ab47bc",
+    color: "#6a1b9a",
   },
 ];
 
 export function TestSummaryBadges({ summary }: { summary: TestSummary }) {
   return (
     <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 1.5 }}>
-      {BADGES.map(({ key, label, palette }) => (
+      {BADGES.map(({ key, label, background, border, color }) => (
         <Box
           key={key}
           sx={{
             padding: "8px 10px",
-            backgroundColor: `${palette}.light`,
+            backgroundColor: background,
             border: "1px solid",
-            borderColor: `${palette}.main`,
-            borderRadius: 1,
+            borderColor: border,
+            borderRadius: "6px",
             fontWeight: 600,
-            color: `${palette}.dark`,
+            color: color,
           }}
         >
           {label}: {summary[key]}
