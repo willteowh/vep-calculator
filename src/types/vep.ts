@@ -1,4 +1,4 @@
-import { CHECKPOINTS, VEHICLE_TYPES } from "@/config/constants";
+import { CHECKPOINTS, VEHICLE_TYPES } from "../config/constants";
 
 export type VehicleCategory =
   (typeof VEHICLE_TYPES)[keyof typeof VEHICLE_TYPES];

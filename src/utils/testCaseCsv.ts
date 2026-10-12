@@ -1,6 +1,6 @@
-import { TestCase } from "@/config/testCases";
+import type { TestCase } from "../config/testCases";
 import { toLocalDateTimeString } from "./dateUtils";
-import { isHasIU, isVehicleCategory } from "@/types/vep";
+import { isHasIU, isVehicleCategory } from "../types/vep";
 
 const CSV_HEADERS = [
   "id",

@@ -82,10 +82,11 @@ export function TestCaseCard({
         : "pre-2027";
 
   return (
-    <div style={tcCardStyle}>
+    <div data-testid={`test-case-${testCase.id}`} style={tcCardStyle}>
       <div style={tcTitleStyle}>
         #{testCase.id} — {testCase.label}
         <span
+          data-testid={`test-case-status-${testCase.id}`}
           style={{
             display: "inline-block",
             padding: "2px 8px",
@@ -238,6 +239,7 @@ export function TestCaseCard({
       <TestCaseInputDetails testCase={testCase} />
 
       <button
+        data-testid={`run-test-${testCase.id}`}
         style={tcButtonStyle}
         onClick={() => onRun(testCase)}
         disabled={isRunning}

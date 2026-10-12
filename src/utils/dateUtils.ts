@@ -3,7 +3,7 @@ import {
   SCHOOL_HOLIDAYS,
   CUTOFF_2027,
   MS_PER_DAY,
-} from "@/config/constants";
+} from "../config/constants";
 
 const PUBLIC_HOLIDAY_BY_DATE: Map<string, string> = new Map(
   SG_PUBLIC_HOLIDAYS.map((holiday) => [holiday.date, holiday.title]),

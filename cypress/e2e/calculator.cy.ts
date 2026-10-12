@@ -18,6 +18,7 @@ describe("Fee Calculator tab", () => {
     cy.selectOption("has-iu", "yes");
     cy.seedDateTime("entry-datetime");
     cy.seedDateTime("depart-datetime");
+    cy.setDateTime("depart-datetime", "2026-04-11T01:30");
     cy.selectOption("entry-checkpoint", "woodlands");
     cy.selectOption("depart-checkpoint", "woodlands");
     cy.get('[data-testid="calculate-button"]').click();
