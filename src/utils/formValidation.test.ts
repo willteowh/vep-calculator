@@ -10,8 +10,6 @@ const validForm: FormState = {
   departDatetime: "2026-03-12T10:00",
   entryCheckpoint: "woodlands",
   departCheckpoint: "woodlands",
-  erpDays2026: "2",
-  erpDays2027: "",
 };
 
 describe("validateCalculatorForm", () => {
@@ -34,24 +32,5 @@ describe("validateCalculatorForm", () => {
 
   it("accepts a valid form", () => {
     expect(validateCalculatorForm(validForm)).toEqual({});
-  });
-
-  it("rejects ERP days above the days selected in that year", () => {
-    const errors = validateCalculatorForm({ ...validForm, erpDays2026: "4" });
-    expect(errors.erpDays2026).toMatch(/cannot exceed|less or equal/);
-  });
-
-  it("rejects ERP days in a year outside the stay", () => {
-    const errors = validateCalculatorForm({ ...validForm, erpDays2027: "1" });
-    expect(errors.erpDays2027).toMatch(/2027/);
-  });
-
-  it("skips ERP validation when the vehicle has an IU", () => {
-    const errors = validateCalculatorForm({
-      ...validForm,
-      hasIU: "yes",
-      erpDays2026: "99",
-    });
-    expect(errors).toEqual({});
   });
 });

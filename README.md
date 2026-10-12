@@ -50,7 +50,7 @@ The VEP Calculator helps owners of Malaysian-registered cars and motorcycles cal
   - Woodlands: Cars entry $0/exit $0.80, Motorcycles $0 both
   - Tuas: Cars entry $2.10/exit $2.10, Motorcycles $0 both
 - **RRC**: $6.40 per entry for cars only
-- **ERP**: Flat daily rate if no IU/OBU, otherwise based on actual gantry usage
+- **ERP**: Flat daily rate if no IU/OBU, charged for every calendar day of the stay except Saturdays, Sundays and public holidays; otherwise based on actual gantry usage
 
 ### Test Cases Module
 
@@ -123,8 +123,7 @@ This produces the same static HTML/CSS/JS output as `build`, but with the Test C
 3. Enter precise entry date and time
 4. Enter departure date and time
 5. Select entry and departure checkpoints
-6. Specify number of ERP days (if applicable)
-7. Click "Calculate" to see fee breakdown
+6. Click "Calculate" to see fee breakdown
 
 ### Test Cases Tab
 
@@ -178,7 +177,7 @@ Run predefined test scenarios to validate calculations and understand different 
 
 - Public holidays and school holiday dates are predefined
 - Toll rates are fixed and don't account for future changes
-- ERP charges without IU use flat daily rates
+- ERP charges without IU use flat daily rates on all weekdays (excluding public holidays) in the stay
 
 ### Functional Limitations
 

@@ -17,8 +17,6 @@ export function TestCaseInputDetails({ testCase }: { testCase: TestCase }) {
   const inputRows = [
     ["Vehicle", testCase.params.vehicleCategory],
     ["IU/OBU", testCase.params.hasIU],
-    ["ERP Days (2026)", testCase.params.erpDays2026],
-    ["ERP Days (2027)", testCase.params.erpDays2027],
     ["Entry Datetime", testCase.params.entryDt],
     ["Departure Datetime", testCase.params.departureDt],
     ["Entry Checkpoint", testCase.params.entryCheckpoint],

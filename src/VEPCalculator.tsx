@@ -24,7 +24,6 @@ export default function VEPCalculator() {
             "0%": { transform: "rotate(0deg)" },
             "100%": { transform: "rotate(360deg)" },
           },
-          ".infoBox > *": { marginBottom: 20 },
         }}
       />
       <Box sx={wrapSx}>

@@ -17,9 +17,7 @@ export function useFeeCalculator() {
   function submit() {
     const sanitisedForm = sanitiseForm(form);
 
-    (["erpDays2026", "erpDays2027", "hasIU"] as const).forEach((key) => {
-      if (sanitisedForm[key] !== form[key]) set(key, sanitisedForm[key]);
-    });
+    if (sanitisedForm.hasIU !== form.hasIU) set("hasIU", sanitisedForm.hasIU);
 
     const validationErrors = validate(sanitisedForm);
     if (Object.keys(validationErrors).length) {
@@ -52,8 +50,6 @@ export function useFeeCalculator() {
           hasIU,
           entryCheckpoint,
           departCheckpoint,
-          erpDays2026: sanitisedForm.erpDays2026,
-          erpDays2027: sanitisedForm.erpDays2027,
           entryDt,
           departureDt,
         }),

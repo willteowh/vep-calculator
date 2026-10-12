@@ -5,8 +5,6 @@ export interface FormState {
   departDatetime: string;
   entryCheckpoint: string;
   departCheckpoint: string;
-  erpDays2026: string;
-  erpDays2027: string;
 }
 
 export interface FormErrors {
@@ -16,8 +14,6 @@ export interface FormErrors {
   departDatetime?: string;
   entryCheckpoint?: string;
   departCheckpoint?: string;
-  erpDays2026?: string;
-  erpDays2027?: string;
   _g?: string;
 }
 
@@ -28,6 +24,4 @@ export const INITIAL_FORM_STATE: FormState = {
   departDatetime: "",
   entryCheckpoint: "",
   departCheckpoint: "",
-  erpDays2026: "",
-  erpDays2027: "",
 };

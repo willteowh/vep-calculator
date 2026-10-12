@@ -34,8 +34,6 @@ export interface CalculationResult {
   departDatetime: string;
   entryCheckpoint: string;
   departCheckpoint: string;
-  erpDays2026: string;
-  erpDays2027: string;
   dur: number;
   totalChargeable: number;
   preDays: number;
@@ -136,6 +134,26 @@ export function splitChargeableDays(
   return { pre, post };
 }
 
+/** ERP runs on every calendar day except weekends and public holidays. */
+export function countErpDays(
+  entryDt: Date,
+  departureDt: Date,
+): ChargeableDaysSplit {
+  const entryDate = getCalendarDate(entryDt);
+  const totalCal =
+    getDateDifferenceDays(entryDate, getCalendarDate(departureDt)) + 1;
+  let pre = 0,
+    post = 0;
+  for (let i = 0; i < totalCal; i++) {
+    const d = new Date(entryDate);
+    d.setDate(entryDate.getDate() + i);
+    if (isWeekend(d) || isPublicHoliday(d)) continue;
+    if (isPost2027(d)) post++;
+    else pre++;
+  }
+  return { pre, post };
+}
+
 export interface CalculateParams {
   vehicleCategory: VehicleCategory;
   hasIU: HasIU;
@@ -143,8 +161,6 @@ export interface CalculateParams {
   departureDt: Date;
   entryCheckpoint: string;
   departCheckpoint: string;
-  erpDays2026: string;
-  erpDays2027: string;
 }
 
 export function getStayError(entryDt: Date, departureDt: Date): string | null {
@@ -163,8 +179,6 @@ export function calculate(params: CalculateParams): CalculationOutput {
     departureDt,
     entryCheckpoint,
     departCheckpoint,
-    erpDays2026,
-    erpDays2027,
   } = params;
 
   const stayError = getStayError(entryDt, departureDt);
@@ -210,10 +224,10 @@ export function calculate(params: CalculateParams): CalculationOutput {
 
   // ERP calculation (only for vehicles with VEP rates)
   const noIU = hasIU === "no";
-  const erpNum2026 = parseInt(erpDays2026, 10) || 0;
-  const erpNum2027 = parseInt(erpDays2027, 10) || 0;
-  const erpDaysPre = erpNum2026;
-  const erpDaysPost = erpNum2027;
+  const { pre: erpDaysPre, post: erpDaysPost } = countErpDays(
+    entryDt,
+    departureDt,
+  );
 
   let erpCharge = 0;
   let erpNote = "";
@@ -264,8 +278,6 @@ export function calculate(params: CalculateParams): CalculationOutput {
     departDatetime: toLocalDateTimeString(departureDt),
     entryCheckpoint,
     departCheckpoint,
-    erpDays2026,
-    erpDays2027,
     dur,
     totalChargeable,
     preDays,

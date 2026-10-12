@@ -73,7 +73,10 @@ describe("Calculator fare scenarios", () => {
         }
 
         cy.seedDateTime("entry-datetime");
-        cy.setDateTime("entry-datetime", localDateTime(testCase.params.entryDt));
+        cy.setDateTime(
+          "entry-datetime",
+          localDateTime(testCase.params.entryDt),
+        );
         cy.seedDateTime("depart-datetime");
 
         if (caseId === 25) {
@@ -93,25 +96,6 @@ describe("Calculator fare scenarios", () => {
         );
         cy.selectOption("entry-checkpoint", testCase.params.entryCheckpoint);
         cy.selectOption("depart-checkpoint", testCase.params.departCheckpoint);
-
-        if (testCase.params.hasIU === "no") {
-          if (
-            testCase.params.entryDt.getFullYear() === 2026 &&
-            testCase.params.erpDays2026
-          ) {
-            cy.get('[data-testid="erp-days-2026"] input')
-              .clear()
-              .type(testCase.params.erpDays2026);
-          }
-          if (
-            testCase.params.departureDt.getFullYear() === 2027 &&
-            testCase.params.erpDays2027
-          ) {
-            cy.get('[data-testid="erp-days-2027"] input')
-              .clear()
-              .type(testCase.params.erpDays2027);
-          }
-        }
 
         cy.get('[data-testid="calculate-button"]').click();
         if (caseId === 26) {

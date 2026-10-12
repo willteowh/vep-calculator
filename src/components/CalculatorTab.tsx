@@ -20,7 +20,7 @@ export function CalculatorTab({ calculator }: { calculator: FeeCalculator }) {
 
   return (
     <Box>
-      <Box className="infoBox">
+      <Box sx={{ "& > .MuiTypography-root": { marginBottom: "20px" } }}>
         <Typography component="h1" style={pageHeaderStyle}>
           Calculate Fees and Charges for Foreign Vehicles in Singapore
         </Typography>

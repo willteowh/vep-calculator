@@ -101,19 +101,6 @@ export function ResultTable({ result }: ResultTableProps) {
         </Card>
       )}
 
-      {result.vehicleCategory === "cars" &&
-        result.hasIU === "no" &&
-        (!result.erpDays2026 || String(result.erpDays2026).trim() === "") &&
-        (!result.erpDays2027 || String(result.erpDays2027).trim() === "") && (
-          <Card sx={resultStyles.infoCard}>
-            <CardContent sx={resultStyles.noticeContent}>
-              <InfoOutlinedIcon sx={resultStyles.InfoIcon} />
-              Please indicate the number of days intend to drive through ERP
-              gantries during ERP operating hours.
-            </CardContent>
-          </Card>
-        )}
-
       {hasPublicHoliday && (
         <Card sx={resultStyles.infoCard}>
           <CardContent sx={resultStyles.noticeContent}>

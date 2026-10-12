@@ -1,24 +1,16 @@
 import { INCLUDE_TESTS } from "@/config/features";
 import { UI_LABELS } from "@/config/messages";
 import type { FormState, FormErrors } from "@/types/form";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  Stack,
-} from "@mui/material";
+import { Box, Button, Card, CardContent, Grid, Stack } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import dayjs, { Dayjs } from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { useEffect, useState, type KeyboardEvent } from "react";
+import { useEffect, useState } from "react";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import { resultStyles } from "@/utils/resultStyles";
 import { CalculatorDateTimeField } from "./CalculatorDateTimeField";
 import { CalculatorSelectField } from "./CalculatorSelectField";
-import { ErpDaysField } from "./ErpDaysField";
 import {
   tertiaryButtonStyle,
   primaryButtonStyle,
@@ -80,13 +72,6 @@ export function CalculatorForm({
 
   const IUApplicable =
     !!form.vehicleCategory && form.vehicleCategory !== "taxis";
-  const ERPFlatRateApplicable = IUApplicable && form.hasIU === "no";
-
-  const showErp2026 =
-    form.entryDatetime >= "2026-01-01T00:00" &&
-    form.entryDatetime < "2027-01-01T00:00";
-  const showErp2027 = form.departDatetime >= "2027-01-01T00:00";
-  const straddleYear = showErp2026 && showErp2027;
   const handleEntryChange = (value: Dayjs | null) => {
     const isoString = normaliseAndApplyDateTime("entryDatetime", value);
     if (isoString && form.departDatetime && form.departDatetime < isoString) {
@@ -116,49 +101,6 @@ export function CalculatorForm({
       normaliseAndApplyDateTime("departDatetime", seedDepartValue);
     }
     setDepartPickerOpen(true);
-  };
-
-  const handleErpDaysChange = (
-    field: "erpDays2026" | "erpDays2027",
-    rawValue: string,
-  ) => {
-    if (rawValue === "") {
-      onFieldChange(field, "");
-      return;
-    }
-
-    if (rawValue.includes("-")) {
-      onFieldChange(field, "0");
-      return;
-    }
-
-    // Keep only digits and cap to 2 characters.
-    const digitsOnly = rawValue.replace(/\D/g, "").slice(0, 2);
-    if (digitsOnly === "") {
-      return;
-    }
-
-    onFieldChange(field, digitsOnly);
-  };
-
-  const handleDigitsOnlyKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
-    const allowedControlKeys = [
-      "Backspace",
-      "Delete",
-      "ArrowLeft",
-      "ArrowRight",
-      "Tab",
-      "Home",
-      "End",
-    ];
-
-    if (allowedControlKeys.includes(event.key)) {
-      return;
-    }
-
-    if (!/^[0-9]$/.test(event.key)) {
-      event.preventDefault();
-    }
   };
 
   return (
@@ -264,35 +206,6 @@ export function CalculatorForm({
             />
           </Grid>
 
-          {ERPFlatRateApplicable && (
-            <>
-              {showErp2026 && (
-                <ErpDaysField
-                  year={2026}
-                  value={form.erpDays2026}
-                  error={errors.erpDays2026}
-                  straddlesYear={straddleYear}
-                  onChange={(value) =>
-                    handleErpDaysChange("erpDays2026", value)
-                  }
-                  onKeyDown={handleDigitsOnlyKeyDown}
-                />
-              )}
-
-              {showErp2027 && (
-                <ErpDaysField
-                  year={2027}
-                  value={form.erpDays2027}
-                  error={errors.erpDays2027}
-                  straddlesYear={straddleYear}
-                  onChange={(value) =>
-                    handleErpDaysChange("erpDays2027", value)
-                  }
-                  onKeyDown={handleDigitsOnlyKeyDown}
-                />
-              )}
-            </>
-          )}
           <Grid size={{ xs: 12 }}>
             <Box
               sx={{

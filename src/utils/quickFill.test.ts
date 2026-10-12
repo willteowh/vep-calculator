@@ -20,9 +20,4 @@ describe("generateQuickFillForm", () => {
     expect(first).toEqual(second);
     expect(first.vehicleCategory).toBe("cars");
   });
-
-  it("only fills the ERP year matching the entry year", () => {
-    const form = generateQuickFillForm(new Date("2027-02-01T09:00"), () => 0);
-    expect(form.erpDays2026).toBe("");
-  });
 });

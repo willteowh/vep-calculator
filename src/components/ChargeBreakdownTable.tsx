@@ -165,7 +165,16 @@ export function ChargeBreakdownTable({
                   sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}
                 >
                   <Typography component="span" sx={resultStyles.subTextCell}>
-                    ERP Charges
+                    {erpFlatRateApplies && (
+                      <>
+                        Flat-rate ERP Charges (indicative)
+                      </>
+                    )}
+                    {!erpFlatRateApplies && (
+                      <>
+                        ERP Charges
+                      </>
+                    )}
                   </Typography>
                   {erpFlatRateApplies && result.erpCharge > 0 && (
                     <>

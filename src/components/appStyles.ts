@@ -3,14 +3,14 @@ export const wrapSx = {
   color: "text.primary",
   maxWidth: 960,
   margin: "0 auto",
-  padding: 16,
+  padding: "16px",
 };
 
 export const tabsSx = {
   display: "flex",
   borderBottom: "2px solid",
   borderColor: "secondary.main",
-  marginBottom: 24,
+  marginBottom: 2,
 };
 
 export const tabSx = (active: boolean) => ({
