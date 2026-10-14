@@ -26,15 +26,15 @@ export const SG_PUBLIC_HOLIDAYS = [
   { date: "2027-12-25", title: "Christmas Day" },
 ] as const;
 
-// June & December school holidays (approximate annual ranges)
+// June & December school holidays (approximate annual ranges), inclusive local dates
 export const SCHOOL_HOLIDAYS = [
   // 2026
-  { start: new Date("2026-05-30"), end: new Date("2026-06-28") },
-  { start: new Date("2026-11-21"), end: new Date("2026-12-31") },
+  { start: "2026-05-30", end: "2026-06-28" },
+  { start: "2026-11-21", end: "2026-12-31" },
   // 2027
-  { start: new Date("2027-05-29"), end: new Date("2027-06-27") },
-  { start: new Date("2027-11-20"), end: new Date("2027-12-31") },
-];
+  { start: "2027-05-29", end: "2027-06-27" },
+  { start: "2027-11-20", end: "2027-12-31" },
+] as const;
 
 export const CUTOFF_2027 = new Date("2027-01-01T00:00:00");
 

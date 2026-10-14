@@ -6,6 +6,7 @@ import {
   getHourFromDate,
   isPost2027,
   isPublicHoliday,
+  isSchoolHoliday,
   isWeekend,
 } from "./dateUtils";
 
@@ -38,4 +39,36 @@ describe("dateUtils", () => {
     expect(durationDays(a, new Date("2026-04-11T11:00"))).toBe(2);
     expect(durationDays(a, new Date("2026-04-09T10:00"))).toBe(0);
   });
+});
+
+describe("isSchoolHoliday boundaries", () => {
+  // [first day, last day] of each range in the configured school holidays
+  const ranges: [string, string][] = [
+    ["2026-05-30", "2026-06-28"],
+    ["2026-11-21", "2026-12-31"],
+    ["2027-05-29", "2027-06-27"],
+    ["2027-11-20", "2027-12-31"],
+  ];
+  const day = (iso: string, offset = 0, time = "00:00") => {
+    const [y, m, d] = iso.split("-").map(Number);
+    const base = new Date(y, m - 1, d + offset);
+    const [hh, mm] = time.split(":").map(Number);
+    base.setHours(hh, mm);
+    return base;
+  };
+
+  it.each(ranges)("range %s to %s includes both end days", (first, last) => {
+    expect(isSchoolHoliday(day(first))).toBe(true);
+    expect(isSchoolHoliday(day(first, 0, "23:59"))).toBe(true);
+    expect(isSchoolHoliday(day(last))).toBe(true);
+    expect(isSchoolHoliday(day(last, 0, "23:59"))).toBe(true);
+  });
+
+  it.each(ranges)(
+    "range %s to %s excludes the neighbouring days",
+    (first, last) => {
+      expect(isSchoolHoliday(day(first, -1, "23:59"))).toBe(false);
+      expect(isSchoolHoliday(day(last, 1))).toBe(false);
+    },
+  );
 });

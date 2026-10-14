@@ -26,6 +26,9 @@ import {
   toLocalDateTimeString,
 } from "./dateUtils";
 
+/** Sums of decimal rates accumulate float error (35 + 0.8 + 6.4); keep money to whole cents. */
+const roundMoney = (amount: number) => Math.round(amount * 100) / 100;
+
 export interface CalculationResult {
   vehicleType: string;
   vehicleCategory: VehicleCategory;
@@ -198,7 +201,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
   const exitToll = isCheckpoint(departCheckpoint)
     ? tolls.exit[departCheckpoint]
     : 0;
-  const tollTotal = entryToll + exitToll;
+  const tollTotal = roundMoney(entryToll + exitToll);
 
   // Split chargeable days across rate boundary
   const { pre: preDays, post: postDays } = splitChargeableDays(
@@ -247,8 +250,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
     erpNote = "";
   }
 
-  const subtotal = tollTotal + vepFees;
-  const grandTotal = subtotal + rrcCharge + psvpFee + erpCharge;
+  const subtotal = roundMoney(tollTotal + vepFees);
+  const grandTotal = roundMoney(subtotal + rrcCharge + psvpFee + erpCharge);
   const dur = durationDays(entryDt, departureDt);
 
   const getVehicleTypeName = () => {

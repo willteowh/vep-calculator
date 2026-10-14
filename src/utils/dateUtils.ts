@@ -35,7 +35,8 @@ export function isWeekend(d: Date): boolean {
 }
 
 export function isSchoolHoliday(d: Date): boolean {
-  return SCHOOL_HOLIDAYS.some((r) => d >= r.start && d <= r.end);
+  const key = dateKey(d);
+  return SCHOOL_HOLIDAYS.some((r) => key >= r.start && key <= r.end);
 }
 
 export function isPost2027(d: Date): boolean {

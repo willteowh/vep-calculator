@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
 import { TEST_CASES } from "@/config/testCases";
-import { calculate, countErpDays, getStayError } from "./calculations";
+import {
+  calculate,
+  countErpDays,
+  getStayError,
+  isDayVEPFree,
+} from "./calculations";
 import { evaluateTestCase } from "./testCaseEvaluation";
 
 describe("calculate() against TEST_CASES", () => {
@@ -79,5 +84,95 @@ describe("countErpDays", () => {
     expect(
       countErpDays(new Date("2027-01-04T10:00"), new Date("2027-01-04T18:00")),
     ).toEqual({ pre: 0, post: 1 });
+  });
+});
+
+// Hand-derived from the published waiver rules; weekdays chosen so no weekend/holiday masks the rule.
+describe("isDayVEPFree waiver boundaries", () => {
+  const at = (iso: string) => new Date(iso);
+  const tue14Apr = at("2026-04-14T00:00");
+  const wed15Apr = at("2026-04-15T00:00");
+  const mon15Jun = at("2026-06-15T00:00"); // school holiday weekday
+
+  it("frees the entry day from 17:00, not at 16:59", () => {
+    const dep = at("2026-04-14T18:00");
+    expect(isDayVEPFree(tue14Apr, at("2026-04-14T16:59"), dep)).toBe(false);
+    expect(isDayVEPFree(tue14Apr, at("2026-04-14T17:00"), dep)).toBe(true);
+  });
+
+  it("frees the exit day before 02:00, not at 02:00", () => {
+    const entry = at("2026-04-14T18:00");
+    expect(isDayVEPFree(wed15Apr, entry, at("2026-04-15T01:59"))).toBe(true);
+    expect(isDayVEPFree(wed15Apr, entry, at("2026-04-15T02:00"))).toBe(false);
+  });
+
+  it("frees a school-holiday entry day from 12:00, not at 11:59", () => {
+    const dep = at("2026-06-15T18:00");
+    expect(isDayVEPFree(mon15Jun, at("2026-06-15T11:59"), dep)).toBe(false);
+    expect(isDayVEPFree(mon15Jun, at("2026-06-15T12:00"), dep)).toBe(true);
+  });
+
+  it("does not apply the noon waiver outside school holidays", () => {
+    expect(
+      isDayVEPFree(tue14Apr, at("2026-04-14T12:00"), at("2026-04-14T18:00")),
+    ).toBe(false);
+  });
+
+  it("applies no time waivers from 2027", () => {
+    const mon4Jan2027 = at("2027-01-04T00:00");
+    const dep = at("2027-01-04T18:00");
+    expect(isDayVEPFree(mon4Jan2027, at("2027-01-04T17:00"), dep)).toBe(false);
+    expect(isDayVEPFree(mon4Jan2027, at("2027-01-04T12:00"), dep)).toBe(false);
+  });
+
+  it.each([
+    ["Saturday before 2027", "2026-04-11T00:00"],
+    ["public holiday before 2027", "2026-05-01T00:00"],
+    ["Saturday from 2027", "2027-01-02T00:00"],
+    ["public holiday from 2027", "2027-01-01T00:00"],
+  ])("always frees a %s", (_name, day) => {
+    expect(isDayVEPFree(at(day), at(day), at(day))).toBe(true);
+  });
+});
+
+describe("fare at the evening-entry boundary", () => {
+  const base = {
+    vehicleCategory: "cars",
+    hasIU: "yes",
+    entryCheckpoint: "woodlands",
+    departCheckpoint: "woodlands",
+    departureDt: new Date("2026-04-11T01:30"),
+  } as const;
+
+  it("charges the Friday at 16:59: 35 VEP + 0.80 toll + 6.40 RRC", () => {
+    const result = calculate({
+      ...base,
+      entryDt: new Date("2026-04-10T16:59"),
+    });
+    expect(result).toMatchObject({ vepFees: 35, grandTotal: 42.2 });
+  });
+
+  it("waives the Friday at 17:00: 0.80 toll + 6.40 RRC", () => {
+    const result = calculate({
+      ...base,
+      entryDt: new Date("2026-04-10T17:00"),
+    });
+    expect(result).toMatchObject({ vepFees: 0, grandTotal: 7.2 });
+  });
+});
+
+describe("maximum stay boundary", () => {
+  const entry = new Date("2026-01-01T00:00");
+
+  it("allows exactly 250 days", () => {
+    expect(getStayError(entry, new Date("2026-09-08T00:00"))).toBeNull();
+  });
+
+  it("rejects 250 days and one minute", () => {
+    expect(getStayError(entry, new Date("2026-09-08T00:01"))).not.toBeNull();
+  });
+
+  it("allows departure in the same minute as entry", () => {
+    expect(getStayError(entry, entry)).toBeNull();
   });
 });
