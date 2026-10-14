@@ -62,7 +62,7 @@ export function ResultTable({ result }: ResultTableProps) {
   const straddlesBoundary = entryDt < CUTOFF_2027 && departureDt >= CUTOFF_2027;
 
   return (
-    <Box sx={resultStyles.wrapper}>
+    <Box data-testid="result-table" sx={resultStyles.wrapper}>
       <Box
         aria-hidden
         sx={{
@@ -193,7 +193,7 @@ export function ResultTable({ result }: ResultTableProps) {
         }}
       />
 
-      <Card sx={resultStyles.disclaimerCard}>
+      <Card data-testid="disclaimer" sx={resultStyles.disclaimerCard}>
         <CardContent>
           <Typography component="p" sx={resultStyles.disclaimerContent}>
             Please note that the above charges shown in the table do not include

@@ -67,7 +67,7 @@ export function ChargeBreakdownTable({
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
               >
-                {fmt(result.tollTotal)}
+                <span data-testid="charge-toll">{fmt(result.tollTotal)}</span>
               </TableCell>
             </TableRow>
 
@@ -85,6 +85,7 @@ export function ChargeBreakdownTable({
                     <>
                       {result.preDays > 0 && "vepPerDay" in result.rPre && (
                         <Typography
+                          data-testid="charge-vep-pre"
                           component="span"
                           sx={resultStyles.subTextCell}
                         >
@@ -93,6 +94,7 @@ export function ChargeBreakdownTable({
                       )}
                       {result.postDays > 0 && "vepPerDay" in result.rPost && (
                         <Typography
+                          data-testid="charge-vep-post"
                           component="span"
                           sx={resultStyles.subTextCell}
                         >
@@ -107,7 +109,7 @@ export function ChargeBreakdownTable({
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
               >
-                {fmt(result.vepFees)}
+                <span data-testid="charge-vep">{fmt(result.vepFees)}</span>
               </TableCell>
             </TableRow>
 
@@ -121,7 +123,10 @@ export function ChargeBreakdownTable({
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
               >
-                <Typography sx={{ fontWeight: 600 }}>
+                <Typography
+                  data-testid="charge-subtotal"
+                  sx={{ fontWeight: 600 }}
+                >
                   {fmt(result.subtotal)}
                 </Typography>
               </TableCell>
@@ -137,7 +142,9 @@ export function ChargeBreakdownTable({
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
                 >
-                  {result.rrc > 0 ? fmt(result.rrc) : "—"}
+                  <span data-testid="charge-rrc">
+                    {result.rrc > 0 ? fmt(result.rrc) : "—"}
+                  </span>
                 </TableCell>
               </TableRow>
             )}
@@ -152,7 +159,7 @@ export function ChargeBreakdownTable({
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
                 >
-                  {fmt(result.psvpFee)}
+                  <span data-testid="charge-psvp">{fmt(result.psvpFee)}</span>
                 </TableCell>
               </TableRow>
             )}
@@ -174,6 +181,7 @@ export function ChargeBreakdownTable({
                     <>
                       {result.erpDaysPre > 0 && (
                         <Typography
+                          data-testid="charge-erp-pre"
                           component="span"
                           sx={resultStyles.subTextCell}
                         >
@@ -183,6 +191,7 @@ export function ChargeBreakdownTable({
                       )}
                       {result.erpDaysPost > 0 && (
                         <Typography
+                          data-testid="charge-erp-post"
                           component="span"
                           sx={resultStyles.subTextCell}
                         >
@@ -197,7 +206,7 @@ export function ChargeBreakdownTable({
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
               >
-                <Typography>
+                <Typography data-testid="charge-erp">
                   {separateERPChargesApply && <>Separate ERP charges apply.</>}
                   {normalERPChargesApply && (
                     <>

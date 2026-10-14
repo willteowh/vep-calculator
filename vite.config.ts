@@ -9,7 +9,10 @@ export default defineConfig({
     {
       name: "remove-crossorigin",
       transformIndexHtml(html) {
-        return html.replace(/\s+crossorigin(?:=(?:"[^"]*"|'[^']*'|[^\s>]+))?/g, "");
+        return html.replace(
+          /\s+crossorigin(?:=(?:"[^"]*"|'[^']*'|[^\s>]+))?/g,
+          "",
+        );
       },
     },
   ],

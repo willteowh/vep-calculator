@@ -1,0 +1,48 @@
+item,vehicle,vehicle_name,detail,amount
+VEP per day,cars,Car,pre-2027,35
+VEP per day,cars,Car,from 2027,50
+VEP per day,motorcycles,Motorcycle,pre-2027,4
+VEP per day,motorcycles,Motorcycle,from 2027,7
+ERP per day (no IU),cars,Car,pre-2027,5
+ERP per day (no IU),cars,Car,from 2027,10
+ERP per day (no IU),motorcycles,Motorcycle,pre-2027,0
+ERP per day (no IU),motorcycles,Motorcycle,from 2027,3
+ERP per day (no IU),vans,Van / Light goods,pre-2027,0
+ERP per day (no IU),vans,Van / Light goods,from 2027,10
+ERP per day (no IU),heavyGoods,Heavy goods,pre-2027,0
+ERP per day (no IU),heavyGoods,Heavy goods,from 2027,10
+ERP per day (no IU),taxis,Taxi,pre-2027,0
+ERP per day (no IU),taxis,Taxi,from 2027,0
+ERP per day (no IU),buses,Bus,pre-2027,0
+ERP per day (no IU),buses,Bus,from 2027,10
+Toll entry,cars,Car,woodlands,0
+Toll entry,cars,Car,tuas,2.1
+Toll exit,cars,Car,woodlands,0.8
+Toll exit,cars,Car,tuas,2.1
+Toll entry,motorcycles,Motorcycle,woodlands,0
+Toll entry,motorcycles,Motorcycle,tuas,0
+Toll exit,motorcycles,Motorcycle,woodlands,0
+Toll exit,motorcycles,Motorcycle,tuas,0
+Toll entry,vans,Van / Light goods,woodlands,0
+Toll entry,vans,Van / Light goods,tuas,5.6
+Toll exit,vans,Van / Light goods,woodlands,1.5
+Toll exit,vans,Van / Light goods,tuas,5.6
+Toll entry,heavyGoods,Heavy goods,woodlands,0
+Toll entry,heavyGoods,Heavy goods,tuas,11.3
+Toll exit,heavyGoods,Heavy goods,woodlands,2
+Toll exit,heavyGoods,Heavy goods,tuas,11.3
+Toll entry,taxis,Taxi,woodlands,0
+Toll entry,taxis,Taxi,tuas,1.6
+Toll exit,taxis,Taxi,woodlands,0.4
+Toll exit,taxis,Taxi,tuas,1.6
+Toll entry,buses,Bus,woodlands,0
+Toll entry,buses,Bus,tuas,2.5
+Toll exit,buses,Bus,woodlands,0.6
+Toll exit,buses,Bus,tuas,2.5
+RRC per entry,cars,Car,-,6.4
+RRC per entry,motorcycles,Motorcycle,-,0
+RRC per entry,vans,Van / Light goods,-,0
+RRC per entry,heavyGoods,Heavy goods,-,0
+RRC per entry,taxis,Taxi,-,0
+RRC per entry,buses,Bus,-,0
+PSVP per entry,taxis,Taxi,from 2027,15

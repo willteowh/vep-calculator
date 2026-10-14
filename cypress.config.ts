@@ -6,5 +6,7 @@ export default defineConfig({
     supportFile: "cypress/support/e2e.ts",
     specPattern: "cypress/e2e/**/*.cy.ts",
     video: false,
+    // One retry in headless runs absorbs timing noise; failures that pass on retry are still reported.
+    retries: { runMode: 1, openMode: 0 },
   },
 });

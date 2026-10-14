@@ -5,7 +5,15 @@ import reactHooks from "eslint-plugin-react-hooks";
 import prettier from "eslint-config-prettier";
 
 export default tseslint.config(
-  { ignores: [".vite/**", "dist/**", "node_modules/**", "public/**"] },
+  {
+    ignores: [
+      "coverage/**",
+      ".vite/**",
+      "dist/**",
+      "node_modules/**",
+      "public/**",
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -20,7 +28,12 @@ export default tseslint.config(
     },
   },
   {
-    files: ["vite.config.ts", "vitest.config.ts", "vitest.global-setup.ts"],
+    files: [
+      "vite.config.ts",
+      "vitest.config.ts",
+      "vitest.global-setup.ts",
+      "scripts/**/*.ts",
+    ],
     languageOptions: { globals: globals.node },
   },
   prettier,

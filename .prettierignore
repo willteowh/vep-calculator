@@ -1,4 +1,9 @@
 dist
+coverage
 node_modules
 public
 package-lock.json
+cypress/e2e/scenarios
+.vscode
+AGENTS.md
+cypress/e2e/all-scenarios.cy.ts

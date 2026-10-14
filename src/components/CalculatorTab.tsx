@@ -46,7 +46,7 @@ export function CalculatorTab({ calculator }: { calculator: FeeCalculator }) {
         </Typography>
       </Box>
 
-      <Box sx={formCardStyle}>
+      <Box data-testid="calculator-card" sx={formCardStyle}>
         <CalculatorForm
           form={form}
           errors={errors}

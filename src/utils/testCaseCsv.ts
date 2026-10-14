@@ -1,4 +1,5 @@
 import type { TestCase } from "../config/testCases";
+import { buildCsv, parseCsv } from "./csv";
 import { toLocalDateTimeString } from "./dateUtils";
 import { isHasIU, isVehicleCategory } from "../types/vep";
 
@@ -16,49 +17,11 @@ const CSV_HEADERS = [
   "note",
 ] as const;
 
-function escapeCsvValue(value: string): string {
-  if (/[,"\n\r]/.test(value)) {
-    return `"${value.replace(/"/g, '""')}"`;
-  }
-  return value;
-}
-
-function parseCsvLine(line: string): string[] {
-  const values: string[] = [];
-  let current = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-
-    if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') {
-        current += '"';
-        i++;
-      } else {
-        inQuotes = !inQuotes;
-      }
-      continue;
-    }
-
-    if (ch === "," && !inQuotes) {
-      values.push(current);
-      current = "";
-      continue;
-    }
-
-    current += ch;
-  }
-
-  values.push(current);
-  return values;
-}
-
 export function buildTestCasesCsv(testCases: TestCase[]): string {
-  const lines = [CSV_HEADERS.join(",")];
+  const rows: string[][] = [[...CSV_HEADERS]];
 
   for (const tc of testCases) {
-    const row = [
+    rows.push([
       String(tc.id),
       tc.label,
       tc.desc,
@@ -70,27 +33,22 @@ export function buildTestCasesCsv(testCases: TestCase[]): string {
       tc.params.departCheckpoint,
       String(tc.expectedTotal),
       tc.note,
-    ].map((value) => escapeCsvValue(String(value ?? "")));
-
-    lines.push(row.join(","));
+    ]);
   }
 
-  return lines.join("\n");
+  return buildCsv(rows);
 }
 
 export function parseTestCasesCsv(csvText: string): TestCase[] {
-  const lines = csvText
-    .replace(/\uFEFF/g, "")
-    .split(/\r?\n/)
-    .filter((line) => line.trim().length > 0);
+  const rows = parseCsv(csvText);
 
-  if (lines.length < 2) {
+  if (rows.length < 2) {
     throw new Error(
       "CSV file must include a header row and at least one data row.",
     );
   }
 
-  const headers = parseCsvLine(lines[0]).map((h) => h.trim());
+  const headers = rows[0].map((h) => h.trim());
   const missingHeaders = CSV_HEADERS.filter((h) => !headers.includes(h));
   if (missingHeaders.length > 0) {
     throw new Error(
@@ -103,8 +61,8 @@ export function parseTestCasesCsv(csvText: string): TestCase[] {
   const parsedCases: TestCase[] = [];
   const usedIds = new Set<number>();
 
-  for (let lineIndex = 1; lineIndex < lines.length; lineIndex++) {
-    const raw = parseCsvLine(lines[lineIndex]);
+  for (let lineIndex = 1; lineIndex < rows.length; lineIndex++) {
+    const raw = rows[lineIndex];
     const get = (name: (typeof CSV_HEADERS)[number]) =>
       (raw[col(name)] ?? "").trim();
 

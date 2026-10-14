@@ -5,6 +5,7 @@ import {
   durationDays,
   getHourFromDate,
   isPost2027,
+  getPublicHolidayTitle,
   isPublicHoliday,
   isSchoolHoliday,
   isWeekend,
@@ -23,6 +24,11 @@ describe("dateUtils", () => {
   it("detects public holidays", () => {
     expect(isPublicHoliday(new Date(2026, 11, 25))).toBe(true);
     expect(isPublicHoliday(new Date(2026, 11, 24))).toBe(false);
+  });
+
+  it("names a public holiday and returns null otherwise", () => {
+    expect(getPublicHolidayTitle(new Date(2026, 11, 25))).toBe("Christmas Day");
+    expect(getPublicHolidayTitle(new Date(2026, 11, 24))).toBeNull();
   });
 
   it("detects the 2027 rate boundary", () => {

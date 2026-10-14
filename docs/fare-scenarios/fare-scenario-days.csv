@@ -1,0 +1,60 @@
+scenario_id,scenario,date,vep_status,reason,erp_operational
+S01,"car, two weekdays pre-2027",2026-04-13,charged,,yes
+S01,"car, two weekdays pre-2027",2026-04-14,charged,,yes
+S02,"car, Friday entry at 17:00 is waived (evening entry)",2026-04-10,free,evening entry,yes
+S02,"car, Friday entry at 17:00 is waived (evening entry)",2026-04-11,free,weekend,no
+S03,"car, Friday entry at 16:59 is charged",2026-04-10,charged,,yes
+S03,"car, Friday entry at 16:59 is charged",2026-04-11,free,weekend,no
+S04,"car, school-holiday weekday entry at 12:00 is waived",2026-06-15,free,school holiday noon entry,yes
+S04,"car, school-holiday weekday entry at 12:00 is waived",2026-06-16,free,exit before 02:00,yes
+S05,"car, school-holiday weekday entry at 11:59 is charged",2026-06-15,charged,,yes
+S05,"car, school-holiday weekday entry at 11:59 is charged",2026-06-16,free,exit before 02:00,yes
+S06,"car, exit at 01:59 waives the departure day",2026-04-14,free,evening entry,yes
+S06,"car, exit at 01:59 waives the departure day",2026-04-15,free,exit before 02:00,yes
+S07,"car, exit at 02:00 charges the departure day",2026-04-14,free,evening entry,yes
+S07,"car, exit at 02:00 charges the departure day",2026-04-15,charged,,yes
+S08,"car, same-minute stay on a weekday",2026-04-14,charged,,yes
+S09,"car, two weekdays from 2027",2027-01-04,charged,,yes
+S09,"car, two weekdays from 2027",2027-01-05,charged,,yes
+S10,"car, 2027 has no evening-entry or early-exit waiver",2027-01-05,charged,,yes
+S10,"car, 2027 has no evening-entry or early-exit waiver",2027-01-06,charged,,yes
+S11,"car, Tuas both ways over a weekend",2027-01-02,free,weekend,no
+S11,"car, Tuas both ways over a weekend",2027-01-03,free,weekend,no
+S12,"car without IU, straddling 1 Jan 2027",2026-12-28,charged,,yes
+S12,"car without IU, straddling 1 Jan 2027",2026-12-29,charged,,yes
+S12,"car without IU, straddling 1 Jan 2027",2026-12-30,charged,,yes
+S12,"car without IU, straddling 1 Jan 2027",2026-12-31,charged,,yes
+S12,"car without IU, straddling 1 Jan 2027",2027-01-01,free,public holiday,no
+S12,"car without IU, straddling 1 Jan 2027",2027-01-02,free,weekend,no
+S12,"car without IU, straddling 1 Jan 2027",2027-01-03,free,weekend,no
+S12,"car without IU, straddling 1 Jan 2027",2027-01-04,charged,,yes
+S12,"car without IU, straddling 1 Jan 2027",2027-01-05,charged,,yes
+S13,"car without IU, public holiday and weekend inside the stay",2026-04-30,charged,,yes
+S13,"car without IU, public holiday and weekend inside the stay",2026-05-01,free,public holiday,no
+S13,"car without IU, public holiday and weekend inside the stay",2026-05-02,free,weekend,no
+S13,"car without IU, public holiday and weekend inside the stay",2026-05-03,free,weekend,no
+S13,"car without IU, public holiday and weekend inside the stay",2026-05-04,charged,,yes
+S14,"car without IU, weekend-only stay has no ERP days",2026-04-11,free,weekend,no
+S14,"car without IU, weekend-only stay has no ERP days",2026-04-12,free,weekend,no
+S15,"car, entry 31 Dec 23:59 to 1 Jan 00:01",2026-12-31,free,evening entry,yes
+S15,"car, entry 31 Dec 23:59 to 1 Jan 00:01",2027-01-01,free,public holiday,no
+S16,"car, long stay with a holiday and weekends",2026-04-30,free,evening entry,yes
+S16,"car, long stay with a holiday and weekends",2026-05-01,free,public holiday,no
+S16,"car, long stay with a holiday and weekends",2026-05-02,free,weekend,no
+S16,"car, long stay with a holiday and weekends",2026-05-03,free,weekend,no
+S16,"car, long stay with a holiday and weekends",2026-05-04,charged,,yes
+S16,"car, long stay with a holiday and weekends",2026-05-05,charged,,yes
+S16,"car, long stay with a holiday and weekends",2026-05-06,charged,,yes
+S16,"car, long stay with a holiday and weekends",2026-05-07,charged,,yes
+S16,"car, long stay with a holiday and weekends",2026-05-08,charged,,yes
+S16,"car, long stay with a holiday and weekends",2026-05-09,free,weekend,no
+S17,"motorcycle without IU from 2027, three weekdays",2027-01-04,charged,,yes
+S17,"motorcycle without IU from 2027, three weekdays",2027-01-05,charged,,yes
+S17,"motorcycle without IU from 2027, three weekdays",2027-01-06,charged,,yes
+S18,"motorcycle with IU before 2027, one weekday",2026-04-13,charged,,yes
+S19,taxi from 2027 pays PSVP and exit toll,2027-01-04,charged,,yes
+S20,taxi before 2027 pays no PSVP,2026-12-30,charged,,yes
+S21,van without IU from 2027 at Tuas pays ERP,2027-01-04,charged,,yes
+S22,"heavy goods vehicle without IU, Tuas in and Woodlands out",2027-01-04,charged,,yes
+S23,bus without IU before 2027 has no ERP charge,2026-11-03,charged,,yes
+S23,bus without IU before 2027 has no ERP charge,2026-11-04,charged,,yes

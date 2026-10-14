@@ -55,14 +55,6 @@ export function getDateDifferenceDays(date1: Date, date2: Date): number {
   return Math.round((date2.getTime() - date1.getTime()) / MS_PER_DAY);
 }
 
-export function isSameDay(dt1: Date, dt2: Date): boolean {
-  return getDateDifferenceDays(dt1, dt2) === 0;
-}
-
-export function isNextDay(dt1: Date, dt2: Date): boolean {
-  return getDateDifferenceDays(dt1, dt2) === 1;
-}
-
 export function durationDays(entryDt: Date, departureDt: Date): number {
   const ms = departureDt.getTime() - entryDt.getTime();
   return ms > 0 ? Math.ceil(ms / MS_PER_DAY) : 0;

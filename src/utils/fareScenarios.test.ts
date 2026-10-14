@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { calculate, countErpDays, isDayVEPFree } from "./calculations";
 import { getCalendarDate, dateKey } from "./dateUtils";
-import { FARE_SCENARIOS } from "./__fixtures__/fareScenarios";
+import { loadFareScenarios } from "./__fixtures__/loadFareScenarios";
+
+const FARE_SCENARIOS = loadFareScenarios();
 
 const calendarDays = (entry: Date, departure: Date): string[] => {
   const days: string[] = [];
@@ -15,7 +17,7 @@ const calendarDays = (entry: Date, departure: Date): string[] => {
   return days;
 };
 
-describe.each(FARE_SCENARIOS)("fare scenario: $name", (scenario) => {
+describe.each(FARE_SCENARIOS)("fare scenario $id: $name", (scenario) => {
   const { params, days, expected } = scenario;
 
   it("has a ledger that covers every calendar day of the stay", () => {
