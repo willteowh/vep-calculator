@@ -3,7 +3,7 @@ import { resolve } from "path";
 import { describe, expect, it } from "vitest";
 
 import {
-  PSVP_TAXI_POST_2027_ENTRY_FEE,
+  PSVP_TAXI_POST_2027_EXIT_FEE,
   RATES_POST,
   RATES_PRE,
   RRC,
@@ -78,8 +78,8 @@ describe("published rates sheet (docs/fare-scenarios/published-rates.csv)", () =
     fromConstants.set(`RRC per entry|${vehicle}|-`, RRC[vehicle]);
   }
   fromConstants.set(
-    "PSVP per entry|taxis|from 2027",
-    PSVP_TAXI_POST_2027_ENTRY_FEE,
+    "PSVP per exit|taxis|from 2027",
+    PSVP_TAXI_POST_2027_EXIT_FEE,
   );
 
   const rows = parseCsvRecords(read("docs/fare-scenarios/published-rates.csv"));

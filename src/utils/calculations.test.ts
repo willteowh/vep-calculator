@@ -41,6 +41,30 @@ describe("calculate() input validation", () => {
   });
 });
 
+describe("taxi PSVP exit boundary", () => {
+  const params = {
+    vehicleCategory: "taxis",
+    hasIU: "yes",
+    entryCheckpoint: "woodlands",
+    departCheckpoint: "woodlands",
+    entryDt: new Date("2026-12-31T23:59"),
+  } as const;
+
+  it("does not charge before 2027-01-01 00:00 and charges at the boundary", () => {
+    const before = calculate({
+      ...params,
+      departureDt: new Date("2026-12-31T23:59"),
+    });
+    const atBoundary = calculate({
+      ...params,
+      departureDt: new Date("2027-01-01T00:00"),
+    });
+
+    expect(before).toMatchObject({ psvpFee: 0, grandTotal: 0.4 });
+    expect(atBoundary).toMatchObject({ psvpFee: 15, grandTotal: 15.4 });
+  });
+});
+
 describe("getStayError", () => {
   it("returns null for a valid stay", () => {
     expect(

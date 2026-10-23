@@ -128,5 +128,5 @@ export const RRC = {
   buses: 0,
 } as const;
 
-// PSVP fee for taxis (per entry) from 1 Jan 2027
-export const PSVP_TAXI_POST_2027_ENTRY_FEE = 15;
+// PSVP fee for taxis (per trip) from 1 Jan 2027
+export const PSVP_TAXI_POST_2027_EXIT_FEE = 15;

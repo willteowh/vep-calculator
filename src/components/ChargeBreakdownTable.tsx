@@ -154,7 +154,7 @@ export function ChargeBreakdownTable({
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
                 >
-                  PSVP Fee (per entry)
+                  PSVP Fee (per trip)
                 </TableCell>
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}

@@ -148,7 +148,7 @@ export const TEST_CASES: TestCase[] = [
   {
     id: 10,
     label: "Taxi Post-2027 PSVP on Woodlands",
-    desc: "Single weekday entry after cutoff",
+    desc: "Single weekday exit after cutoff",
     params: {
       vehicleCategory: "taxis",
       hasIU: "yes",
@@ -163,7 +163,7 @@ export const TEST_CASES: TestCase[] = [
   {
     id: 11,
     label: "Taxi Pre-2027 PSVP off Woodlands",
-    desc: "Single weekday entry before cutoff",
+    desc: "Single weekday exit before cutoff",
     params: {
       vehicleCategory: "taxis",
       hasIU: "yes",
@@ -178,7 +178,7 @@ export const TEST_CASES: TestCase[] = [
   {
     id: 12,
     label: "Taxi Post-2027 PSVP on Tuas both ways",
-    desc: "Single weekday entry after cutoff",
+    desc: "Single weekday exit after cutoff",
     params: {
       vehicleCategory: "taxis",
       hasIU: "yes",
@@ -342,13 +342,13 @@ export const TEST_CASES: TestCase[] = [
   },
   {
     id: 23,
-    label: "Taxi Cutoff exact PSVP trigger",
-    desc: "Entry exactly at cutoff should trigger PSVP",
+    label: "Taxi Exit Cutoff exact PSVP trigger",
+    desc: "Departure exactly at cutoff should trigger PSVP",
     params: {
       vehicleCategory: "taxis",
       hasIU: "yes",
-      entryDt: new Date("2027-01-01T00:00"),
-      departureDt: new Date("2027-01-01T01:00"),
+      entryDt: new Date("2026-12-31T23:59"),
+      departureDt: new Date("2027-01-01T00:00"),
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },

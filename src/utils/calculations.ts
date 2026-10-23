@@ -7,7 +7,7 @@ import {
   SCHOOL_HOLIDAY_ENTRY_HOUR,
   TOLLS,
   RRC,
-  PSVP_TAXI_POST_2027_ENTRY_FEE,
+  PSVP_TAXI_POST_2027_EXIT_FEE,
   MAX_STAY_DAYS,
   MS_PER_DAY,
   VEHICLE_TYPES,
@@ -30,7 +30,6 @@ import {
 const roundMoney = (amount: number) => Math.round(amount * 100) / 100;
 
 export interface CalculationResult {
-  vehicleType: string;
   vehicleCategory: VehicleCategory;
   hasIU: HasIU;
   entryDatetime: string;
@@ -221,8 +220,8 @@ export function calculate(params: CalculateParams): CalculationOutput {
 
   const rrcCharge = RRC[vehicleCategory];
   const psvpFee =
-    vehicleCategory === VEHICLE_TYPES.TAXIS && entryDt >= CUTOFF_2027
-      ? PSVP_TAXI_POST_2027_ENTRY_FEE
+    vehicleCategory === VEHICLE_TYPES.TAXIS && departureDt >= CUTOFF_2027
+      ? PSVP_TAXI_POST_2027_EXIT_FEE
       : 0;
 
   // ERP calculation (only for vehicles with VEP rates)
@@ -254,27 +253,7 @@ export function calculate(params: CalculateParams): CalculationOutput {
   const grandTotal = roundMoney(subtotal + rrcCharge + psvpFee + erpCharge);
   const dur = durationDays(entryDt, departureDt);
 
-  const getVehicleTypeName = () => {
-    switch (vehicleCategory) {
-      case VEHICLE_TYPES.CARS:
-        return "Cars";
-      case VEHICLE_TYPES.MOTORCYCLES:
-        return "Motorcycles";
-      case VEHICLE_TYPES.VANS:
-        return "Vans/Light Goods Vehicles";
-      case VEHICLE_TYPES.HEAVY_GOODS:
-        return "Heavy Goods Vehicles";
-      case VEHICLE_TYPES.TAXIS:
-        return "Taxis";
-      case VEHICLE_TYPES.BUSES:
-        return "Buses";
-      default:
-        return vehicleCategory;
-    }
-  };
-
   return {
-    vehicleType: getVehicleTypeName(),
     vehicleCategory,
     hasIU,
     entryDatetime: toLocalDateTimeString(entryDt),

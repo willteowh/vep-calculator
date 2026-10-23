@@ -45,4 +45,4 @@ RRC per entry,vans,Van / Light goods,-,0
 RRC per entry,heavyGoods,Heavy goods,-,0
 RRC per entry,taxis,Taxi,-,0
 RRC per entry,buses,Bus,-,0
-PSVP per entry,taxis,Taxi,from 2027,15
+PSVP per exit,taxis,Taxi,from 2027,15

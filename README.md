@@ -30,6 +30,8 @@ The VEP Calculator helps owners of Malaysian-registered cars and motorcycles cal
 - Cars: $50/day VEP, $10/day ERP (no IU)
 - Motorcycles: $7/day VEP, $3/day ERP (no IU)
 
+Vans/light goods, heavy goods vehicles, taxis and buses pay no VEP fee; only tolls (and ERP / the taxi PSVP fee, where applicable) are charged.
+
 #### Waiver Conditions
 
 **Always Free (both periods):**
@@ -40,9 +42,8 @@ The VEP Calculator helps owners of Malaysian-registered cars and motorcycles cal
 **Pre-2027 Only Waivers:**
 
 - **Evening Entry**: Entry day free if entry ≥ 5:00 PM
-- **Evening Exit**: Next day free if entry ≥ 5:00 PM and exit < 2:00 AM
 - **School Holiday Noon**: Entry day free if entry ≥ 12:00 PM during school holidays (June, December)
-- **School Holiday Exit**: Exit day free if entry ≥ 12:00 PM, exit < 2:00 AM, and during school holidays
+- **Early Exit**: Departure day free if departure is before 2:00 AM, regardless of entry time
 
 #### Additional Charges
 
