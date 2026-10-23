@@ -30,6 +30,26 @@ describe("Fee Calculator tab", () => {
     );
   });
 
+  it("calculates taxi PSVP on exit exactly at the 2027 cutoff (matches TEST_CASES #23)", () => {
+    cy.clock(new Date(2026, 11, 31, 23, 59).getTime(), ["Date"]);
+    cy.visit("/");
+
+    cy.selectOption("vehicle-category", "taxis");
+    cy.seedDateTime("entry-datetime");
+    cy.setDateTime("entry-datetime", "2026-12-31T23:59");
+    cy.seedDateTime("depart-datetime");
+    cy.setDateTime("depart-datetime", "2027-01-01T00:00");
+    cy.selectOption("entry-checkpoint", "woodlands");
+    cy.selectOption("depart-checkpoint", "woodlands");
+    cy.get('[data-testid="calculate-button"]').click();
+
+    cy.get('[data-testid="charge-psvp"]', { timeout: 5000 }).should(
+      "have.text",
+      "15.00",
+    );
+    cy.get('[data-testid="grand-total"]').should("contain", "15.40");
+  });
+
   it("clears the form", () => {
     cy.selectOption("vehicle-category", "cars");
     cy.get('[data-testid="clear-button"]').click();
