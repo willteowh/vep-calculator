@@ -4,8 +4,6 @@ import type { FormState, FormErrors } from "@/types/form";
 import { Box, Button, Card, CardContent, Grid, Stack } from "@mui/material";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import dayjs, { Dayjs } from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 import { useEffect, useState } from "react";
 import { CALCULATOR_MAX_EXIT_DATE } from "@/config/constants";
 import { resultStyles } from "@/utils/resultStyles";
@@ -16,9 +14,6 @@ import {
   primaryButtonStyle,
   quickFillButtonStyle,
 } from "./calculatorFormStyles";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 interface CalculatorFormProps {
   form: FormState;
