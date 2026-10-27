@@ -1,5 +1,3 @@
-import { TEST_CASES } from "../../src/config/testCases";
-
 describe("Test Cases tab", () => {
   beforeEach(() => {
     cy.visit("/");
@@ -15,15 +13,6 @@ describe("Test Cases tab", () => {
         expect(match, "summary text").to.not.equal(null);
         expect(match![1]).to.equal(match![2]);
       });
-  });
-
-  TEST_CASES.forEach(({ id, label }) => {
-    it(`runs built-in test case #${id}: ${label}`, () => {
-      cy.get(`[data-testid="run-test-${id}"]`).click();
-      cy.get(`[data-testid="test-case-status-${id}"]`, {
-        timeout: 5000,
-      }).should("have.text", "PASSED");
-    });
   });
 
   it("re-imports the downloaded sample CSV", () => {

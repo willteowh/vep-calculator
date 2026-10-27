@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import {
   CUTOFF_2027,
   MAX_STAY_DAYS,
+  PSVP_TAXI_POST_2027_EXIT_FEE,
   SG_PUBLIC_HOLIDAYS,
   VEHICLE_TYPES,
 } from "@/config/constants";
@@ -261,18 +262,18 @@ describe("calculate() invariants", () => {
     );
   });
 
-  it("charges ERP only without an IU, RRC only for cars, PSVP only for taxis from 2027", () => {
+  it("charges ERP only without an IU, RRC only for cars, and taxi PSVP by exit date", () => {
     fc.assert(
       fc.property(stay, (params) => {
         const r = ok(params);
         if (params.hasIU === "yes") expect(r.erpCharge).toBe(0);
         if (params.vehicleCategory !== "cars") expect(r.rrc).toBe(0);
-        if (
-          params.vehicleCategory !== "taxis" ||
-          params.entryDt < CUTOFF_2027
-        ) {
-          expect(r.psvpFee).toBe(0);
-        }
+        const shouldChargePSVP =
+          params.vehicleCategory === "taxis" &&
+          params.departureDt >= CUTOFF_2027;
+        expect(r.psvpFee).toBe(
+          shouldChargePSVP ? PSVP_TAXI_POST_2027_EXIT_FEE : 0,
+        );
         if (
           params.vehicleCategory !== "cars" &&
           params.vehicleCategory !== "motorcycles"

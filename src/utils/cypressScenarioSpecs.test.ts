@@ -6,6 +6,7 @@ import {
   ALL_SCENARIOS_SPEC,
   SCENARIO_SPEC_DIR,
   allScenariosSpecSource,
+  scenarioSpecName,
   scenarioSpecSource,
 } from "../../scripts/scenarioSpec";
 import { parseCsvRecords } from "./csv";
@@ -23,17 +24,20 @@ const hint =
 describe("Cypress scenario specs", () => {
   it("has exactly one spec per scenario in the sheet", () => {
     const files = existsSync(dir) ? readdirSync(dir).sort() : [];
-    const expected = scenarios.map((row) => `${row.scenario_id}.cy.ts`).sort();
+    const expected = scenarios
+      .map((_, index) => scenarioSpecName(index + 1))
+      .sort();
     expect(files, hint).toEqual(expected);
   });
 
-  it.each(scenarios.map((row) => [row.scenario_id, row.scenario]))(
-    "%s spec is up to date with the sheet",
-    (id, name) => {
-      const content = readFileSync(resolve(dir, `${id}.cy.ts`), "utf8");
-      expect(content, hint).toBe(scenarioSpecSource(id, name));
-    },
-  );
+  it.each(
+    scenarios.map(
+      (row, index) => [index + 1, row.scenario_id, row.scenario] as const,
+    ),
+  )("spec index %i is up to date for fare scenario %s", (index, id, name) => {
+    const content = readFileSync(resolve(dir, scenarioSpecName(index)), "utf8");
+    expect(content, hint).toBe(scenarioSpecSource(id, name));
+  });
 
   it("all-scenarios spec is up to date with the sheet", () => {
     const content = readFileSync(

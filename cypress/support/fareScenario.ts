@@ -19,7 +19,7 @@ const absent = (testId: string) =>
  */
 export function runFareScenario(id: string, name: string) {
   describe(`${id}: ${name}`, () => {
-    it("shows the hand-derived fare breakdown", () => {
+    it("matches the expected fare breakdown and grand total", () => {
       cy.readFile(SCENARIOS_CSV).then((csv: string) => {
         const row = parseCsvRecords(csv).find((r) => r.scenario_id === id);
         if (!row) throw new Error(`${id} is not in ${SCENARIOS_CSV}`);

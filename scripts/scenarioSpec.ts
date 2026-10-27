@@ -1,6 +1,10 @@
 export const SCENARIO_SPEC_DIR = "cypress/e2e/scenarios";
 export const ALL_SCENARIOS_SPEC = "cypress/e2e/all-scenarios.cy.ts";
 
+export function scenarioSpecName(index: number): string {
+  return `TC${String(index).padStart(3, "0")}.cy.ts`;
+}
+
 export function scenarioSpecSource(id: string, name: string): string {
   return `// Generated from docs/fare-scenarios/fare-scenarios.csv by \`npm run scenarios:sync\`. Do not edit.
 import { runFareScenario } from "../../support/fareScenario";

@@ -1,4 +1,4 @@
-// Run with: npm run scenarios:sync (writes one Cypress spec per row of the scenario sheet).
+// Run with: npm run scenarios:sync (writes one Cypress spec per fare scenario).
 import {
   mkdirSync,
   readFileSync,
@@ -13,6 +13,7 @@ import {
   ALL_SCENARIOS_SPEC,
   SCENARIO_SPEC_DIR,
   allScenariosSpecSource,
+  scenarioSpecName,
   scenarioSpecSource,
 } from "./scenarioSpec.ts";
 
@@ -22,16 +23,18 @@ const scenarios = parseCsvRecords(
 const dir = resolve(SCENARIO_SPEC_DIR);
 mkdirSync(dir, { recursive: true });
 
-const wanted = new Set(scenarios.map((row) => `${row.scenario_id}.cy.ts`));
+const wanted = new Set(
+  scenarios.map((_, index) => scenarioSpecName(index + 1)),
+);
 for (const file of readdirSync(dir)) {
-  if (!wanted.has(file)) {
+  if (/^(?:S\d{2}|TC\d{2,3})\.cy\.ts$/.test(file) && !wanted.has(file)) {
     rmSync(resolve(dir, file));
     console.log(`removed ${file}`);
   }
 }
-for (const row of scenarios) {
+for (const [index, row] of scenarios.entries()) {
   writeFileSync(
-    resolve(dir, `${row.scenario_id}.cy.ts`),
+    resolve(dir, scenarioSpecName(index + 1)),
     scenarioSpecSource(row.scenario_id, row.scenario),
   );
 }
@@ -41,4 +44,6 @@ writeFileSync(
     scenarios.map((row) => ({ id: row.scenario_id, name: row.scenario })),
   ),
 );
-console.log(`wrote ${scenarios.length} scenario specs to ${SCENARIO_SPEC_DIR}`);
+console.log(
+  `wrote ${scenarios.length} fare scenario specs to ${SCENARIO_SPEC_DIR}`,
+);
