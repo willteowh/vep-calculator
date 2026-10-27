@@ -62,6 +62,9 @@ export function CalculatorDateTimeField({
         reduceAnimations
         localeText={PLACEHOLDER_LOCALE_TEXT}
         slotProps={{
+          desktopTransition: {
+            timeout: { enter: 120, exit: 120 },
+          },
           openPickerButton: {
             disableRipple: true,
             disableTouchRipple: true,
