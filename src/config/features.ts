@@ -1,2 +1,2 @@
-// The exported (production) build sets VITE_INCLUDE_TESTS=false to hide dev tooling.
-export const INCLUDE_TESTS = import.meta.env.VITE_INCLUDE_TESTS !== "false";
+// `npm run export` builds with --mode export to hide dev tooling (works on Windows and macOS).
+export const INCLUDE_TESTS = import.meta.env.MODE !== "export";
