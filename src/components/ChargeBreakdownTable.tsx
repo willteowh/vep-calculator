@@ -81,7 +81,8 @@ export function ChargeBreakdownTable({
                   <Typography component="span" sx={resultStyles.subTextCell}>
                     VEP Charges
                   </Typography>
-                  {result.vepFees !== 0 && (
+                  {/* hide VEP breakdown  */}
+                  {/* {result.vepFees !== 0 && (
                     <>
                       {result.preDays > 0 && "vepPerDay" in result.rPre && (
                         <Typography
@@ -103,7 +104,7 @@ export function ChargeBreakdownTable({
                         </Typography>
                       )}
                     </>
-                  )}
+                  )} */}
                 </Box>
               </TableCell>
               <TableCell
@@ -112,8 +113,9 @@ export function ChargeBreakdownTable({
                 <span data-testid="charge-vep">{fmt(result.vepFees)}</span>
               </TableCell>
             </TableRow>
-
-            <TableRow sx={resultStyles.totalRow}>
+            
+            {/* hide subtotal row */}
+            {/* <TableRow sx={resultStyles.totalRow}>
               <TableCell
                 sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
               >
@@ -130,7 +132,7 @@ export function ChargeBreakdownTable({
                   {fmt(result.subtotal)}
                 </Typography>
               </TableCell>
-            </TableRow>
+            </TableRow> */}
 
             {appliesRRC && (
               <TableRow sx={resultStyles.itemRow}>
@@ -154,7 +156,7 @@ export function ChargeBreakdownTable({
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.itemCell }}
                 >
-                  PSVP Fee (per trip)
+                  PSVP Fee 
                 </TableCell>
                 <TableCell
                   sx={{ ...resultStyles.tableCell, ...resultStyles.amountCell }}
@@ -177,7 +179,8 @@ export function ChargeBreakdownTable({
                     )}
                     {!erpFlatRateApplies && <>ERP Charges</>}
                   </Typography>
-                  {erpFlatRateApplies && result.erpCharge > 0 && (
+                  {/* hide ERP breakdown  */}
+                  {/* {erpFlatRateApplies && result.erpCharge > 0 && (
                     <>
                       {result.erpDaysPre > 0 && (
                         <Typography
@@ -200,7 +203,7 @@ export function ChargeBreakdownTable({
                         </Typography>
                       )}
                     </>
-                  )}
+                  )} */}
                 </Box>
               </TableCell>
               <TableCell

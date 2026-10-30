@@ -188,12 +188,12 @@ describe("fare at the evening-entry boundary", () => {
 describe("maximum stay boundary", () => {
   const entry = new Date("2026-01-01T00:00");
 
-  it("allows exactly 250 days", () => {
-    expect(getStayError(entry, new Date("2026-09-08T00:00"))).toBeNull();
+  it("allows exactly 90 days", () => {
+    expect(getStayError(entry, new Date("2026-04-01T00:00"))).toBeNull();
   });
 
-  it("rejects 250 days and one minute", () => {
-    expect(getStayError(entry, new Date("2026-09-08T00:01"))).not.toBeNull();
+  it("rejects 90 days and one minute", () => {
+    expect(getStayError(entry, new Date("2026-04-01T00:01"))).not.toBeNull();
   });
 
   it("allows departure in the same minute as entry", () => {

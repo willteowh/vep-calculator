@@ -63,7 +63,7 @@ export const SCHOOL_HOLIDAY_ENTRY_HOUR = 12; // Noon
 export const MS_PER_DAY = 86_400_000;
 
 // Calculation Limits
-export const MAX_STAY_DAYS = 250;
+export const MAX_STAY_DAYS = 90;
 export const QUICK_FILL_MAX_DAYS = 30;
 export const QUICK_FILL_STAY_DAYS_MAX = 10;
 export const CALCULATOR_MAX_EXIT_DATE = "2027-12-31T23:59:59";

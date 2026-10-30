@@ -182,7 +182,7 @@ Run predefined test scenarios to validate calculations and understand different 
 
 ### Functional Limitations
 
-- Maximum stay calculation: 250 days
+- Maximum stay calculation: 90 days
 - Only supports cars and motorcycles
 - Only Woodlands and Tuas checkpoints
 - ERP calculation for IU-equipped vehicles shows informational message only

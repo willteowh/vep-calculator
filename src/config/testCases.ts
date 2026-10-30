@@ -388,12 +388,12 @@ export const TEST_CASES: TestCase[] = [
   {
     id: 26,
     label: "Car Exceed max stay should error",
-    desc: "Stay above 250 days",
+    desc: "Stay above 90 days",
     params: {
       vehicleCategory: "cars",
       hasIU: "yes",
       entryDt: new Date("2026-01-01T00:00"),
-      departureDt: new Date("2026-09-09T00:01"),
+      departureDt: new Date("2026-04-01T00:01"),
       entryCheckpoint: "woodlands",
       departCheckpoint: "woodlands",
     },

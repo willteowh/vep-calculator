@@ -26,20 +26,20 @@ describe("Stay validation", () => {
     );
   });
 
-  it("accepts a stay of exactly 250 days", () => {
+  it("accepts a stay of exactly 90 days", () => {
     start("2026-01-01T00:00");
-    cy.setDateTime("depart-datetime", "2026-09-08T00:00");
+    cy.setDateTime("depart-datetime", "2026-04-01T00:00");
     checkpoints();
     cy.get('[data-testid="calculate-button"]').click();
     cy.get('[data-testid="grand-total"]', { timeout: 5000 }).should("exist");
   });
 
-  it("rejects a stay longer than 250 days", () => {
+  it("rejects a stay longer than 90 days", () => {
     start("2026-01-01T00:00");
-    cy.setDateTime("depart-datetime", "2026-09-08T00:01");
+    cy.setDateTime("depart-datetime", "2026-04-01T00:01");
     checkpoints();
     cy.get('[data-testid="calculate-button"]').click();
-    cy.contains("Stay duration cannot exceed 250 days.", {
+    cy.contains("Stay duration cannot exceed 90 days.", {
       timeout: 5000,
     }).should("be.visible");
     cy.get('[data-testid="grand-total"]').should("not.exist");

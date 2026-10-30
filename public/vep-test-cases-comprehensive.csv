@@ -24,6 +24,6 @@ id,label,desc,vehicleCategory,hasIU,entryDt,departureDt,entryCheckpoint,departCh
 23,Taxi Exit Cutoff exact PSVP trigger,Departure exactly at cutoff should trigger PSVP,taxis,yes,2026-12-31T23:59,2027-01-01T00:00,woodlands,woodlands,15.4,Boundary check for PSVP
 24,Car Straddle minute-level boundary,Entry 1 minute before cutoff and depart 1 minute after,cars,yes,2026-12-31T23:59,2027-01-01T00:01,woodlands,woodlands,7.2,Entry day waived by evening rule and Jan 1 holiday
 25,Car Invalid date range should error,Departure before entry,cars,yes,2027-01-05T10:00,2027-01-04T18:00,woodlands,woodlands,0,Expect INVALID_DATE_RANGE error
-26,Car Exceed max stay should error,Stay above 250 days,cars,yes,2026-01-01T00:00,2026-09-09T00:01,woodlands,woodlands,0,Expect EXCEED_DURATION error
+26,Car Exceed max stay should error,Stay above 90 days,cars,yes,2026-01-01T00:00,2026-04-01T00:01,woodlands,woodlands,0,Expect EXCEED_DURATION error
 27,Car Unknown checkpoint fallback no crash,Unknown checkpoint should zero toll,cars,yes,2027-01-06T10:00,2027-01-06T18:00,unknown,unknown,56.4,Toll fallback 0 with VEP 50 and RRC 6.4
 28,Van Unknown checkpoint fallback no crash,Unknown checkpoint with ERP day one,vans,no,2027-01-06T10:00,2027-01-06T18:00,unknown,unknown,10,Toll fallback 0 ERP 10

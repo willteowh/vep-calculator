@@ -1,6 +1,6 @@
 export const ERROR_MESSAGES = {
   INVALID_DATE_RANGE: "Departure date cannot be before entry date.",
-  EXCEED_DURATION: "Stay duration cannot exceed 250 days.",
+  EXCEED_DURATION: "Stay duration cannot exceed 90 days.",
   INVALID_VEHICLE:
     "This calculator supports Cars and Motorcycles registered in Malaysia only.",
 } as const;
