@@ -60,6 +60,7 @@ export function ResultTable({ result }: ResultTableProps) {
   }
   const holidayTitlesText = Array.from(holidayTitles).join(", ");
   const straddlesBoundary = entryDt < CUTOFF_2027 && departureDt >= CUTOFF_2027;
+  const isBrowserYear2027 = new Date().getFullYear() >= 2027;
 
   return (
     <Box data-testid="result-table" sx={resultStyles.wrapper}>
@@ -229,20 +230,26 @@ export function ResultTable({ result }: ResultTableProps) {
             collected together with the Vehicle Entry Permit (VEP), toll charges
             and fixed Electronic Road Pricing (ERP) fees upon departure at Tuas
             or Woodlands Checkpoint. <br />
-            <br />• For all foreign-registered cars, you will automatically be
-            on the fixed ERP fee scheme if no In-vehicle Unit (IU) is installed
-            in your vehicle. An ERP fee of S$5 daily is payable if you use
-            ERP-priced roads during the ERP operating hours. <br />
-            <br />• For vehicles with IUs, please note that separate ERP charges
-            will apply. Click{" "}
-            <Link
-              sx={linkStyle}
-              href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
-              target="_blank"
-            >
-              here
-            </Link>{" "}
-            to enquire ERP rates*. <br />
+            {!isBrowserYear2027 && (
+              <>
+                <br />• For all foreign-registered cars, you will automatically
+                be on the fixed ERP fee scheme if no In-vehicle Unit (IU) is
+                installed in your vehicle. An ERP fee of S$5 daily is payable
+                if you use ERP-priced roads during the ERP operating hours. <br />
+                <br />• For vehicles with IUs, please note that separate ERP
+                charges will apply. Click{" "}
+                <Link
+                  sx={linkStyle}
+                  href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
+                  target="_blank"
+                >
+                  here
+                </Link>{" "}
+                to enquire ERP rates*. <br />
+              </>
+            )}
+            <br />• From 1 January 2027, the revised VEP fees for foreign-registered cars and motorcycles will apply on weekdays (excluding Singapore public holidays). A flat-rate ERP fee will also apply on ERP operational days for all foreign-registered vehicles, except taxis, without On-Board Units (OBUs). Charges will be automatically deducetd from the Autopass's stored value when exiting Singapore. Visit the LTA OneMotoring website or refer to the news release for more information. Please click here to learn more about ERP and applicable charges. <br/>
+            <br />• From 1 January 2027, the ASEAN Public Service Vhicle Permit (PSVP) fee for Malaysia-registerd taxis entering Singapore will be increased to S$15 per trip, up from the current S$2 per month. Visit the LTA OneMotoring website or refer to the news release for more informaton. <br/>
             <br />
             • All terms and conditions outlined in the application for the
             International Circulation Permit (ICP), Visitor's Permit (VP), ASEAN
@@ -273,18 +280,22 @@ export function ResultTable({ result }: ResultTableProps) {
             </Link>{" "}
             or call our hotlines at (02)-62255582 (from Malaysia) or at
             1800-2255-582 (for calls made in Singapore). <br />
-            <br />* These rates are applicable to foreign-registered cars
-            installed with IUs, otherwise, a flat rate of S$5 per day is payable
-            irrespective of the number of gantries passed through on that day by
-            the foreign-registered car. Please click{" "}
-            <Link
-              sx={linkStyle}
-              href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
-              target="_blank"
-            >
-              here
-            </Link>{" "}
-            to learn more about ERP and applicable charges.
+            {!isBrowserYear2027 && (
+              <>  
+              <br />* These rates are applicable to foreign-registered cars
+              installed with IUs, otherwise, a flat rate of S$5 per day is payable
+              irrespective of the number of gantries passed through on that day by
+              the foreign-registered car. Please click{" "}
+              <Link
+                sx={linkStyle}
+                href="https://www.onemotoring.lta.gov.sg/content/onemotoring/home/driving/ERP.html"
+                target="_blank"
+              >
+                here
+              </Link>{" "}
+              to learn more about ERP and applicable charges.
+              </>
+            )}
           </Typography>
         </CardContent>
       </Card>

@@ -44,6 +44,7 @@ export function CalculatorForm({
 
   const minEntryDayjs = dayjs().subtract(14, "days");
   const maxExitDayjs = dayjs(CALCULATOR_MAX_EXIT_DATE);
+  const isBrowserYear2027 = new Date().getFullYear() === 2027;
 
   const clampToAllowedRange = (value: Dayjs): Dayjs => {
     if (value.isBefore(minEntryDayjs)) return minEntryDayjs;
@@ -123,15 +124,27 @@ export function CalculatorForm({
             {IUApplicable && (
               <Grid size={{ xs: 12, sm: 6 }}>
                 <CalculatorSelectField
-                  label={UI_LABELS.HAS_IU}
+                  label={
+                    isBrowserYear2027 ? "OBU installed?" : UI_LABELS.HAS_IU
+                  }
                   testId="has-iu"
                   value={form.hasIU}
                   error={errors.hasIU}
                   placeholderDisabled={false}
                   onChange={(value) => onFieldChange("hasIU", value)}
                   options={[
-                    { value: "yes", label: "Yes (IU / OBU installed)" },
-                    { value: "no", label: "No (no IU / OBU)" },
+                    {
+                      value: "yes",
+                      label: isBrowserYear2027
+                        ? "Yes (OBU installed)"
+                        : "Yes (IU / OBU installed)",
+                    },
+                    {
+                      value: "no",
+                      label: isBrowserYear2027
+                        ? "No (no OBU)"
+                        : "No (no IU / OBU)",
+                    },
                   ]}
                 />
               </Grid>
